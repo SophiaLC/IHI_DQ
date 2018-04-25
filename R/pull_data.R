@@ -27,5 +27,7 @@ pull_data <- function(username, password, table, mft, start, end) {
     
   odbcCloseAll() # close connection
   
+  data$Age_Reported <- as.numeric(data$Age_Reported)
+  
   return(list(data=data, names=names))
 }
