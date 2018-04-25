@@ -49,10 +49,10 @@ age_invalid <- function(data) {
            ),
            Invalid_Age=case_when(
              is.na(Age_Units_Reported) & !is.na(Age_Reported) ~ TRUE, # invalid if they don't report age units, but report age
-             (Age_Units_Reported=="YEAR" | Age_Units_Reported=="YEARS") & Age_Reported >= 2 & Age_Reported <=120 ~ FALSE, # if in years and between 2 and 120, then not invalid
-             (Age_Units_Reported=="MONTH" | Age_Units_Reported=="MONTHS") & Age_Reported >= 1 & Age_Reported <=24 ~ FALSE, # if in months and between 1 and 24, then not invalid
-             (Age_Units_Reported=="WEEK" | Age_Units_Reported=="WEEKS") & Age_Reported >= 1 & Age_Reported <=20 ~ FALSE, # if in weeks and between 1 and 20, then not invalid
-             (Age_Units_Reported=="DAY" | Age_Units_Reported=="DAYS") & Age_Reported >= 1 & Age_Reported <=30 ~ FALSE, # if in days and between 1 and 30, then not invalid
+             (Age_Units_Reported=="YEAR" | Age_Units_Reported=="YEARS" | Age_Units_Reported=="YEAR [TIME]") & Age_Reported >= 2 & Age_Reported <=120 ~ FALSE, # if in years and between 2 and 120, then not invalid
+             (Age_Units_Reported=="MONTH" | Age_Units_Reported=="MONTHS" | Age_Units_Reported=="MONTH [TIME]") & Age_Reported >= 1 & Age_Reported <=24 ~ FALSE, # if in months and between 1 and 24, then not invalid
+             (Age_Units_Reported=="WEEK" | Age_Units_Reported=="WEEKS" | Age_Units_Reported=="WEEK [TIME]") & Age_Reported >= 1 & Age_Reported <=20 ~ FALSE, # if in weeks and between 1 and 20, then not invalid
+             (Age_Units_Reported=="DAY" | Age_Units_Reported=="DAYS" | Age_Units_Reported=="DAY [TIME]") & Age_Reported >= 1 & Age_Reported <=30 ~ FALSE, # if in days and between 1 and 30, then not invalid
              TRUE ~ TRUE, # otherwise, it is invalid
            ))
   
