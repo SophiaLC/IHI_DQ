@@ -148,12 +148,12 @@ write_reports <- function(username, password, table, mft, start, end, directory=
                      bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
                      # bind with date ranges and number of records and visits
                      bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
-                                                  "Number of Records", "Number of Visits","Average_Lag"),
+                                                  "Number of Records", "Number of Visits"),
                                           Value=c(paste("From", vmin, "to", vmax),
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
-                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
-                                                  va_lag(subdata)))) %>% 
+                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))
+                                                  ))) %>% 
                      right_join(hl7_values, ., by="Field")), # get hl7 values
                    firstColumn=TRUE, bandedRows=TRUE)
     setColWidths(wb, sheet1, 1:3, "auto")
@@ -190,6 +190,27 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
     freezePane(wb, sheet4, firstActiveRow=2) # format sheet
+   
+    # sheet 5: average lag
+    sheet5 <- addWorksheet(wb, "average lag") # initialize sheet
+    # making data for it
+   subdata=data%>%
+          filter(C_Biosense_Facility_ID==i)
+    writeDataTable(wb, sheet5, va_lag(subdata), firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet5, 1:ncol(va_lag(subdata)), "auto") # format sheet
+    freezePane(wb, sheet5, firstActiveRow=2) # format sheet
+    
+    # sheet 6: earliest lag
+    sheet6 <- addWorksheet(wb, "earliest lag") # initialize sheet
+    # making data for it
+    subdata=data%>%
+          filter(C_Biosense_Facility_ID==i)
+    writeDataTable(wb, sheet6, early_lag(subdata), firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet6, 1:ncol(early_lag(subdata)), "auto") # format sheet
+    freezePane(wb, sheet6, firstActiveRow=2) # format sheet
+    
+    
+    
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
