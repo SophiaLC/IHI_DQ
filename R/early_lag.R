@@ -1,6 +1,3 @@
-
-
-
 early_lag <- function(data) {
   LagTime=data %>%
     select(C_Biosense_Facility_ID, C_Biosense_ID, Arrived_Date_Time, C_Visit_Date_Time, Message_Date_Time, Recorded_Date_Time)%>% 
