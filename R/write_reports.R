@@ -45,10 +45,10 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   state_opt_nulls <- get_opt_nulls(data)
   # get facility-level state summary of invalids
   state_invalids <- get_all_invalids(data)
-  ## get state-wide average lag
-  state_lag <-apply(va_lag(data),2,mean)
-  ## get state-wide average earliest lag
-  state_early_lag<-apply(early_lag(data),2,mean)
+  ## get state-wide average lag, remove the column of Facility_ID
+  state_lag <-apply(va_lag(data)[,-1],2,mean)
+  ## get state-wide average earliest lag, remove the column of Facility_ID
+  state_early_lag<-apply(early_lag(data)[,-1],2,mean)
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
@@ -101,21 +101,17 @@ write_reports <- function(username, password, table, mft, start, end, directory=
            rows=1:3, cols=1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
   # sheet 4: average lag
   sheet4 <- addWorksheet(wb, "Average Lag")
-  writeData(wb, sheet4, state_lag, 
-            startCol=2, startRow=1, colNames=FALSE)
   writeDataTable(wb, sheet4,
                  va_lag(data),
-                 startCol=1, startRow=4, bandedRows=TRUE)
+                 startCol=1, startRow=1, bandedRows=TRUE)
   setColWidths(wb, sheet4, 1:6, "auto")
   freezePane(wb, sheet4, firstActiveRow=2)
   
   # sheet 5: lag using the earliest Recorded_Date_Time
   sheet5 <- addWorksheet(wb, "Early Lag")
-  writeData(wb, sheet4, state_early_lag, 
-            startCol=2, startRow=1, colNames=FALSE)
   writeDataTable(wb, sheet5,
                  early_lag(data),
-                 startCol=1, startRow=4, bandedRows=TRUE)
+                 startCol=1, startRow=1, bandedRows=TRUE)
   setColWidths(wb, sheet5, 1:6, "auto")
   freezePane(wb, sheet5, firstActiveRow=2)
   
@@ -201,19 +197,23 @@ write_reports <- function(username, password, table, mft, start, end, directory=
    
     # sheet 5: average lag
     sheet5 <- addWorksheet(wb, "average lag") # initialize sheet
+    writeData(wb, sheet5, state_lag, 
+            startCol=2, startRow=1, colNames=FALSE)
     # making data for it
    subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet5, va_lag(subdata), firstColumn=TRUE, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet5, va_lag(subdata), startCol=1, startRow=3, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet5, 1:ncol(va_lag(subdata)), "auto") # format sheet
     freezePane(wb, sheet5, firstActiveRow=2) # format sheet
     
     # sheet 6: earliest lag
     sheet6 <- addWorksheet(wb, "earliest lag") # initialize sheet
+    writeData(wb, sheet6, state_early_lag, 
+            startCol=2, startRow=1, colNames=FALSE)
     # making data for it
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet6, early_lag(subdata), firstColumn=TRUE, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet6, early_lag(subdata), startCol=1, startRow=3, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet6, 1:ncol(early_lag(subdata)), "auto") # format sheet
     freezePane(wb, sheet6, firstActiveRow=2) # format sheet
     
