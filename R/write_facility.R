@@ -77,11 +77,12 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                     bind_rows(data.frame(Field="Facility_Name", Value=name), .) %>% # add name to the top
                                     # bind with date ranges and number of records and visits
                                     bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates",
-                                                                 "Number of Records", "Number of Visits"),
+                                                                 "Number of Records", "Number of Visits","Average_Lag"),
                                                          Value=c(paste("From", vmin, "to", vmax),
                                                                  paste("From", amin, "to", amax),
                                                                  nrow(data),
-                                                                 n_groups(group_by(data, C_BioSense_ID))))) %>%
+                                                                 n_groups(group_by(data, C_BioSense_ID)),
+                                                                 va_lag(data)))) %>%
                                     right_join(hl7_values, ., by="Field")), # get hl7 values
                  firstColumn=TRUE, bandedRows=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
@@ -101,18 +102,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
   freezePane(wb, sheet4, firstActiveRow=2) # format sheet
   
-  # sheet 5: lag
-  sheet5 <- addWorksheet(wb, "Average Lag") # initialize sheet
-  writeDataTable(wb, sheet5, va_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet, 1:ncol(invalids), "auto") # format sheet
-  freezePane(wb, sheet5, firstActiveRow=2) # format sheet
-  
-  
-  # sheet 6: early lag
-  sheet5 <- addWorksheet(wb, "Earliest Lag") # initialize sheet
-  writeDataTable(wb, sheet6, early_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet, 1:ncol(invalids), "auto") # format sheet
-  freezePane(wb, sheet6, firstActiveRow=2) # format sheet
+ 
   
   # write to file
   filename <- str_replace_all(name, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
