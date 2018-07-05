@@ -198,7 +198,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # sheet 5: average lag
     sheet5 <- addWorksheet(wb, "average lag") # initialize sheet
     writeData(wb, sheet5, state_lag, 
-            startCol=2, startRow=1, colNames=FALSE)
+            startCol=2, startRow=1, colNames=TRUE)
     # making data for it
    subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
@@ -209,7 +209,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # sheet 6: earliest lag
     sheet6 <- addWorksheet(wb, "earliest lag") # initialize sheet
     writeData(wb, sheet6, state_early_lag, 
-            startCol=2, startRow=1, colNames=FALSE)
+            startCol=2, startRow=1, colNames=TRUE)
     # making data for it
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
