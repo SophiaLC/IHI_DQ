@@ -77,12 +77,12 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                     bind_rows(data.frame(Field="Facility_Name", Value=name), .) %>% # add name to the top
                                     # bind with date ranges and number of records and visits
                                     bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates",
-                                                                 "Number of Records", "Number of Visits","Early_Lag"),
+                                                                 "Number of Records", "Number of Visits"),
                                                          Value=c(paste("From", vmin, "to", vmax),
                                                                  paste("From", amin, "to", amax),
                                                                  nrow(data),
-                                                                 n_groups(group_by(data, C_BioSense_ID)),
-                                                                 early_lag(data)))) %>%
+                                                                 n_groups(group_by(data, C_BioSense_ID))
+                                                                 ))) %>%
                                     right_join(hl7_values, ., by="Field")), # get hl7 values
                  firstColumn=TRUE, bandedRows=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
@@ -101,7 +101,11 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   writeDataTable(wb, sheet4, invalids, firstColumn=TRUE, bandedRows=TRUE) # write to table
   setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
   freezePane(wb, sheet4, firstActiveRow=2) # format sheet
-  
+    # sheet 5: lags
+  sheet4 <- addWorksheet(wb, "lag") # initialize sheet
+  writeDataTable(wb, sheet5, va_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
+  setColWidths(wb, sheet5, 1:ncol(va_lag(data)), "auto") # format sheet
+  freezePane(wb, sheet5, firstActiveRow=2) # format sheet
  
   
   # write to file
