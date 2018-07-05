@@ -20,13 +20,13 @@ early_lag <- function(data) {
            lag_Arrival_Visit=as.numeric(difftime(Arrived,Visit,units="hours"))         
     )
   
-  return(
+ 
   Lag_Summary=Time_Diff %>%
     group_by(C_Biosense_Facility_ID)%>%
     summarise(Record_Visit=round(mean(lag_Record_Visit,na.rm=TRUE),2)),
               Message_Record=round(mean(lag_Message_Record,na.rm=TRUE),2),
               Arrival_Message=round(mean(lag_Arrival_Message,na.rm=TRUE),2),
-              Arrival_Visit=round(mean(lag_Arrival_Visit,na.rm=TRUE),2)         
-  )
-
+              Arrival_Visit=round(mean(lag_Arrival_Visit,na.rm=TRUE),2)     
+  
+  Return(Lag_Summary)
 }
