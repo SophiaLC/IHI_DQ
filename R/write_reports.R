@@ -46,9 +46,9 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   # get facility-level state summary of invalids
   state_invalids <- get_all_invalids(data)
   ## get state-wide average lag, remove the column of Facility_ID
-  state_lag <-apply(va_lag(data)[,-1],2,mean)
+  state_lag <-c("State-wide",apply(va_lag(data)[,-1],2,mean))
   ## get state-wide average earliest lag, remove the column of Facility_ID
-  state_early_lag<-apply(early_lag(data)[,-1],2,mean)
+  state_early_lag<-c("State-wide",apply(early_lag(data)[,-1],2,mean))
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
