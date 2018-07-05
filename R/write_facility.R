@@ -77,12 +77,12 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                     bind_rows(data.frame(Field="Facility_Name", Value=name), .) %>% # add name to the top
                                     # bind with date ranges and number of records and visits
                                     bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates",
-                                                                 "Number of Records", "Number of Visits","Average_Lag"),
+                                                                 "Number of Records", "Number of Visits","Early_Lag"),
                                                          Value=c(paste("From", vmin, "to", vmax),
                                                                  paste("From", amin, "to", amax),
                                                                  nrow(data),
                                                                  n_groups(group_by(data, C_BioSense_ID)),
-                                                                 va_lag(data)))) %>%
+                                                                 early_lag(data)))) %>%
                                     right_join(hl7_values, ., by="Field")), # get hl7 values
                  firstColumn=TRUE, bandedRows=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
