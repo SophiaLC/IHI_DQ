@@ -101,11 +101,17 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   writeDataTable(wb, sheet4, invalids, firstColumn=TRUE, bandedRows=TRUE) # write to table
   setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
   freezePane(wb, sheet4, firstActiveRow=2) # format sheet
-    # sheet 5: lags
+    # sheet 5:average lags
   sheet5 <- addWorksheet(wb, "lag") # initialize sheet
   writeDataTable(wb, sheet5, va_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
   setColWidths(wb, sheet5, 1:ncol(va_lag(data)), "auto") # format sheet
   freezePane(wb, sheet5, firstActiveRow=2) # format sheet
+  
+   # sheet 6: earliest lags
+  sheet6 <- addWorksheet(wb, "lag") # initialize sheet
+  writeDataTable(wb, sheet6, early_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
+  setColWidths(wb, sheet6, 1:ncol(early_lag(data)), "auto") # format sheet
+  freezePane(wb, sheet6, firstActiveRow=2) # format sheet
  
   
   # write to file
