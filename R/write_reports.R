@@ -202,7 +202,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # making data for it
    subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet5, va_lag(subdata), startCol=1, startRow=3, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet5, va_lag(subdata), startCol=1, startRow=2, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet5, 1:ncol(va_lag(subdata)), "auto") # format sheet
     freezePane(wb, sheet5, firstActiveRow=4) # format sheet
     
@@ -213,7 +213,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # making data for it
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet6, early_lag(subdata), startCol=1, startRow=3, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet6, early_lag(subdata), startCol=1, startRow=2, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet6, 1:ncol(early_lag(subdata)), "auto") # format sheet
     freezePane(wb, sheet6, firstActiveRow=4) # format sheet
     
