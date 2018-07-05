@@ -30,5 +30,5 @@ early_lag <- function(data) {
              )
   
   
-  Return(Lag_Summary)
+  return(Lag_Summary)
 }
