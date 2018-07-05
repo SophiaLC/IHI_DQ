@@ -102,20 +102,20 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   # sheet 4: average lag
   sheet4 <- addWorksheet(wb, "Average Lag")
   writeData(wb, sheet4, state_lag, 
-            startCol=1, startRow=1, colNames=FALSE)
+            startCol=2, startRow=1, colNames=FALSE)
   writeDataTable(wb, sheet4,
                  va_lag(data),
-                 startCol=1, startRow=3, bandedRows=TRUE)
+                 startCol=1, startRow=4, bandedRows=TRUE)
   setColWidths(wb, sheet4, 1:6, "auto")
   freezePane(wb, sheet4, firstActiveRow=2)
   
   # sheet 5: lag using the earliest Recorded_Date_Time
   sheet5 <- addWorksheet(wb, "Early Lag")
   writeData(wb, sheet4, state_early_lag, 
-            startCol=1, startRow=1, colNames=FALSE)
+            startCol=2, startRow=1, colNames=FALSE)
   writeDataTable(wb, sheet5,
                  early_lag(data),
-                 startCol=1, startRow=3, bandedRows=TRUE)
+                 startCol=1, startRow=4, bandedRows=TRUE)
   setColWidths(wb, sheet5, 1:6, "auto")
   freezePane(wb, sheet5, firstActiveRow=2)
   
