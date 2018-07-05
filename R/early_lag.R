@@ -1,6 +1,6 @@
 early_lag <- function(data) {
   LagTime=data %>%
-    select(C_Biosense_Facility_ID, C_Biosense_ID, Arrived_Date_Time, C_Visit_Date_Time, Message_Date_Time, Recorded_Date_Time)%>% 
+    select(C_Biosense_Facility_ID, C_BioSense_ID, Arrived_Date_Time, C_Visit_Date_Time, Message_Date_Time, Recorded_Date_Time)%>% 
     mutate(Arrived=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"),
            Visit=as.POSIXct(C_Visit_Date_Time,format="%Y-%m-%d %H:%M:%S"),
            Message=as.POSIXct(Message_Date_Time,format="%Y-%m-%d %H:%M:%S"),
@@ -9,7 +9,7 @@ early_lag <- function(data) {
   
   
   Early_Lag=LagTime%>%
-    group_by(C_Biosense_ID)%>%
+    group_by(C_BioSense_ID)%>%
     slice(which.min(Record))
   
   
