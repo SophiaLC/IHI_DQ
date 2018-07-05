@@ -102,7 +102,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
   freezePane(wb, sheet4, firstActiveRow=2) # format sheet
     # sheet 5: lags
-  sheet4 <- addWorksheet(wb, "lag") # initialize sheet
+  sheet5 <- addWorksheet(wb, "lag") # initialize sheet
   writeDataTable(wb, sheet5, va_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
   setColWidths(wb, sheet5, 1:ncol(va_lag(data)), "auto") # format sheet
   freezePane(wb, sheet5, firstActiveRow=2) # format sheet
