@@ -95,13 +95,22 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   freezePane(wb, sheet3, firstActiveRow=4, firstActiveCol=4)
   addStyle(wb, sheet3, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
            rows=1:3, cols=1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
-  # sheet 4: visit-arrival lag
-  sheet4 <- addWorksheet(wb, "Visit-Arrival Lag")
+  # sheet 4: average lag
+  sheet4 <- addWorksheet(wb, "Average Lag")
   writeDataTable(wb, sheet4,
-                 va_lag(data, fnames, offset),
+                 va_lag(data),
                  startCol=1, startRow=1, bandedRows=TRUE)
-  setColWidths(wb, sheet4, 1:3, "auto")
+  setColWidths(wb, sheet4, 1:6, "auto")
   freezePane(wb, sheet4, firstActiveRow=2)
+  
+  # sheet 5: lag using the earliest Recorded_Date_Time
+  sheet5 <- addWorksheet(wb, "Early Lag")
+  writeDataTable(wb, sheet5,
+                 early_lag(data),
+                 startCol=1, startRow=1, bandedRows=TRUE)
+  setColWidths(wb, sheet5, 1:6, "auto")
+  freezePane(wb, sheet5, firstActiveRow=2)
+  
   # write workbook
   saveWorkbook(wb, paste0(directory, "/State_Summary.xlsx"), overwrite=TRUE)
 
