@@ -196,7 +196,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     freezePane(wb, sheet4, firstActiveRow=2) # format sheet
    
     # sheet 5: average lag
-    sheet5 <- addWorksheet(wb, "average lag") # initialize sheet
+    sheet5 <- addWorksheet(wb, "Average Lag") # initialize sheet
     writeData(wb, sheet5, t(state_lag), 
             startCol=1, startRow=1, colNames=FALSE)
     # making data for it
@@ -207,7 +207,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     freezePane(wb, sheet5, firstActiveRow=4) # format sheet
     
     # sheet 6: earliest lag
-    sheet6 <- addWorksheet(wb, "earliest lag") # initialize sheet
+    sheet6 <- addWorksheet(wb, "Earliest Lag") # initialize sheet
     writeData(wb, sheet6, t(state_early_lag), 
             startCol=1, startRow=1, colNames=FALSE)
     # making data for it
