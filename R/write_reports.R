@@ -165,13 +165,13 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Average_Lag(hours)=t(va_lag(subdata)[-1]),
+      Average_Lag_hours=t(va_lag(subdata)[-1]),
       State_wide_Average= state_lag
       )
     Early_Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Early_Lag(hours)= t(early_lag(subdata)[-1]),
+      Early_Lag_hours= t(early_lag(subdata)[-1]),
       State_wide_Early=state_early_lag
       )
     
