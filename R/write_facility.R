@@ -85,7 +85,14 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                                                  ))) %>%
                                     right_join(hl7_values, ., by="Field")), # get hl7 values
                  firstColumn=TRUE, bandedRows=TRUE)
-  setColWidths(wb, sheet1, 1:3, "auto")
+  
+    Lag_table<-data.frame(
+      Lag_Between<-c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Average_Lag<-va_lag(data)[-1],
+      Early_Lag<- early_lag(data)[-1],
+      )
+  writeDataTable(wb,sheet1,Lag_table,startCol=3,startRow=15, colNames=FALSE,rowNames=FALSE)
+  setColWidths(wb, sheet1, 1:5, "auto")
   # sheet 2: required nulls
   sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
   writeDataTable(wb, sheet2, req_nulls, firstColumn=TRUE, bandedRows=TRUE) # write to table
@@ -101,17 +108,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   writeDataTable(wb, sheet4, invalids, firstColumn=TRUE, bandedRows=TRUE) # write to table
   setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
   freezePane(wb, sheet4, firstActiveRow=2) # format sheet
-    # sheet 5:average lags
-  sheet5 <- addWorksheet(wb, "average lag") # initialize sheet
-  writeDataTable(wb, sheet5, va_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet5, 1:ncol(va_lag(data)), "auto") # format sheet
-  freezePane(wb, sheet5, firstActiveRow=2) # format sheet
-  
-   # sheet 6: earliest lags
-  sheet6 <- addWorksheet(wb, "earliest lag") # initialize sheet
-  writeDataTable(wb, sheet6, early_lag(data), firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet6, 1:ncol(early_lag(data)), "auto") # format sheet
-  freezePane(wb, sheet6, firstActiveRow=2) # format sheet
+
  
   
   # write to file
