@@ -170,7 +170,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       State_wide_Early=state_early_lag
       )
    
-    writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=FALSE,rowNames=TRUE)
+    writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=TRUE,rowNames=FALSE)
     setColWidths(wb, sheet1, 1:9, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
