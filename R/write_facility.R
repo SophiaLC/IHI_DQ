@@ -67,8 +67,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   wb <- createWorkbook()
   # sheet 1: facility information
   sheet1 <- addWorksheet(wb, "Facility Information")
-  writeDataTable(wb, sheet1,
-                 suppressWarnings(data %>% # take data
+  facility_table=suppressWarnings(data %>% # take data
                                     select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application,
                                              Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
                                     gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
@@ -83,15 +82,18 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                                                  nrow(data),
                                                                  n_groups(group_by(data, C_BioSense_ID))
                                                                  ))) %>%
-                                    right_join(hl7_values, ., by="Field")), # get hl7 values
-                 firstColumn=TRUE, bandedRows=TRUE)
+                                  right_join(hl7_values, ., by="Field"))
+                                  
+  writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
   
     Lag_table<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag=t(va_lag(data)[-1]),
       Early_Lag=t(early_lag(data)[-1])
       )
-  writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=TRUE,rowNames=TRUE)
-  setColWidths(wb, sheet1, 1:7, "auto")
+  writeDataTable(wb,sheet1,Lag_table,startCol=1,startRow=nrow(facility_table)+1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+  setColWidths(wb, sheet1, 1:3, "auto")
   # sheet 2: required nulls
   sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
   writeDataTable(wb, sheet2, req_nulls, firstColumn=TRUE, bandedRows=TRUE) # write to table
