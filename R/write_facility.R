@@ -87,9 +87,8 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                  firstColumn=TRUE, bandedRows=TRUE)
   
     Lag_table<-data.frame(
-      Lag_Between<-c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Average_Lag<-va_lag(data)[-1],
-      Early_Lag<- early_lag(data)[-1],
+      Average_Lag=t(va_lag(data)[-1]),
+      Early_Lag=t(early_lag(data)[-1])
       )
   writeDataTable(wb,sheet1,Lag_table,startCol=3,startRow=15, colNames=FALSE,rowNames=FALSE)
   setColWidths(wb, sheet1, 1:5, "auto")
