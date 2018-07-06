@@ -142,8 +142,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
             filter(C_Biosense_Facility_ID==i)
     
     sheet1 <- addWorksheet(wb, "Facility Information")
-    writeDataTable(wb, sheet1,
-                   suppressWarnings(data %>% # take data
+    facility_table=suppressWarnings(data %>% # take data
                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
                               Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
                      filter(C_Biosense_Facility_ID==i) %>% # taking only rows with the same facility ID
@@ -158,8 +157,11 @@ write_reports <- function(username, password, table, mft, start, end, directory=
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))
                                                   ))) %>% 
-                     right_join(hl7_values, ., by="Field")), # get hl7 values
+                     right_join(hl7_values, ., by="Field"))
+    writeDataTable(wb, sheet1,
+                   facility_table,
                    firstColumn=TRUE, bandedRows=TRUE)
+    
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
     Lag<-data.frame(
@@ -175,8 +177,8 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       State_wide_Early=state_early_lag
       )
     
-    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=15, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=20, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+6, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet1, 1:4, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
