@@ -186,7 +186,8 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Earliest_Non_NA_Chief_Complaint_Lag_hours=t(lag_chief_complaint(subdata)[-1]),
       State_wide_Average= state_chief_complaint
-      
+      )
+    
      Diagnosis<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
