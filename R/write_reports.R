@@ -160,7 +160,18 @@ write_reports <- function(username, password, table, mft, start, end, directory=
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field")), # get hl7 values
                    firstColumn=TRUE, bandedRows=TRUE)
-    setColWidths(wb, sheet1, 1:3, "auto")
+    subdata=data%>%
+          filter(C_Biosense_Facility_ID==i)
+    Lag_table<-data.frame(
+      Lag_Between<-c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Average_Lag<-va_lag(subdata)[-1],
+      State_wide_Average<- state_lag,
+      Early_Lag<- early_lag(subdata)[-1],
+      State_wide_Early<-state_early_lag
+      )
+   
+    writeDataTable(wb,sheet1,Lag_table,startCol=3,startRow=15, colNames=FALSE,rowNames=FALSE)
+    #setColWidths(wb, sheet1, 1:3, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
