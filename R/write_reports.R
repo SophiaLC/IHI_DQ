@@ -174,7 +174,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       Early_Lag(hours)= t(early_lag(subdata)[-1]),
       State_wide_Early=state_early_lag
       )
-   
+    
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=15, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=20, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet1, 1:4, "auto")
