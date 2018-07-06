@@ -46,9 +46,9 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   # get facility-level state summary of invalids
   state_invalids <- get_all_invalids(data)
   ## get state-wide average lag, remove the column of Facility_ID
-  state_lag <-c("State-wide",(apply(va_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  state_lag <-c((apply(va_lag(data)[,-1],2,function(s)round(mean(s),2))))
   ## get state-wide average earliest lag, remove the column of Facility_ID
-  state_early_lag<-c("State-wide",(apply(early_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  state_early_lag<-c((apply(early_lag(data)[,-1],2,function(s)round(mean(s),2))))
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
@@ -163,15 +163,14 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
     Lag_table<-data.frame(
-      Lag_Between<-c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Average_Lag<-va_lag(subdata)[-1],
-      State_wide_Average<- state_lag,
-      Early_Lag<- early_lag(subdata)[-1],
-      State_wide_Early<-state_early_lag
+      Average_Lag=t(va_lag(subdata)[-1]),
+      State_wide_Average= state_lag,
+      Early_Lag= t(early_lag(subdata)[-1]),
+      State_wide_Early=state_early_lag
       )
    
     writeDataTable(wb,sheet1,Lag_table,startCol=3,startRow=15, colNames=FALSE,rowNames=FALSE)
-    #setColWidths(wb, sheet1, 1:3, "auto")
+    setColWidths(wb, sheet1, 1:7, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
@@ -205,31 +204,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
     freezePane(wb, sheet4, firstActiveRow=2) # format sheet
-   
-    # sheet 5: average lag
-    sheet5 <- addWorksheet(wb, "Average Lag") # initialize sheet
-    writeData(wb, sheet5, t(state_lag), 
-            startCol=1, startRow=1, colNames=FALSE)
-    # making data for it
-   subdata=data%>%
-          filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet5, va_lag(subdata), startCol=1, startRow=2, bandedRows=TRUE) # write to table
-    setColWidths(wb, sheet5, 1:ncol(va_lag(subdata)), "auto") # format sheet
-    freezePane(wb, sheet5, firstActiveRow=4) # format sheet
-    
-    # sheet 6: earliest lag
-    sheet6 <- addWorksheet(wb, "Earliest Lag") # initialize sheet
-    writeData(wb, sheet6, t(state_early_lag), 
-            startCol=1, startRow=1, colNames=FALSE)
-    # making data for it
-    subdata=data%>%
-          filter(C_Biosense_Facility_ID==i)
-    writeDataTable(wb, sheet6, early_lag(subdata), startCol=1, startRow=2, bandedRows=TRUE) # write to table
-    setColWidths(wb, sheet6, 1:ncol(early_lag(subdata)), "auto") # format sheet
-    freezePane(wb, sheet6, firstActiveRow=4) # format sheet
-    
-    
-    
+
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
