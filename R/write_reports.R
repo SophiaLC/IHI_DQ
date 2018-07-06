@@ -163,13 +163,13 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
     Lag<-data.frame(
-      HL7=c("EVN-2.1","MSH-7.1, EVN-2.1","MSH-7.1",""),
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag=t(va_lag(subdata)[-1]),
-      State_wide_Average= state_lag,
+      State_wide_Average= state_lag
       )
     Early_Lag<-data.frame(
-      HL7=c("EVN-2.1","MSH-7.1, EVN-2.1","MSH-7.1",""),
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Early_Lag= t(early_lag(subdata)[-1]),
       State_wide_Early=state_early_lag
