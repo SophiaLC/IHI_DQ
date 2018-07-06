@@ -163,14 +163,15 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
     Lag_table<-data.frame(
+      Lag_Between_hours=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag=t(va_lag(subdata)[-1]),
       State_wide_Average= state_lag,
       Early_Lag= t(early_lag(subdata)[-1]),
       State_wide_Early=state_early_lag
       )
    
-    writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=TRUE,rowNames=TRUE)
-    setColWidths(wb, sheet1, 1:7, "auto")
+    writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=FALSE,rowNames=TRUE)
+    setColWidths(wb, sheet1, 1:9, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
