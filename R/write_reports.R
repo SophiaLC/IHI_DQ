@@ -162,16 +162,22 @@ write_reports <- function(username, password, table, mft, start, end, directory=
                    firstColumn=TRUE, bandedRows=TRUE)
     subdata=data%>%
           filter(C_Biosense_Facility_ID==i)
-    Lag_table<-data.frame(
-      Lag_Between_hours=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+    Lag<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1, EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag=t(va_lag(subdata)[-1]),
       State_wide_Average= state_lag,
+      )
+    Early_Lag<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1, EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Early_Lag= t(early_lag(subdata)[-1]),
       State_wide_Early=state_early_lag
       )
    
-    writeDataTable(wb,sheet1,Lag_table,startCol=5,startRow=6, colNames=TRUE,rowNames=FALSE)
-    setColWidths(wb, sheet1, 1:9, "auto")
+    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=13, colNames=TRUE,rowNames=FALSE)
+    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=18, colNames=TRUE,rowNames=FALSE)
+    setColWidths(wb, sheet1, 1:4, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
