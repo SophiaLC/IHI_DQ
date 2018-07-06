@@ -92,7 +92,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
       Average_Lag=t(va_lag(data)[-1]),
       Early_Lag=t(early_lag(data)[-1])
       )
-  writeDataTable(wb,sheet1,Lag_table,startCol=1,startRow=nrow(facility_table)+1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+  writeDataTable(wb,sheet1,Lag_table,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
   # sheet 2: required nulls
   sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
