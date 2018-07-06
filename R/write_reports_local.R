@@ -27,6 +27,10 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
   state_opt_nulls <- get_opt_nulls(data)
   # get facility-level state summary of invalids
   state_invalids <- get_all_invalids(data)
+  ## get state-wide average lag, remove the column of Facility_ID
+  state_lag <-c("State-wide",(apply(va_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest lag, remove the column of Facility_ID
+  state_early_lag<-c("State-wide",(apply(early_lag(data)[,-1],2,function(s)round(mean(s),2))))
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
@@ -134,7 +138,18 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
                                                                    n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))))) %>% 
                                       right_join(hl7_values, ., by="Field")), # get hl7 values
                    firstColumn=TRUE, bandedRows=TRUE)
-    setColWidths(wb, sheet1, 1:3, "auto")
+    subdata=data%>%
+          filter(C_Biosense_Facility_ID==i)
+    Lag_table<-data.frame(
+      Lag_Between<-c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Average_Lag<-va_lag(subdata)[-1],
+      State_wide_Average<- state_lag,
+      Early_Lag<- early_lag(subdata)[-1],
+      State_wide_Early<-state_early_lag
+      )
+   
+    writeDataTable(wb,sheet1,Lag_table,startCol=3,startRow=15, colNames=FALSE,rowNames=FALSE)
+    setColWidths(wb, sheet1, 1:7, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
