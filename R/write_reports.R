@@ -49,6 +49,10 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   state_lag <-c((apply(va_lag(data)[,-1],2,function(s)round(mean(s),2))))
   ## get state-wide average earliest lag, remove the column of Facility_ID
   state_early_lag<-c((apply(early_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest Non NA chief_complaint lag, remove the column of Facility_ID                          
+  state_chief_complaint<-c((apply(lag_chief_complaint(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest Non NA diagnosis lag, remove the column of Facility_ID
+  state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
@@ -174,11 +178,29 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Early_Lag_hours= t(early_lag(subdata)[-1]),
-      State_wide_Early=state_early_lag
+      State_wide_Average=state_early_lag
       )
+    
+    Chief_Complaint<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Earliest_Non_NA_Chief_Complaint_Lag_hours=t(lag_chief_complaint(subdata)[-1]),
+      State_wide_Average= state_chief_complaint
+      
+     Diagnosis<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Earliest_Non_NA_diagnosis_code_Lag_hours=t(lag_diagnosis(subdata)[-1]),
+      State_wide_Average= state_diagnosis
+      )
+    
+    
     
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1, Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+      
     setColWidths(wb, sheet1, 1:4, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
