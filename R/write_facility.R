@@ -89,8 +89,8 @@ write_facility <- function(username, password, table, mft, start, end, facility,
     Lag_table<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Average_Lag=t(va_lag(data)[-1]),
-      Early_Lag=t(early_lag(data)[-1])
+      Average_Lag_hours=t(va_lag(data)[-1]),
+      Early_Lag_hours=t(early_lag(data)[-1])
       )
   writeDataTable(wb,sheet1,Lag_table,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
