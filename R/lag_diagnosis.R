@@ -8,7 +8,7 @@ lag_diagnosis<-function(data){
     filter(is.na(Diagnosis_Code)==FALSE)%>%
     group_by(C_BioSense_ID)%>%
     slice(which.min(Recorded_Date_Time))
-    )
+  
   
   Time_Diff=LagTime%>%
     mutate(Arrived=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"),
