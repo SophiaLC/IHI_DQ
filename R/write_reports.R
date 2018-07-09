@@ -52,7 +52,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   ## get state-wide average earliest Non NA chief_complaint lag, remove the column of Facility_ID                          
   state_chief_complaint<-c((apply(lag_chief_complaint(data)[,-1],2,function(s)round(mean(s),2))))
   ## get state-wide average earliest Non NA diagnosis lag, remove the column of Facility_ID
-  state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
+  #state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
   # overall , state-level average
   statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
@@ -179,7 +179,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     Chief_Complaint<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA_Chief_Complaint_Lag=t(lag_chief_complaint(subdata)[-1]),
+      Earliest_Non_NA=t(lag_chief_complaint(subdata)[-1]),
       State_wide_Average= state_chief_complaint
       )
     
