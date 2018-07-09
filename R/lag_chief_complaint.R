@@ -11,7 +11,7 @@ lag_chief_complaint<-function(data){
            Message=as.POSIXct(Message_Date_Time,format="%Y-%m-%d %H:%M:%S"),
            Record=as.POSIXct(Recorded_Date_Time,format="%Y-%m-%d %H:%M:%S"))%>%
     group_by(C_BioSense_ID)%>%
-    filter(which.min(Record))
+    slice(which.min(Record))
 
 
   Time_Diff=LagTime%>%
