@@ -42,6 +42,7 @@ age_invalid <- function(data) {
   age_examples <- data %>% # take data
     select(c(C_Biosense_Facility_ID, C_BioSense_ID, Age_Reported, Age_Units_Reported)) %>% # get only the variables we need right now
     mutate(Age_Units_Reported=toupper(Age_Units_Reported), # upper casing everything
+            Age_Units_Reported_NA=ifelse(is.na(Age_Units_Reported),"Missing","Not Missing"),
            Invalid_Age_Units=case_when(
              is.na(Age_Units_Reported) ~ NA, # if it is na, keep it na
              Age_Units_Reported %in% valid_age_units ~ FALSE, # if units reported are valid, then false invalid
