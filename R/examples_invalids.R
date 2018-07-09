@@ -30,7 +30,7 @@ examples_invalids <- function(i, invalid_examples) {
   ## age units
   output <- invalid_examples[[2]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Age_Units==TRUE) %>%
-    select(C_BioSense_ID, Age_Units_Reported, Age_Reported_NA) %>%
+    select(C_BioSense_ID, Age_Units_Reported, Age_Units_Reported_NA) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
