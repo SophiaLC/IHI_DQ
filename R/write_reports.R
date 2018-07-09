@@ -142,9 +142,6 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # initialize workbook
     wb <- createWorkbook()
     # sheet 1: facility information
-    subdata=data%>%
-            filter(C_Biosense_Facility_ID==i)
-    
     sheet1 <- addWorksheet(wb, "Facility Information")
     facility_table=suppressWarnings(data %>% # take data
                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
@@ -162,12 +159,9 @@ write_reports <- function(username, password, table, mft, start, end, directory=
                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
-    writeDataTable(wb, sheet1,
-                   facility_table,
-                   firstColumn=TRUE, bandedRows=TRUE)
     
     subdata=data%>%
-          filter(C_Biosense_Facility_ID==i)
+            filter(C_Biosense_Facility_ID==i)
     
     Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
@@ -185,19 +179,19 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     Chief_Complaint<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA_Chief_Complaint_Lag_hours=t(lag_chief_complaint(subdata)[-1]),
+      Earliest_Non_NA_Chief_Complaint_Lag=t(lag_chief_complaint(subdata)[-1]),
       State_wide_Average= state_chief_complaint
       )
     
      Diagnosis<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA_diagnosis_code_Lag_hours=t(lag_diagnosis(subdata)[-1]),
+      Earliest_Non_NA_diagnosis_code_Lag=t(lag_diagnosis(subdata)[-1]),
       State_wide_Average= state_diagnosis
       )
     
     
-    
+    writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
