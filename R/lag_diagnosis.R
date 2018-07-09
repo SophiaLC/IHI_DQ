@@ -2,25 +2,25 @@
 #' and message sent time, arrival and visit time, for the earliest recorded non NA C_Chief_Complaints
 
 lag_diagnosis<-function(data){
-  LagTime=data %>%
+   LagTime=data %>%
     select(C_Biosense_Facility_ID, C_BioSense_ID, Arrived_Date_Time, C_Visit_Date_Time, Message_Date_Time,
            Recorded_Date_Time, Diagnosis_Code)%>% 
     filter(is.na(Diagnosis_Code)==FALSE)%>%
-    group_by(C_BioSense_ID)%>%
-    slice(which.min(Recorded_Date_Time))
-  
-  
-  Time_Diff=LagTime%>%
     mutate(Arrived=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"),
            Visit=as.POSIXct(C_Visit_Date_Time,format="%Y-%m-%d %H:%M:%S"),
            Message=as.POSIXct(Message_Date_Time,format="%Y-%m-%d %H:%M:%S"),
-           Record=as.POSIXct(Recorded_Date_Time,format="%Y-%m-%d %H:%M:%S"),
-           lag_Record_Visit=as.numeric(difftime(Record,Visit,units="hours")),
-           lag_Message_Record=as.numeric(difftime(Message,Record,units="hours")),
-           lag_Arrival_Message=as.numeric(difftime(Arrived,Message,units="hours")),
-           lag_Arrival_Visit=as.numeric(difftime(Arrived,Visit,units="hours"))         
+           Record=as.POSIXct(Recorded_Date_Time,format="%Y-%m-%d %H:%M:%S"))%>%
+    group_by(C_BioSense_ID)%>%
+    filter(which.min(Record))
+
+
+  Time_Diff=LagTime%>%
+   mutate(lag_Record_Visit=as.numeric(difftime(Record,Visit,units="hours")),
+         lag_Message_Record=as.numeric(difftime(Message,Record,units="hours")),
+         lag_Arrival_Message=as.numeric(difftime(Arrived,Message,units="hours")),
+         lag_Arrival_Visit=as.numeric(difftime(Arrived,Visit,units="hours"))         
     )
-  
+
   Lag_Summary=Time_Diff %>%
     group_by(C_Biosense_Facility_ID)%>%
     summarise(Record_Visit=round(mean(lag_Record_Visit,na.rm=TRUE),2),
@@ -29,5 +29,6 @@ lag_diagnosis<-function(data){
               Arrival_Visit=round(mean(lag_Arrival_Visit,na.rm=TRUE),2)
     )
   return(Lag_Summary)
+  
   
 }
