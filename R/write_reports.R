@@ -183,19 +183,19 @@ write_reports <- function(username, password, table, mft, start, end, directory=
       State_wide_Average= state_chief_complaint
       )
     
-     Diagnosis<-data.frame(
-      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
-      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA_diagnosis_code_Lag=t(lag_diagnosis(subdata)[-1]),
-      State_wide_Average= state_diagnosis
-      )
+     #Diagnosis<-data.frame(
+     # HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+     # Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+     # Earliest_Non_NA_diagnosis_code_Lag=t(lag_diagnosis(subdata)[-1]),
+      #State_wide_Average= state_diagnosis
+     # )
     
     
     writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    #writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
       
     setColWidths(wb, sheet1, 1:4, "auto")
     # sheet 2: required nulls
