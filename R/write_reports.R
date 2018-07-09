@@ -179,14 +179,14 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     Chief_Complaint<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA=t(lag_chief_complaint(subdata)[-1]),
+      Earliest_Non_NA_Chief_Complaint_Lag=t(lag_chief_complaint(subdata)[-1]),
       State_wide_Average= state_chief_complaint
       )
     
      Diagnosis<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Earliest_Non_NA_diagnosis_code_Lag=t(lag_diagnosis(subdata)[-1]),
+      Earliest_Non_NA_Diagnosis_Code_Lag=t(lag_diagnosis(subdata)[-1]),
       State_wide_Average= state_diagnosis
       )
     
