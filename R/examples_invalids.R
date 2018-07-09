@@ -23,14 +23,14 @@ examples_invalids <- function(i, invalid_examples) {
   ## age
   output <- invalid_examples[[2]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Age==TRUE) %>%
-    select(C_BioSense_ID, Age_Reported, Age_Units_Reported) %>%
+    select(C_BioSense_ID, Age_Reported, Age_Units_Reported_NA) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## age units
   output <- invalid_examples[[2]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Age_Units==TRUE) %>%
-    select(C_BioSense_ID, Age_Units_Reported, Age_Reported) %>%
+    select(C_BioSense_ID, Age_Units_Reported, Age_Reported_NA) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
@@ -282,7 +282,7 @@ examples_invalids <- function(i, invalid_examples) {
   return(
     suppressWarnings( # it'll throw that it is converting it all to character; we do not care
       output %>% # take output
-        gather(Field, Invalid_Entry, 2:ncol(.), na.rm=TRUE) # gather it all, get rid of NAs
+        gather(Field, Invalid_Entry,Description, 2:ncol(.), na.rm=TRUE) # gather it all, get rid of NAs
     )
   )
 }
