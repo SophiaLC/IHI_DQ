@@ -275,7 +275,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     left_join(.,Time_Bet_Batch,by = c("Feed_Name", "Arrived_Date"))
 
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet5,Batch_Per_Day,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet5, 1:4, "auto")
     
     # write to file
