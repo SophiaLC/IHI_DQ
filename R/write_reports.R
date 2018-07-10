@@ -25,10 +25,10 @@
 #' @import openxlsx
 #' @importFrom stringr str_replace_all
 #' @export
-write_reports <- function(username, password, table, mft, start, end, directory="", nexamples=0, offset) {
+write_reports <- function(username, password, table, mft, start, end,raw, directory="", nexamples=0, offset) {
   
   ## get data and names
-  pull <- pull_data(username, password, table, mft, start, end)
+  pull <- pull_data(username, password, table, mft, start, end,raw)
   # save data into data
   data <- pull$data
   if (nrow(data) == 0) stop("The query yielded no data.")
