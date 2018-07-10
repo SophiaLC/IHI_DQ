@@ -282,7 +282,7 @@ examples_invalids <- function(i, invalid_examples) {
   return(
     suppressWarnings( # it'll throw that it is converting it all to character; we do not care
       output %>% # take output
-        gather(Field, Invalid_Entry,Description, 2:ncol(.), na.rm=TRUE) # gather it all, get rid of NAs
+        gather(Field, Invalid_Entry, 2:ncol(.), na.rm=TRUE) # gather it all, get rid of NAs
     )
   )
 }
