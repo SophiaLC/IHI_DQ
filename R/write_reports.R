@@ -35,7 +35,7 @@ write_reports <- function(username, password, table, mft, start, end, directory=
   # save names into names, getting rid of any duplicate names (take first listed)
   fnames <- pull$names %>% group_by(C_Biosense_Facility_ID) %>% slice(1) %>% ungroup()
   
-  
+  batchdata<-pull$batchdata
   
   
   ## state-wide summary
@@ -232,6 +232,29 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
     freezePane(wb, sheet4, firstActiveRow=2) # format sheet
 
+    
+    
+    ## batch information
+    sheet5 <- addWorksheet(wb, "Batch_Information")
+    
+    batch_mean<-function(data){
+    Batch_Mean=data%>%
+    group_by(Feed_Name,File_Name)%>%
+    summarise(count=n())%>%
+    ungroup()%>%
+    group_by(Feed_Name)%>%
+    summarise(Batch_Mean=round(mean(count),2))
+     return(Batch_Mean)
+    }
+    
+    Batch_Mean=subdata%>%
+    select(Feed_Name,C_Biosense_Facility_ID)%>%
+    merge(batch_mean(batchdata),.,by="Feed_Name")%>%
+    distinct()
+    
+    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
+    
+    
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
