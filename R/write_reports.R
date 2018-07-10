@@ -261,6 +261,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet5,Batch_Per_Day,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet1, 1:3, "auto")
     
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
