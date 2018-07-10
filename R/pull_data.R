@@ -12,22 +12,28 @@
 #' and C_Biosense_Facility_ID from the MFT table.
 #' @import RODBC
 #' @export
-pull_data <- function(username, password, table, mft, start, end) {
+pull_data <- function(username, password, table, mft, raw, start, end) {
   
   channel <- odbcConnect("BioSense_Platform", paste0("BIOSENSE\\", username), password) # open channel
   data <- sqlQuery(
     channel,
     paste0("SELECT * FROM ", table, " WHERE C_Visit_Date_Time >= '", start, "' AND C_Visit_Date_Time <= '", end, "'") # create sql query
-  , as.is=TRUE
+    , as.is=TRUE
   )
   
   names <- sqlQuery(channel, paste0("SELECT Facility_Name, C_Biosense_Facility_ID FROM ", mft)
-                   , as.is=TRUE
-                   ) # get mft from channel
-    
+                    , as.is=TRUE
+  ) # get mft from channel
+  
+  batchdata <- sqlQuery(
+    channel,
+    paste0("SELECT * FROM ", raw, " WHERE Arrived_Date_Time >= '", start, "' AND Arrived_Date_Time <= '", end, "'") # create sql query
+    , as.is=TRUE
+  )
+  
   odbcCloseAll() # close connection
   
   data$Age_Reported <- as.numeric(data$Age_Reported)
   
-  return(list(data=data, names=names))
+  return(list(data=data, names=names,batchdata=batchdata))
 }
