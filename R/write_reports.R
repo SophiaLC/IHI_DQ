@@ -252,8 +252,15 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     merge(batch_mean(batchdata),.,by="Feed_Name")%>%
     distinct()
     
-    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
     
+    Batch_Per_Day=batchdata%>%
+    group_by(Feed_Name,Arrived_Date)%>%
+    summarise(N_Batch=n_distinct(File_Name))%>%
+    filter(Feed_Name==Batch_Mean$Feed_Name)
+  
+    
+    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet5,Batch_Per_Day,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
