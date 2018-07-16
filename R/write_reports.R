@@ -163,8 +163,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
-                                                  visits_per_day,
-                                                  visit_length
+                                                  4,
+                                                  8
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
     
