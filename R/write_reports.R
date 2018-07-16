@@ -200,10 +200,10 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Trigger<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      Trigger_Event_A01=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A01",]),
-      Trigger_Event_A03=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A03",]),
-      Trigger_Event_A04=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A04",]),
-      Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",]),
+      Trigger_Event_A01=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A01",][-1]),
+      Trigger_Event_A03=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A03",][-1]),
+      Trigger_Event_A04=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A04",][-1]),
+      Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1]),
       )
    
     writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
