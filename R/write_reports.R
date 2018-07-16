@@ -301,7 +301,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Race_Code=race_code_perc(subdata)
     
     writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet6,Batch_Data,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet6, 1:8, "auto")
     
     
