@@ -145,7 +145,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     sheet1 <- addWorksheet(wb, "Facility Information")
     subdata=data%>%
             filter(C_Biosense_Facility_ID==i)
-    visit_per_day=avg_visit_per_day(subdata)
+    visits_per_day=avg_visit_per_day(subdata)
     visit_length=avg_visit_length(subdata)
     
     facility_table=suppressWarnings(data %>% # take data
@@ -163,7 +163,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
-                                                  visit_per_day,
+                                                  visits_per_day,
                                                   visit_length
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
