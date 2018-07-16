@@ -145,6 +145,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     sheet1 <- addWorksheet(wb, "Facility Information")
     subdata=data%>%
             filter(C_Biosense_Facility_ID==i)
+    visit_per_day=avg_visit_per_day(subdata)
+    
     facility_table=suppressWarnings(data %>% # take data
                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
                               Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
@@ -154,11 +156,13 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                      bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
                      # bind with date ranges and number of records and visits
                      bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
-                                                  "Number of Records", "Number of Visits"),
+                                                  "Number of Records", "Number of Visits",
+                                                 "Average Number of Visits per Day"),
                                           Value=c(paste("From", vmin, "to", vmax),
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
-                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))
+                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
+                                                  visit_per_day,
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
     
