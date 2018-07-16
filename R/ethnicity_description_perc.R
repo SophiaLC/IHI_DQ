@@ -1,0 +1,18 @@
+##Frequency of occurrence in data - what is actually occurring in the data and
+##how often each distinct entry is occurring and percentage of all visits each entry
+##accounts for. 
+## for variable Race_Description
+
+## Ethnicity_Description
+ethnicity_description_perc<-function(data){
+  Ethnicity_Description=data%>%
+    select(C_BioSense_ID,Ethnicity_Description)%>%
+    distinct(C_BioSense_ID,.keep_all=TRUE)%>%
+    count(Ethnicity_Description)%>%
+    transmute(Ethnicity_Description,count=n,percentage=n/sum(n))
+  
+  return(
+    Ethnicity_Description
+  )
+  
+}
