@@ -203,7 +203,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       Trigger_Event_A01=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A01",][-1]),
       Trigger_Event_A03=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A03",][-1]),
       Trigger_Event_A04=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A04",][-1]),
-      Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1]),
+      Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1])
       )
    
     writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
