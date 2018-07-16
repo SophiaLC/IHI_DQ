@@ -155,13 +155,12 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                      # bind with date ranges and number of records and visits
                      bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
                                                   "Number of Records", "Number of Visits",
-                                                  "Average Visits per Day","Average Visit Length"),
+                                                  "Average Visits per Day"),
                                           Value=c(paste("From", vmin, "to", vmax),
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
-                                                  avg_visit_per_day(subdata)[1],
-                                                  avg_visit_length(subdata)[1]
+                                                  avg_visit_per_day(subdata)
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
     
