@@ -143,6 +143,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     wb <- createWorkbook()
     # sheet 1: facility information
     sheet1 <- addWorksheet(wb, "Facility Information")
+    subdata=data%>%
+            filter(C_Biosense_Facility_ID==i)
     facility_table=suppressWarnings(data %>% # take data
                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
                               Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
@@ -152,16 +154,18 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                      bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
                      # bind with date ranges and number of records and visits
                      bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
-                                                  "Number of Records", "Number of Visits"),
+                                                  "Number of Records", "Number of Visits",
+                                                  "Average Visits per Day","Average Visit Length"),
                                           Value=c(paste("From", vmin, "to", vmax),
                                                   paste("From", amin, "to", amax),
                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
-                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))
+                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID)),
+                                                  avg_visit_per_day(subdata),
+                                                  avg_visit_length(subdata)
                                                   ))) %>% 
                      right_join(hl7_values, ., by="Field"))
     
-    subdata=data%>%
-            filter(C_Biosense_Facility_ID==i)
+    
     
     Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
@@ -190,14 +194,20 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       State_wide_Average= state_diagnosis
       )
     
-    
+    Trigger<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Lag_By_Trigger_Events=t(lag_by_trigger(subdata))
+      )
+   
     writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
       
-    setColWidths(wb, sheet1, 1:4, "auto")
+    setColWidths(wb, sheet1, 1:8, "auto")
     # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
