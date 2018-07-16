@@ -8,7 +8,7 @@ race_description_perc<-function(data){
     select(C_BioSense_ID,Race_Description)%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Race_Description)%>%
-    transmute(Race_Description,count=n,percentage=n/sum(n))
+    transmute(Race_Description,count=n,percentage=round(n/sum(n),3))
   
   return(
     Race_Description
