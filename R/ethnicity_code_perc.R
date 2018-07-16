@@ -8,7 +8,7 @@ ethnicity_code_perc<-function(data){
     select(C_BioSense_ID,Ethnicity_Code)%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Ethnicity_Code)%>%
-    transmute(Ethnicity_Code,count=n,percentage=n/sum(n))
+    transmute(Ethnicity_Code,count=n,percentage=round(n/sum(n),3))
   
   return(
     Ethnicity_Code
