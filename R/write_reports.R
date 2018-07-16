@@ -294,6 +294,17 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet5, 1:4, "auto")
     
+    ## sheet 6
+    sheet6 <- addWorksheet(wb, "Race and Ethnicity")
+    
+    Race_Description=race_description_perc(subdata)
+    Race_Code=race_code_perc(subdata)
+    
+    writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet6,Batch_Data,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet6, 1:8, "auto")
+    
+    
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
