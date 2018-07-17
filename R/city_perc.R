@@ -1,0 +1,15 @@
+##Frequency of occurrence in data - what is actually occurring in the data and
+##how often each distinct entry is occurring and percentage of all visits each entry
+##accounts for. 
+##city
+
+city_perc<-function(data){
+  City=data%>%
+    select(C_BioSense_ID, Patient_City)%>%
+    distinct(C_BioSense_ID,.keep_all=TRUE)%>%
+    count(Patient_City)%>%
+    transmute(Patient_City,count=n,percentage=n/sum(n))
+  return(
+    City
+  )
+}
