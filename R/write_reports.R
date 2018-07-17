@@ -339,7 +339,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
     writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, startCol=5
+    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, startCol=5,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
     writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Code)+6, bandedRows=TRUE)
