@@ -8,7 +8,7 @@ city_perc<-function(data){
     select(C_BioSense_ID, Patient_City)%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Patient_City)%>%
-    transmute(Patient_City,count=n,percentage=n/sum(n))
+    transmute(Patient_City,count=n,percentage=round(n/sum(n),3))
   return(
     City
   )
