@@ -6,6 +6,7 @@
 insurance_company_id_perc<-function(data){
   Insurance_Company_ID=data%>%
     select(C_BioSense_ID, Insurance_Company_ID)%>%
+     mutate(Insurance_Company_ID=case_when(is.na(Insurance_Company_ID)==TRUE~"NA"))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Insurance_Company_ID)%>%
     transmute(Insurance_Company_ID,count=n,percentage=round(n/sum(n),3))
