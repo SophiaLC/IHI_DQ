@@ -6,7 +6,7 @@
 state_perc<-function(data){
   State=data%>%
     select(C_BioSense_ID, Patient_State)%>%
-    mutate(Patient_State=ifelse(is.na(Patient_State),"NA","Patient_State"))%>%
+    mutate(Patient_State=ifelse(is.na(Patient_State),"NA",Patient_State))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Patient_State)%>%
     transmute(Patient_State,count=n,percentage=round(n/sum(n),3))
