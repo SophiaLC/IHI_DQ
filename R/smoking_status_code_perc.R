@@ -8,7 +8,7 @@ smoking_status_code_perc<-function(data){
     select(C_BioSense_ID, Smoking_Status_Code)%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Smoking_Status_Code)%>%
-    transmute(Smoking_Status_Code,count=n,percentage=n/sum(n))
+    transmute(Smoking_Status_Code,count=n,percentage=round(n/sum(n),3))
   return(
     Smoking_Status_Code
   )
