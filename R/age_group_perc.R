@@ -12,7 +12,7 @@ age_group_perc<-function(data){
                                C_Patient_Age_Years>=65 ~"65+") )%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Age_Group)%>%
-    transmute(Age_Group,count=n, percentage=round(n/sum(n),3))
+    transmute(Age_Group,count=n, percentage=round(100*n/sum(n),2))
   
   return(
     Age_Group
