@@ -345,6 +345,19 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
     setColWidths(wb, sheet8, 1:3, "auto")
     
+    ## sheet 9
+    sheet9<- addWorksheet(wb,"Facility and Diagnosis")
+    Facility_Desc=facility_type_description_perc(subdata)
+    Facility_Code=facility_type_code_perc(subdata)
+    Diagnosis_Type=diagnosis_type_perc(subdata)
+    Diagnosis_Code=diagnosis_code_perc(subdata)
+    
+    writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,startCol=5, bandedRows=TRUE)
+    setColWidths(wb, sheet9, 1:7, "auto")
+    
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
