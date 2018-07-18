@@ -50,12 +50,17 @@ get_opt_nulls <- function(data) {
                  funs(sum(., na.rm=TRUE))) %>% # take mean (i.e., proportion true), round to get a percentage
     magrittr::set_colnames(c("C_Biosense_Facility_ID", opt_pv_cntnames))
   
-  return(
-    pct %>% # take stuff from above...
+
+    result=pct %>% # take stuff from above...
       full_join(cnt, by = "C_Biosense_Facility_ID") %>% # more stuff from above
       gather("Check", "Value", 2:ncol(.)) %>% # gather all columns after facility into check and value columns
       separate(Check, c("Field", "Measure"), "[.]") %>% # splitting up check varaible into three columns by the period
       spread(Field, Value) %>% # spread out all of the facility ids into multiple columns
       as.data.frame() # make data frame, not tbl_df, for when we want to write to excel
+  
+  return(
+    merge(data%>%
+            select(C_Biosense_Facility_ID,Feed_Name,Sending_Application)%>%
+            distinct(),result, by="C_Biosense_Facility_ID")
   )
 }
