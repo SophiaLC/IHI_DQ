@@ -9,7 +9,7 @@ insurance_company_id_perc<-function(data){
      mutate(Insurance_Company_ID=ifelse(is.na(Insurance_Company_ID),"NA",Insurance_Company_ID))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Insurance_Company_ID)%>%
-    transmute(Insurance_Company_ID,count=n,percentage=round(n/sum(n),3))
+    transmute(Insurance_Company_ID,count=n,percentage=round(100*n/sum(n),2))
   return(
     Insurance_Company_ID
   )
