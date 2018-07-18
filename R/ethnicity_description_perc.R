@@ -11,7 +11,7 @@ ethnicity_description_perc<-function(data){
            Ethnicity_Description=ifelse(is.na(Ethnicity_Description),"NA",Ethnicity_Description))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Ethnicity_Description)%>%
-    transmute(Ethnicity_Description,count=n,percentage=round(n/sum(n),3))
+    transmute(Ethnicity_Description,count=n,percentage=round(100*n/sum(n),2))
   
   return(
     Ethnicity_Description
