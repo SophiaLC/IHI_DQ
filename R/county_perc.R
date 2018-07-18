@@ -9,7 +9,7 @@ county_perc<-function(data){
     mutate(C_Patient_County=ifelse(is.na(C_Patient_County),"NA",C_Patient_County))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(C_Patient_County)%>%
-    transmute(C_Patient_County,count=n,percentage=round(n/sum(n),3))
+    transmute(C_Patient_County,count=n,percentage=round(100*n/sum(n),2))
   return(
     County
   )
