@@ -9,7 +9,7 @@ country_perc<-function(data){
     mutate(Patient_Country=ifelse(is.na(Patient_Country),"NA",Patient_Country))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Patient_Country)%>%
-    transmute(Patient_Country,count=n,percentage=round(n/sum(n),3))
+    transmute(Patient_Country,count=n,percentage=round(100*n/sum(n),2))
   return(
     Country
   )
