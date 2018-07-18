@@ -10,7 +10,7 @@ facility_type_description_perc<-function(data){
            Facility_Type_Description=ifelse(is.na(Facility_Type_Description),"NA",Facility_Type_Description))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Facility_Type_Description)%>%
-    transmute(Facility_Type_Description,count=n,percentage=round(n/sum(n),3))
+    transmute(Facility_Type_Description,count=n,percentage=round(100*n/sum(n),2))
   return(
     Facility_Type_Description
   )
