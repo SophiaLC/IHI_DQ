@@ -10,7 +10,7 @@ diagnosis_type_perc<-function(data){
     mutate(Diagnosis_Type=ifelse(is.na(Diagnosis_Type),"NA",Diagnosis_Type))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Diagnosis_Type)%>%
-    transmute(Diagnosis_Type,count=n,percentage=round(n/sum(n),3))
+    transmute(Diagnosis_Type,count=n,percentage=round(100*n/sum(n),2))
   return(
     Diagnosis_Type
   )
