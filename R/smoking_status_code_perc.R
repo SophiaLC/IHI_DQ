@@ -9,7 +9,7 @@ smoking_status_code_perc<-function(data){
     mutate(Smoking_Status_Code=ifelse(is.na(Smoking_Status_Code),"NA",Smoking_Status_Code))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Smoking_Status_Code)%>%
-    transmute(Smoking_Status_Code,count=n,percentage=round(n/sum(n),3))
+    transmute(Smoking_Status_Code,count=n,percentage=round(100*n/sum(n),2))
   return(
     Smoking_Status_Code
   )
