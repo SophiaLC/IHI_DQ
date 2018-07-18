@@ -9,7 +9,7 @@ ethnicity_code_perc<-function(data){
     mutate(Ethnicity_Code=ifelse(is.na(Ethnicity_Code),"NA",Ethnicity_Code))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Ethnicity_Code)%>%
-    transmute(Ethnicity_Code,count=n,percentage=round(n/sum(n),3))
+    transmute(Ethnicity_Code,count=n,percentage=round(100*n/sum(n),2))
   
   return(
     Ethnicity_Code
