@@ -29,7 +29,7 @@ get_req_nulls <- function(data) {
                      "Insurance_Company_ID", "Administrative_Sex", "Race_Code", "Race_Description", "Patient_City", "Patient_Zip",
                      "Patient_State", "C_Patient_County", "Patient_Country", "Ethnicity_Code", "Ethnicity_Description",
                      "Patient_Class_Code", "Visit_ID", "Admit_Reason_Description", "Chief_Complaint_Text",
-                     "Facility_Type_Code", "Facility_Type_Description", "Age_Reported",
+                     "Facility_Type_Code", "Facility_Type_Description","Birth_Date_Time", "Age_Reported",
                      "Age_Units_Reported", "Height", "Height_Units", "Weight",
                      "Weight_Units", "Smoking_Status_Code", "Smoking_Status_Description") # fields required once per visit
   req_pv_pctnames <- unlist(lapply(req_pv_fields, function(x) paste0(x, ".Percent"))) # creating names for the report
