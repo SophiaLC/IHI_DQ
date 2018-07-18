@@ -9,7 +9,7 @@ discharge_disposition_perc<-function(data){
     mutate(Discharge_Disposition=ifelse(is.na(Discharge_Disposition),"NA",Discharge_Disposition))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Discharge_Disposition)%>%
-    transmute(Discharge_Disposition,count=n,percentage=round(n/sum(n),3))
+    transmute(Discharge_Disposition,count=n,percentage=round(100*n/sum(n),2))
   return(
     Discharge_Disposition
   )
