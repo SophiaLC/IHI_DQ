@@ -38,5 +38,9 @@ get_all_invalids <- function(data) {
     as.data.frame() # make as a classic data frame for writing to xlsx
   state_invalids[state_invalids=="NaN"] <- NA # replace nan with na
   
-  return(state_invalids)
+   return(
+    merge(data%>%
+            select(C_Biosense_Facility_ID,Feed_Name,Sending_Application)%>%
+            distinct(),state_invalids, by="C_Biosense_Facility_ID")
+  )
 }
