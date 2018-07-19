@@ -54,15 +54,15 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   ## get state-wide average earliest Non NA diagnosis lag, remove the column of Facility_ID
   state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
   # overall , state-level average
-  #statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
+  statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
   # writing xlsx
   wb <- createWorkbook() # create workbook
   # sheet 1: required nulls
   sheet1 <- addWorksheet(wb, "Required Nulls")
   # putting statewide above the filter
-  #writeData(wb, sheet1, statewides$statewide_reqnull, 
-            #startCol=2, startRow=1, colNames=FALSE)
+  writeData(wb, sheet1, statewides$statewide_reqnull, 
+            startCol=2, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet1,
                  state_req_nulls %>% 
@@ -70,14 +70,14 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet1, 1:ncol(right_join(fnames, state_req_nulls, by = "C_Biosense_Facility_ID")), "auto")
-  freezePane(wb, sheet1, firstActiveRow=4, firstActiveCol=4)
+  freezePane(wb, sheet1, firstActiveRow=4, firstActiveCol=6)
   addStyle(wb, sheet1, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
            rows=1:3, cols=1:ncol(right_join(fnames, state_req_nulls, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
   # sheet 2: optional nulls
   sheet2 <- addWorksheet(wb, "Optional Nulls")
   # putting statewide above the filter
- # writeData(wb, sheet2, statewides$statewide_optnull, 
-            #startCol=2, startRow=1, colNames=FALSE)
+ writeData(wb, sheet2, statewides$statewide_optnull, 
+            startCol=2, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet2,
                  state_opt_nulls %>% 
@@ -85,14 +85,14 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet2, 1:ncol(right_join(fnames, state_opt_nulls, by = "C_Biosense_Facility_ID")), "auto")
-  freezePane(wb, sheet2, firstActiveRow=4, firstActiveCol=4)
+  freezePane(wb, sheet2, firstActiveRow=4, firstActiveCol=6)
   addStyle(wb, sheet2, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
            rows=1:3, cols=1:ncol(right_join(fnames, state_opt_nulls, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
   # sheet 3: invalids
   sheet3 <- addWorksheet(wb, "Invalids")
   # putting statewide above the filter
-  #writeData(wb, sheet3, statewides$statewide_invalids, 
-            #startCol=2, startRow=1, colNames=FALSE)
+  writeData(wb, sheet3, statewides$statewide_invalids, 
+            startCol=2, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet3,
                  state_invalids %>% 
@@ -100,7 +100,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet3, 1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), "auto")
-  freezePane(wb, sheet3, firstActiveRow=4, firstActiveCol=4)
+  freezePane(wb, sheet3, firstActiveRow=4, firstActiveCol=6)
   addStyle(wb, sheet3, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
            rows=1:3, cols=1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
 
@@ -201,38 +201,38 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       
     setColWidths(wb, sheet1, 1:8, "auto")
     # sheet 2: required nulls
-    #sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
+    sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
     # making data for it
-    #facsheet2data <- statewides$statewide_reqnull %>% # take state average
-      #filter(Measure=="Percent") %>% # only percent
-      #select(-Location, -Measure) %>% # select vars only needed
-      #gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-      #left_join(one_facility_summary(state_req_nulls, i), ., by="Field") # join with one facility summary
-    #writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    #setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
-    #freezePane(wb, sheet2, firstActiveRow=2) # format sheet
+    facsheet2data <- statewides$statewide_reqnull %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_req_nulls, i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
+    freezePane(wb, sheet2, firstActiveRow=2) # format sheet
     # sheet 3: optional nulls
-    #sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
+    sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
     # making data for it
-    #facsheet3data <- statewides$statewide_optnull %>% # take state average
-      #filter(Measure=="Percent") %>% # only percent
-      #select(-Location, -Measure) %>% # select vars only needed
-      #gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-      #left_join(one_facility_summary(state_opt_nulls, i), ., by="Field") # join with one facility summary
-    #writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    #setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
-    #freezePane(wb, sheet3, firstActiveRow=2) # format sheet
+    facsheet3data <- statewides$statewide_optnull %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_opt_nulls, i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
+    freezePane(wb, sheet3, firstActiveRow=2) # format sheet
     # sheet 4: invalids
-   # sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
+    sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
     # making data for it
-   # facsheet4data <- statewides$statewide_invalids %>% # take state average
-    #  filter(Measure=="Percent") %>% # only percent
-     # select(-Location, -Measure) %>% # select vars only needed
-     # gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-     # left_join(one_facility_summary(state_invalids, i), ., by="Field") # join with one facility summary
-   # writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    #setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
-    #freezePane(wb, sheet4, firstActiveRow=2) # format sheet
+    facsheet4data <- statewides$statewide_invalids %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_invalids, i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
+    freezePane(wb, sheet4, firstActiveRow=2) # format sheet
 
     
     
