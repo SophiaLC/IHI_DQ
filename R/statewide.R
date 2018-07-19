@@ -21,15 +21,15 @@ statewide <- function(data, state_req_nulls, state_opt_nulls, state_invalids) {
   # get totals to work with
   statewide_reqnull <- state_req_nulls %>% # take the summary
     filter(Measure=="Count") %>% # only get count rows
-    summarise_at(vars(-c(1,2)), funs(sum))
+    summarise_at(vars(-c(1,2,3,4)), funs(sum))
   
   statewide_optnull <- state_opt_nulls %>%
     filter(Measure=="Count") %>%
-    summarise_at(vars(-c(1,2)), funs(sum))
+    summarise_at(vars(-c(1,2,3,4)), funs(sum))
   
   statewide_invalids <- state_invalids %>% 
     filter(Measure=="Count") %>%
-    summarise_at(vars(-c(1,2)), funs(sum))
+    summarise_at(vars(-c(1,2,3,4)), funs(sum))
   
   # return statewide percent for these
   req_all_fields <- c("Treating_Facility_ID", "Trigger_Event", "Message_Control_ID", "Processing_ID", "Version_ID", 
