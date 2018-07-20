@@ -248,9 +248,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     distinct()
     
     ## compute the # of batches per day for each Feed_Name/facility
-    Batch_Info=batch_info(batchdata%>%
-                         filter(Feed_Name==Batch_Mean$Feed_Name)
-                          )
+    Batch_Info=batch_info(batchdata)
     
    
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
