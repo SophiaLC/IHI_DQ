@@ -242,7 +242,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     ##compute the average number of messages per batch for each Feed_Name
 
     
-    Mean_Message=subdata%>%
+    Batch_Mean=subdata%>%
     select(Feed_Name,C_Biosense_Facility_ID)%>%
     merge(mean_message_per_batch(batchdata),.,by="Feed_Name")%>%
     distinct()
@@ -250,8 +250,9 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     ## compute the # of batches per day for each Feed_Name/facility
     Batch_Info=batch_info(batchdata)
     Batch_Data=Batch_Info%>%
-                 filter(Feed_Name==Mean_Message$Feed_Name)
-    
+               inner_join(Batch_Mean,.,by="Feed_Name")%>%
+               select(Feed_Name, Arrived_Date, N_Batch, Time_Bet_Batch_Hours)
+
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet5, 1:4, "auto")
