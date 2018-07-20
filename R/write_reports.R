@@ -250,9 +250,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     ## compute the # of batches per day for each Feed_Name/facility
     Batch_Info=batch_info(batchdata)
     Batch_Data=Batch_Info%>%
-                 filter(Feed_Name==Batch_Mean$Feed_Name)
+                 filter(Feed_Name==paste0(Batch_Mean$Feed_Name))
     
-   
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet5, 1:4, "auto")
