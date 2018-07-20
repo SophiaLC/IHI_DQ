@@ -61,8 +61,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   # sheet 1: required nulls
   sheet1 <- addWorksheet(wb, "Required Nulls")
   # putting statewide above the filter
-  #writeData(wb, sheet1, statewides$statewide_reqnull, 
-            #startCol=4, startRow=1, colNames=FALSE)
+  writeData(wb, sheet1, statewides$statewide_reqnull, 
+            startCol=4, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet1,
                  state_req_nulls %>% 
@@ -76,8 +76,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   # sheet 2: optional nulls
   sheet2 <- addWorksheet(wb, "Optional Nulls")
   # putting statewide above the filter
- #writeData(wb, sheet2, statewides$statewide_optnull, 
-            #startCol=4, startRow=1, colNames=FALSE)
+  writeData(wb, sheet2, statewides$statewide_optnull, 
+            startCol=4, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet2,
                  state_opt_nulls %>% 
@@ -91,8 +91,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   # sheet 3: invalids
   sheet3 <- addWorksheet(wb, "Invalids")
   # putting statewide above the filter
-  #writeData(wb, sheet3, statewides$statewide_invalids, 
-            #startCol=4, startRow=1, colNames=FALSE)
+  writeData(wb, sheet3, statewides$statewide_invalids, 
+            startCol=4, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet3,
                  state_invalids %>% 
@@ -297,17 +297,17 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     #setColWidths(wb, sheet6, 1:8, "auto")
     
     ## sheet 7
-    #sheet7 <- addWorksheet(wb, "Patient Location")
-    #Country=country_perc(subdata)
-    #State=state_perc(subdata)
-    #City=city_perc(subdata)
-    #County=county_perc(subdata)
+    sheet7 <- addWorksheet(wb, "Patient Location")
+    Country=country_perc(subdata)
+    State=state_perc(subdata)
+    City=city_perc(subdata)
+    County=county_perc(subdata)
     
-    #writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    #writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
-    #writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
-    #writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
-    #setColWidths(wb, sheet7, 1:3, "auto")
+    writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
+    setColWidths(wb, sheet7, 1:3, "auto")
     
     ## sheet 8
     #sheet8 <- addWorksheet(wb,"Other Patient Information")
