@@ -333,7 +333,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     setColWidths(wb, sheet8, 1:3, "auto")
     
     ## sheet 9
-    sheet9<- addWorksheet(wb,"Facility and Diagnosis")
+    sheet9 <- addWorksheet(wb,"Facility and Diagnosis")
     Facility_Desc=facility_type_description_perc(subdata)
     Facility_Code=facility_type_code_perc(subdata)
     Diagnosis_Type=diagnosis_type_perc(subdata)
