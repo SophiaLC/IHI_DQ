@@ -282,19 +282,19 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
    # setColWidths(wb, sheet5, 1:4, "auto")
     
     ## sheet 6
-    #sheet6 <- addWorksheet(wb, "Race and Ethnicity")
+    sheet6 <- addWorksheet(wb, "Race and Ethnicity")
     
-   # Race_Description=race_description_perc(subdata)
-    #Race_Code=race_code_perc(subdata)
+    Race_Description=race_description_perc(subdata)
+    Race_Code=race_code_perc(subdata)
     
-    #Ethnicity_Description=ethnicity_description_perc(subdata)
-    #Ethnicity_Code=ethnicity_code_perc(subdata)
+    Ethnicity_Description=ethnicity_description_perc(subdata)
+    Ethnicity_Code=ethnicity_code_perc(subdata)
     
-    #writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    #writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    #writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    #writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    #setColWidths(wb, sheet6, 1:8, "auto")
+    writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet6, 1:8, "auto")
     
     ## sheet 7
     sheet7 <- addWorksheet(wb, "Patient Location")
@@ -341,8 +341,10 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     
     writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,startCol=5, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE,
+                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, 
+                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,startCol=5, bandedRows=TRUE)
     setColWidths(wb, sheet9, 1:7, "auto")
     
     # write to file
