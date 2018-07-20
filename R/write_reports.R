@@ -54,7 +54,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   ## get state-wide average earliest Non NA diagnosis lag, remove the column of Facility_ID
   state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
   # overall , state-level average
-  #statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
+  statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
   
   # writing xlsx
   wb <- createWorkbook() # create workbook
@@ -183,57 +183,57 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       State_wide_Average= state_diagnosis
       )
     
-    #Trigger<-data.frame(
-      #HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
-      #Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
-      #Trigger_Event_A01=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A01",][-1]),
-      #Trigger_Event_A03=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A03",][-1]),
-      #Trigger_Event_A04=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A04",][-1]),
-      #Trigger_Event_A06=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A06",][-1]),
-      #Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1])
-      #)
+    Trigger<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Trigger_Event_A01=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A01",][-1]),
+      Trigger_Event_A03=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A03",][-1]),
+      Trigger_Event_A04=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A04",][-1]),
+      Trigger_Event_A06=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A06",][-1]),
+      Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1])
+      )
    
     writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-   # writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
       
     setColWidths(wb, sheet1, 1:8, "auto")
-    # sheet 2: required nulls
-   # sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
-    # making data for it
-    #facsheet2data <- statewides$statewide_reqnull %>% # take state average
-      #filter(Measure=="Percent") %>% # only percent
-      #select(-Location, -Measure) %>% # select vars only needed
-      #gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-     # left_join(one_facility_summary(state_req_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
-   # writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-   # setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
-   # freezePane(wb, sheet2, firstActiveRow=2) # format sheet
+    ## sheet 2: required nulls
+    sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
+     ##making data for it
+    facsheet2data <- statewides$statewide_reqnull %>% # take state average
+     filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_req_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
+    freezePane(wb, sheet2, firstActiveRow=2) # format sheet
     # sheet 3: optional nulls
-    #sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
+    sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
     # making data for it
-    #facsheet3data <- statewides$statewide_optnull %>% # take state average
-      #filter(Measure=="Percent") %>% # only percent
-      #select(-Location, -Measure) %>% # select vars only needed
-      #gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-      #left_join(one_facility_summary(state_opt_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
-    #writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    #setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
-    #freezePane(wb, sheet3, firstActiveRow=2) # format sheet
+    facsheet3data <- statewides$statewide_optnull %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_opt_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
+    freezePane(wb, sheet3, firstActiveRow=2) # format sheet
     # sheet 4: invalids
-    #sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
+    sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
     # making data for it
-    #facsheet4data <- statewides$statewide_invalids %>% # take state average
-     # filter(Measure=="Percent") %>% # only percent
-     # select(-Location, -Measure) %>% # select vars only needed
-     # gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
-     # left_join(one_facility_summary(state_invalids[,-c(2,3)], i), ., by="Field") # join with one facility summary
-    #writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    #setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
-   # freezePane(wb, sheet4, firstActiveRow=2) # format sheet
+    facsheet4data <- statewides$statewide_invalids %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_invalids[,-c(2,3)], i), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
+    freezePane(wb, sheet4, firstActiveRow=2) # format sheet
 
     
     
