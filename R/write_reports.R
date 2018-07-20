@@ -282,68 +282,68 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     setColWidths(wb, sheet5, 1:4, "auto")
     
     ## sheet 6
-    sheet6 <- addWorksheet(wb, "Race and Ethnicity")
+    #sheet6 <- addWorksheet(wb, "Race and Ethnicity")
     
-    Race_Description=race_description_perc(subdata)
-    Race_Code=race_code_perc(subdata)
+    #Race_Description=race_description_perc(subdata)
+    #Race_Code=race_code_perc(subdata)
     
-    Ethnicity_Description=ethnicity_description_perc(subdata)
-    Ethnicity_Code=ethnicity_code_perc(subdata)
+    #Ethnicity_Description=ethnicity_description_perc(subdata)
+    #Ethnicity_Code=ethnicity_code_perc(subdata)
     
-    writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    setColWidths(wb, sheet6, 1:8, "auto")
+    #writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    #writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    #writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    #writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    #setColWidths(wb, sheet6, 1:8, "auto")
     
     ## sheet 7
-    sheet7 <- addWorksheet(wb, "Patient Location")
-    Country=country_perc(subdata)
-    State=state_perc(subdata)
-    City=city_perc(subdata)
-    County=county_perc(subdata)
+    #sheet7 <- addWorksheet(wb, "Patient Location")
+    #Country=country_perc(subdata)
+    #State=state_perc(subdata)
+    #City=city_perc(subdata)
+    #County=county_perc(subdata)
     
-    writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
-    setColWidths(wb, sheet7, 1:3, "auto")
+    #writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    #writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
+    #writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
+    #writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
+    #setColWidths(wb, sheet7, 1:3, "auto")
     
     ## sheet 8
-    sheet8 <- addWorksheet(wb,"Other Patient Information")
-    Insurance=insurance_company_id_perc(subdata)
-    Patient_Class=patient_class_perc(subdata)
-    Age_Group=age_group_perc(subdata)
-    Trigger_Event=trigger_event_perc(subdata)
-    Smoking_Desc=smoking_status_description_perc(subdata)
-    Smoking_Code=smoking_status_code_perc(subdata)
-    Discharge_Dis=discharge_disposition_perc(subdata)
+    #sheet8 <- addWorksheet(wb,"Other Patient Information")
+    #Insurance=insurance_company_id_perc(subdata)
+    #Patient_Class=patient_class_perc(subdata)
+   # Age_Group=age_group_perc(subdata)
+    #Trigger_Event=trigger_event_perc(subdata)
+    #Smoking_Desc=smoking_status_description_perc(subdata)
+    #Smoking_Code=smoking_status_code_perc(subdata)
+    #Discharge_Dis=discharge_disposition_perc(subdata)
     
-    writeDataTable(wb, sheet8, Insurance,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Patient_Class,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+2, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, 
-                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+6, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
-    setColWidths(wb, sheet8, 1:3, "auto")
+    #writeDataTable(wb, sheet8, Insurance,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Patient_Class,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+2, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   #startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   #startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, 
+                   #startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+6, bandedRows=TRUE)
+    #writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   #startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
+    #setColWidths(wb, sheet8, 1:3, "auto")
     
     ## sheet 9
-    sheet9<- addWorksheet(wb,"Facility and Diagnosis")
-    Facility_Desc=facility_type_description_perc(subdata)
-    Facility_Code=facility_type_code_perc(subdata)
-    Diagnosis_Type=diagnosis_type_perc(subdata)
-    Diagnosis_Code=diagnosis_code_perc(subdata)
+    #sheet9<- addWorksheet(wb,"Facility and Diagnosis")
+    #Facility_Desc=facility_type_description_perc(subdata)
+    #Facility_Code=facility_type_code_perc(subdata)
+    #Diagnosis_Type=diagnosis_type_perc(subdata)
+    #Diagnosis_Code=diagnosis_code_perc(subdata)
     
-    writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,startCol=5, bandedRows=TRUE)
-    setColWidths(wb, sheet9, 1:7, "auto")
+    #writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    #writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
+    #writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,bandedRows=TRUE)
+    #writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,startCol=5, bandedRows=TRUE)
+    #setColWidths(wb, sheet9, 1:7, "auto")
     
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
