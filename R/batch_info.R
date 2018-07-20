@@ -19,3 +19,4 @@ batch_info<-function(data){
     left_join(.,Time_Bet_Batch,by = c("Feed_Name", "Arrived_Date"))
   )
 }
+
