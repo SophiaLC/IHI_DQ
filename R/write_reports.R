@@ -248,30 +248,12 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     distinct()
     
     ## compute the # of batches per day for each Feed_Name/facility
-   # Batch_Per_Day=batchdata%>%
-   # group_by(Feed_Name,Arrived_Date)%>%
-   # summarise(N_Batch=n_distinct(File_Name))%>%
-   # filter(Feed_Name==Batch_Mean$Feed_Name)
-  
-    #Batch_Time=batchdata%>%
-    #group_by(Feed_Name,File_Name)%>%
-   # select(Feed_Name,File_Name, Arrived_Date_Time,Arrived_Date)%>%
-   # mutate(Arrived_Date_Time=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"))%>%
-  #  slice(which.min(Arrived_Date_Time))
-
-
-    #Time_Bet_Batch=Batch_Time%>%
-   # group_by(Feed_Name,Arrived_Date)%>%
-   # arrange(Arrived_Date)%>%
-   # summarise(Time_Bet_Batch_Hours=round(as.numeric(difftime(max(Arrived_Date_Time),min(Arrived_Date_Time),units="hours"))/(n()-1),2))%>%
-   # filter(Feed_Name==Batch_Mean$Feed_Name)
-  
-   # Batch_Data=Batch_Per_Day%>%
-   # left_join(.,Time_Bet_Batch,by = c("Feed_Name", "Arrived_Date"))
-
-    #writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
-    #writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-   # setColWidths(wb, sheet5, 1:4, "auto")
+    Batch_Info=batch_info(batchdata)%>%
+               filter(Feed_Name==Batch_Mean$Feed_Name)
+    
+    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet5,Batch_Info,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet5, 1:4, "auto")
     
     ## sheet 6
     sheet6 <- addWorksheet(wb, "Race and Ethnicity")
