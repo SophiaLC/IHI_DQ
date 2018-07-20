@@ -7,7 +7,7 @@ This package can be installed using the `devtools` package. If you do not have t
 
 After this, you can install the `biosensequality` package using the `install_github` function from `devtools`:
 
-`devtools::install_github("SophiaLC/biosensequality")`
+`devtools::install_github("Mengjiao0714/biosensequality")`
 
 **Getting Started**
 
