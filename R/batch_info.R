@@ -5,7 +5,7 @@ batch_info<-function(data){
     group_by(Feed_Name,Arrived_Date)%>%
     summarise(N_Batch=n_distinct(File_Name))
 
-  Batch_Time=data%>%
+  Time_Bet_Batch=data%>%
     group_by(Feed_Name,File_Name)%>%
     select(Feed_Name,File_Name, Arrived_Date_Time,Arrived_Date)%>%
     mutate(Arrived_Date_Time=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"))%>%
