@@ -5,11 +5,11 @@
 
 patient_class_perc<-function(data){
     Patient_Class=data%>%
-    select(C_BioSense_ID, C_MFT_Patient_Class)%>%
-    mutate(C_MFT_Patient_Class=ifelse(is.na(C_MFT_Patient_Class),"NA",C_MFT_Patient_Class))%>%
+    select(C_BioSense_ID, Patient_Class_Code)%>%
+    mutate(Patient_Class_Code=ifelse(is.na(Patient_Class_Code),"NA",Patient_Class_Code))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
-    count(C_MFT_Patient_Class)%>%
-    transmute(C_MFT_Patient_Class,count=n,percentage=round(100*n/sum(n),2))
+    count(Patient_Class_Code)%>%
+    transmute(Patient_Class_Code,count=n,percentage=round(100*n/sum(n),2))
   return(
     Patient_Class
   )
