@@ -290,8 +290,6 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Insurance=insurance_company_id_perc(subdata)
     Patient_Class=patient_class_perc(subdata)
     Age_Group=age_group_perc(subdata)
-    ## number of visits will be used in trigger_event_perc function
-    number_visits=n_groups(group_by(subdata,C_BioSense_ID))
     Trigger_Event=trigger_event_perc(subdata)
     Trigger_Event_A03=subdata%>%
                      filter(Trigger_Event=="A03")%>%
