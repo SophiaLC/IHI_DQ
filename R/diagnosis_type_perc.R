@@ -5,8 +5,13 @@
 ## Diagnosis_Type
 
 diagnosis_type_perc<-function(data){
-  diagnosis=unlist(strsplit(paste0(data$Diagnosis_Type),";"))
-  Diagnosis_Type=diagnosis[diagnosis!=""]
-  as.data.frame(table(Diagnosis_Type))%>%
-                                  arrange(desc(Freq))
+   Diagnosis_Type=data%>%
+    select(C_BioSense_ID, Diagnosis_Type)%>%
+    mutate(Diagnosis_Type=ifelse(is.na(Diagnosis_Type),"NA",Diagnosis_Type))%>%
+    distinct(C_BioSense_ID,.keep_all=TRUE)%>%
+    count(Diagnosis_Type)%>%
+    transmute(Diagnosis_Type,count=n,percentage=round(100*n/sum(n),2))
+  return(
+    Diagnosis_Type
+  )
 }
