@@ -2,8 +2,10 @@
 ##how often each distinct entry is occurring and percentage of all visits each entry
 ##accounts for.
 ##Trigger_Event
-##number_visits=n_groups(group_by(data,C_BioSense_ID)), this number of visits will be computed in write_report function
+
 trigger_event_perc<-function(data){
+  number_visits=n_groups(group_by(data,C_BioSense_ID))
+  
   Trigger_Event=data%>%
     select(C_BioSense_ID, Trigger_Event)%>%
     distinct(C_BioSense_ID,Trigger_Event,.keep_all=TRUE)%>%
