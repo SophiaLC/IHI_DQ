@@ -4,9 +4,13 @@
 ##Diagnosis_Code
 
 diagnosis_code_perc<-function(data){
-  diagnosis=unlist(strsplit(paste0(data$Diagnosis_Code),";"))
-  Diagnosis_Code=diagnosis[diagnosis!=""]
-  as.data.frame(table(Diagnosis_Code))%>%
-                              arrange(desc(Freq))
-
+  Diagnosis_Code=data%>%
+    select(C_BioSense_ID, Diagnosis_Code)%>%
+    mutate(Diagnosis_Code=ifelse(is.na(Diagnosis_Code),"NA",Diagnosis_Code))%>%
+    distinct(C_BioSense_ID,.keep_all=TRUE)%>%
+    count(Diagnosis_Code)%>%
+    transmute(Diagnosis_Code,count=n,percentage=round(100*n/sum(n),2))
+  return(
+    Diagnosis_Code
+  )
 }
