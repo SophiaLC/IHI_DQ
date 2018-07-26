@@ -74,8 +74,8 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
   wb <- createWorkbook()
   # sheet 1: facility information
   sheet1 <- addWorksheet(wb, "Facility Information")
-  visits_per_day=avg_visit_per_day(subdata)
-    visit_length=avg_visit_length(subdata)$Visit_Length
+  visits_per_day=avg_visit_per_day(data)
+    visit_length=avg_visit_length(data)$Visit_Length
     
     facility_table=suppressWarnings(data %>% # take data
                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
