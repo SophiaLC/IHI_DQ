@@ -6,7 +6,7 @@
 patient_class_perc<-function(data){
   Patient_Class=data%>%
     select(C_BioSense_ID, Patient_Class_Code)%>%
-    mutate(Patient_Class_Code=ifelse(is.na(Patient_Class_Code),"NA",Patient_Class_Code))%>%
+    mutate(Patient_Class_Code=ifelse(is.na(Patient_Class_Code),"NULL",Patient_Class_Code))%>%
     distinct(C_BioSense_ID,Patient_Class_Code,.keep_all=TRUE)%>%
     count(Patient_Class_Code)%>%
     transmute(Patient_Class_Code,count=n,percentage=round(100*n/sum(n),2))
