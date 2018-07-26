@@ -339,18 +339,21 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     
     ## sheet 10
     sheet10 <- addWorksheet(wb,"Chief_Complaint_Check")
+    subdata=data%>%
+            filter(C_Biosense_Facility_ID==i)
+    
     Chief_Complaint_Text=chief_complaint_text_count(subdata)
-    #Admit_Reason_Description=admit_reason_description_count(subdata)
-    #Triage_Notes=triage_notes_count(subdata)
-    #Clinical_Impression=clinical_impression_count(subdata)
+    Admit_Reason_Description=admit_reason_description_count(subdata)
+    Triage_Notes=triage_notes_count(subdata)
+    Clinical_Impression=clinical_impression_count(subdata)
     
     writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    #writeDataTable(wb,sheet10,Admit_Reason_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,startRow=nrow(Chief_Complaint)+2)
-    #writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   #startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+3)
-    #writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   #startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+nrow(Triage_Notes)+4)
-    setColWidths(wb,sheet10,1:3,"auto)
+    writeDataTable(wb,sheet10,Admit_Reason_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,startRow=nrow(Chief_Complaint)+2)
+    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+3)
+    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+nrow(Triage_Notes)+4)
+    setColWidths(wb,sheet10,1:3,"auto")
 
    # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
