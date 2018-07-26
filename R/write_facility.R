@@ -267,18 +267,14 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                    startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+8)
     setColWidths(wb,sheet10,1:3,"auto")
   
-  
-  
-  
-  
-  
-  
   # write to file
   filename <- str_replace_all(name, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
     str_replace_all("[\\s]", "_") # replace spaces with underscores
   saveWorkbook(wb, paste0(directory, "/", filename, "_Summary.xlsx"), overwrite=TRUE)
 
-  if (nexamples > 0) {
+  
+  
+   if (nexamples > 0) {
     # get list of invalid examples data frames
     # DO NOT CHANGE THE ORDER OF THIS LIST
     invalid_examples <- list(admit_source_invalid(data)[[1]], # 1
@@ -290,7 +286,7 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                              death_invalid(data)[[1]], # 7
                              diagnosis_type_invalid(data)[[1]], # 8
                              discharge_disposition_invalid(data)[[1]], # 9
-                             ethnicity_invalid(data)[[1]], # 10 
+                             ethnicity_invalid(data)[[1]], # 10
                              facility_type_invalid(data)[[1]], # 11
                              fpid_mrn_invalid(data)[[1]], # 12
                              gender_invalid(data)[[1]], # 13
