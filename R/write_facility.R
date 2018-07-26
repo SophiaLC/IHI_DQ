@@ -37,24 +37,24 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
   data("hl7_values", envir=environment())
   hl7_values$Field <- as.character(hl7_values$Field)
 
+## state-wide summary
   # get facility-level state summary of required nulls
-  req_nulls <- get_req_nulls(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
-    gather(Field, Value, 2:ncol(.)) %>%
-    spread(Measure, Value) %>%
-    right_join(hl7_values, ., by = "Field")
+  state_req_nulls <- get_req_nulls(data)
   # get facility-level state summary of optional nulls
-  opt_nulls <- get_opt_nulls(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
-    gather(Field, Value, 2:ncol(.)) %>%
-    spread(Measure, Value) %>%
-    right_join(hl7_values, ., by = "Field")
+  state_opt_nulls <- get_opt_nulls(data)
   # get facility-level state summary of invalids
-  invalids <- get_all_invalids(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
-    gather(Field, Value, 2:ncol(.)) %>%
-    spread(Measure, Value) %>%
-    right_join(hl7_values, ., by = "Field")
+  state_invalids <- get_all_invalids(data)
+  ## get state-wide average lag, remove the column of Facility_ID
+  state_lag <-c((apply(va_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest lag, remove the column of Facility_ID
+  state_early_lag<-c((apply(early_lag(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest Non NA chief_complaint lag, remove the column of Facility_ID                          
+  state_chief_complaint<-c((apply(lag_chief_complaint(data)[,-1],2,function(s)round(mean(s),2))))
+  ## get state-wide average earliest Non NA diagnosis lag, remove the column of Facility_ID
+  state_diagnosis<-c((apply(lag_diagnosis(data)[,-1],2,function(s)round(mean(s),2))))                         
+  # overall , state-level average
+  statewides <- statewide(data, state_req_nulls, state_opt_nulls, state_invalids)
+                            
 
   # getting first and last visit date times
   vmin <- min(as.character(data$C_Visit_Date_Time))
@@ -134,21 +134,41 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
     setColWidths(wb, sheet1, 1:8, "auto")
   
   
-  # sheet 2: required nulls
-  sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
-  writeDataTable(wb, sheet2, req_nulls, firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet2, 1:ncol(req_nulls), "auto") # format sheet
-  freezePane(wb, sheet2, firstActiveRow=2) # format sheet
-  # sheet 3: optional nulls
-  sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
-  writeDataTable(wb, sheet3, opt_nulls, firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet3, 1:ncol(opt_nulls), "auto") # format sheet
-  freezePane(wb, sheet3, firstActiveRow=2) # format sheet
-  # sheet 4: invalids
-  sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
-  writeDataTable(wb, sheet4, invalids, firstColumn=TRUE, bandedRows=TRUE) # write to table
-  setColWidths(wb, sheet4, 1:ncol(invalids), "auto") # format sheet
-  freezePane(wb, sheet4, firstActiveRow=2) # format sheet
+   ## sheet 2: required nulls
+    sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
+     ##making data for it
+    facsheet2data <- statewides$statewide_reqnull %>% # take state average
+     filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_req_nulls[,-c(2,3)], facility), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
+    freezePane(wb, sheet2, firstActiveRow=2) # format sheet
+                            
+    # sheet 3: optional nulls
+    sheet3 <- addWorksheet(wb, "Optional Nulls") # initialize sheet
+    # making data for it
+    facsheet3data <- statewides$statewide_optnull %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_opt_nulls[,-c(2,3)], facility), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
+    freezePane(wb, sheet3, firstActiveRow=2) # format sheet
+                            
+    # sheet 4: invalids
+    sheet4 <- addWorksheet(wb, "Invalids") # initialize sheet
+    # making data for it
+    facsheet4data <- statewides$statewide_invalids %>% # take state average
+      filter(Measure=="Percent") %>% # only percent
+      select(-Location, -Measure) %>% # select vars only needed
+      gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
+      left_join(one_facility_summary(state_invalids[,-c(2,3)], facility), ., by="Field") # join with one facility summary
+    writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
+    freezePane(wb, sheet4, firstActiveRow=2) # format sheet
 
  
   
