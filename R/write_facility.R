@@ -82,7 +82,7 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                               Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
                      gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
                      distinct() %>% # get only distinct entries
-                     bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
+                     bind_rows(data.frame(Field="Facility_Name", Value=name), .) %>% # add name to the top
                      # bind with date ranges and number of records and visits
                      bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
                                                   "Number of Records", "Number of Visits",
