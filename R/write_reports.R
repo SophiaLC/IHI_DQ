@@ -349,11 +349,11 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     
     writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+2)
+                   bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+4)
     writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+3)
+                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+6)
     writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+4)
+                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+8)
     setColWidths(wb,sheet10,1:3,"auto")
 
    # write to file
