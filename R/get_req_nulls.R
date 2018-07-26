@@ -29,8 +29,8 @@ get_req_nulls <- function(data) {
                      "Insurance_Company_ID", "Administrative_Sex", "Race_Code", "Race_Description", "Patient_City", "Patient_Zip",
                      "Patient_State", "C_Patient_County", "Patient_Country", "Ethnicity_Code", "Ethnicity_Description",
                      "Patient_Class_Code", "Visit_ID", "Admit_Reason_Description", "Chief_Complaint_Text",
-                     "Facility_Type_Code", "Facility_Type_Description", "Age_Reported",
-                     "Age_Units_Reported", "Triage_Notes", "Clinical_Impression", "Height", "Height_Units", "Weight",
+                     "Facility_Type_Code", "Facility_Type_Description", "Birth_Date_Time", "Age_Reported",
+                     "Age_Units_Reported", "Height", "Height_Units", "Weight",
                      "Weight_Units", "Smoking_Status_Code", "Smoking_Status_Description") # fields required once per visit
   req_pv_pctnames <- unlist(lapply(req_pv_fields, function(x) paste0(x, ".Percent"))) # creating names for the report
   req_pv_cntnames <- unlist(lapply(req_pv_fields, function(x) paste0(x, ".Count"))) # creating names for the report
@@ -54,7 +54,7 @@ get_req_nulls <- function(data) {
     summarise_at(req_pv_fields, # summarise at fields required once per visit
                  funs(all(is.na(.)))) %>% # returns true if that field is na in all messages for that patient visit
     ungroup() %>% # joining will ungroup, but I'm explicitly doing it here
-    full_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID")], by="C_BioSense_ID") %>% # joining with facility information
+    full_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID","Feed_Name")], by="C_BioSense_ID") %>% # joining with facility information
     group_by(C_BioSense_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one ovservation per patient visit (they are all identical)
     ungroup() %>% # explicitly ungroup
@@ -76,8 +76,7 @@ get_req_nulls <- function(data) {
     summarise_at(req_pv_fields, funs(sum(., na.rm=TRUE))) %>% # take the number of trues (missing in all) per each group
     magrittr::set_colnames(c("C_Biosense_Facility_ID", req_pv_cntnames)) # renaming columns
 
-  return(
-    pct_nulls_req_all %>% # take stuff from above...
+      result=pct_nulls_req_all %>% # take stuff from above...
       full_join(count_nulls_req_all, by = "C_Biosense_Facility_ID") %>% # more stuff from above...
       full_join(pct_nulls_req_pv, by = "C_Biosense_Facility_ID") %>% # more stuff from above...
       full_join(count_nulls_req_pv, by = "C_Biosense_Facility_ID") %>% # and the last table from above
@@ -85,6 +84,12 @@ get_req_nulls <- function(data) {
       separate(Check, c("Field", "Measure"), "[.]") %>% # splitting up check varaible into three columns by the period
       spread(Field, Value) %>% # spread out all of the facility ids into multiple columns
       as.data.frame() # make data frame, not tbl_df, for when we want to write to excel
+                                   
+      return(
+          merge(data%>%
+          select(C_Biosense_Facility_ID,Feed_Name,Sending_Application)%>%
+          distinct(),result, by="C_Biosense_Facility_ID")                             
   )
 }
+
 
