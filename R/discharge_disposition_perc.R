@@ -4,12 +4,14 @@
 
 ## discharge disposition
 discharge_disposition_perc<-function(data){
+  number_visits=n_groups(group_by(data,C_BioSense_ID))
+  
   Discharge_Disposition=data%>%
     select(C_BioSense_ID, Discharge_Disposition)%>%
     mutate(Discharge_Disposition=ifelse(is.na(Discharge_Disposition),"NULL",Discharge_Disposition))%>%
     distinct(C_BioSense_ID,Discharge_Disposition,.keep_all=TRUE)%>%
     count(Discharge_Disposition)%>%
-    transmute(Discharge_Disposition,count=n,percentage=round(100*n/sum(n),2))
+    transmute(Discharge_Disposition,count=n,percentage=round(100*n/number_visits,2))
   return(
     Discharge_Disposition
   )
