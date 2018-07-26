@@ -6,7 +6,7 @@
 ethnicity_code_perc<-function(data){
   Ethnicity_Code=data%>%
     select(C_BioSense_ID,Ethnicity_Code)%>%
-    mutate(Ethnicity_Code=ifelse(is.na(Ethnicity_Code),"NA",Ethnicity_Code))%>%
+    mutate(Ethnicity_Code=ifelse(is.na(Ethnicity_Code),"NULL",Ethnicity_Code))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Ethnicity_Code)%>%
     transmute(Ethnicity_Code,count=n,percentage=round(100*n/sum(n),2))
