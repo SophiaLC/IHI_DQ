@@ -29,8 +29,15 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
     channel,
     paste0("SELECT * FROM ", table, " WHERE C_Visit_Date_Time >= '", start, "' AND C_Visit_Date_Time <= '", end, "' AND C_Biosense_Facility_ID = ", facility) # create sql query
   , as.is=TRUE)
+  
   if (nrow(data) == 0) stop("The query yielded no data.")
   name <- as.character(unlist(unname(c(sqlQuery(channel, paste0("SELECT Facility_Name FROM ", mft, " WHERE C_Biosense_Facility_ID = ", facility)))))) # get name from mft
+  
+  batchdata <- sqlQuery(
+    channel,
+    paste0("SELECT * FROM ", raw, " WHERE Arrived_Date_Time >= '", start, "' AND Arrived_Date_Time <= '", end, "' AND C_Biosense_Facility_ID = ", facility) # create sql query
+    , as.is=TRUE
+  )
   odbcCloseAll() # close connection
 
   # get hl7 values
