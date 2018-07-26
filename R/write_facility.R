@@ -21,7 +21,7 @@
 #' @import RODBC
 #' @importFrom stringr str_replace_all
 #' @export
-write_facility <- function(username, password, table, mft, raw, start, end, facility, directory="", nexamples=0) {
+write_facility <- function(username, password, table, mft, start, end, facility, directory="", nexamples=0) {
 
   # pull data
   channel <- odbcConnect("BioSense_Platform", paste0("BIOSENSE\\", username), password) # open channel
@@ -29,22 +29,15 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
     channel,
     paste0("SELECT * FROM ", table, " WHERE C_Visit_Date_Time >= '", start, "' AND C_Visit_Date_Time <= '", end, "' AND C_Biosense_Facility_ID = ", facility) # create sql query
   , as.is=TRUE)
-  
   if (nrow(data) == 0) stop("The query yielded no data.")
   name <- as.character(unlist(unname(c(sqlQuery(channel, paste0("SELECT Facility_Name FROM ", mft, " WHERE C_Biosense_Facility_ID = ", facility)))))) # get name from mft
-  
-  batchdata <- sqlQuery(
-    channel,
-    paste0("SELECT * FROM ", raw, " WHERE Arrived_Date_Time >= '", start, "' AND Arrived_Date_Time <= '", end, "' AND C_Biosense_Facility_ID = ", facility) # create sql query
-    , as.is=TRUE
-  )
   odbcCloseAll() # close connection
 
   # get hl7 values
   data("hl7_values", envir=environment())
   hl7_values$Field <- as.character(hl7_values$Field)
-  
-# get facility-level state summary of required nulls
+
+  # get facility-level state summary of required nulls
   req_nulls <- get_req_nulls(data) %>%
     select(-c(C_Biosense_Facility_ID)) %>%
     gather(Field, Value, 2:ncol(.)) %>%
