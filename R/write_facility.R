@@ -74,22 +74,27 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
   wb <- createWorkbook()
   # sheet 1: facility information
   sheet1 <- addWorksheet(wb, "Facility Information")
-  facility_table=suppressWarnings(data %>% # take data
-                                    select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application,
-                                             Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
-                                    gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
-                                    distinct() %>% # get only distinct entries
-                                    mutate_all(as.character) %>% # make all fields character so they work well together
-                                    bind_rows(data.frame(Field="Facility_Name", Value=name), .) %>% # add name to the top
-                                    # bind with date ranges and number of records and visits
-                                    bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates",
-                                                                 "Number of Records", "Number of Visits"),
-                                                         Value=c(paste("From", vmin, "to", vmax),
-                                                                 paste("From", amin, "to", amax),
-                                                                 nrow(data),
-                                                                 n_groups(group_by(data, C_BioSense_ID))
-                                                                 ))) %>%
-                                  right_join(hl7_values, ., by="Field"))
+  visits_per_day=avg_visit_per_day(subdata)
+    visit_length=avg_visit_length(subdata)$Visit_Length
+    
+    facility_table=suppressWarnings(data %>% # take data
+                     select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
+                              Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
+                     gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
+                     distinct() %>% # get only distinct entries
+                     bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
+                     # bind with date ranges and number of records and visits
+                     bind_rows(data.frame(Field=c("Patient_Visit_Dates", "Message_Arrival_Dates", 
+                                                  "Number of Records", "Number of Visits",
+                                                 "Average Number of Visits per Day","Average Visit Length in Hours"),
+                                          Value=c(paste("From", vmin, "to", vmax),
+                                                  paste("From", amin, "to", amax),
+                                                  nrow(filter(data, C_Biosense_Facility_ID==i)), 
+                                                  n_groups(group_by(filter(data, C_Biosense_Facility_ID==facility), C_BioSense_ID)),
+                                                  visits_per_day,
+                                                  visit_length
+                                                  ))) %>% 
+                     right_join(hl7_values, ., by="Field"))
                                   
   
 
