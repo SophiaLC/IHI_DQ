@@ -348,7 +348,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Clinical_Impression=clinical_impression_count(subdata)
     
     writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet10,Admit_Reason_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+2)
     writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
                    startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+3)
