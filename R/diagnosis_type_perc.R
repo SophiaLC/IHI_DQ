@@ -5,12 +5,14 @@
 ## Diagnosis_Type
 
 diagnosis_type_perc<-function(data){
+   number_visits=n_groups(group_by(data,C_BioSense_ID))
+   
    Diagnosis_Type=data%>%
     select(C_BioSense_ID, Diagnosis_Type)%>%
     mutate(Diagnosis_Type=ifelse(is.na(Diagnosis_Type),"NULL",Diagnosis_Type))%>%
     distinct(C_BioSense_ID,Diagnosis_Type,.keep_all=TRUE)%>%
     count(Diagnosis_Type)%>%
-    transmute(Diagnosis_Type,count=n,percentage=round(100*n/sum(n),2))
+    transmute(Diagnosis_Type,count=n,percentage=round(100*n/number_visits,2))
   return(
     Diagnosis_Type
   )
