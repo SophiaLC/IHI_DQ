@@ -336,6 +336,22 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                    firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,startCol=5, bandedRows=TRUE)
     setColWidths(wb, sheet9, 1:7, "auto")
     
+    
+    ## sheet 10
+    sheet10<- addWorksheet(wb,"Chief Complaint Check")
+    Chief_Complaint=chief_complaint_text_count(subdata)
+    Admit_Reason_Description=admit_reason_description_count(subdata)
+    Triage_Notes=triage_notes_count(subdata)
+    Clinical_Impression=clinical_impression_count(subdata)
+    
+    writeDataTable(wb,sheet10,Chief_Complaint,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,startRow=nrow(Chief_Complaint)+2)
+    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+3)
+    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint)+nrow(Admit_Reason)+nrow(Triage_Notes)+4)
+    setColWidths(wb,sheet10,1:3,"auto)
+
     # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
