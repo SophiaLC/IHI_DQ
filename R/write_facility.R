@@ -305,4 +305,4 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
   saveWorkbook(wb, paste0(directory, "/", filename, "_Summary.xlsx"), overwrite=TRUE)
 
   
-  
+  }
