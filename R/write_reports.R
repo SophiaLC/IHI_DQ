@@ -343,7 +343,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
             filter(C_Biosense_Facility_ID==i)
     
     Chief_Complaint_Text=chief_complaint_text_count(subdata)
-    Admit_Reason_Description=admit_reason_description_count(subdata)
+    Admit_Reason=admit_reason_description_count(subdata)
     Triage_Notes=triage_notes_count(subdata)
     Clinical_Impression=clinical_impression_count(subdata)
     
