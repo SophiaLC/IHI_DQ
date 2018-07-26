@@ -102,27 +102,27 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag_hours=t(va_lag(data)[-1]),
-      State_wide_Average= state_lag
+      #State_wide_Average= state_lag
       )
     Early_Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Early_Lag_hours= t(early_lag(data)[-1]),
-      State_wide_Average=state_early_lag
+      #State_wide_Average=state_early_lag
       )
     
     Chief_Complaint<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Earliest_Non_NA_Chief_Complaint_Lag=t(lag_chief_complaint(data)[-1]),
-      State_wide_Average= state_chief_complaint
+      #State_wide_Average= state_chief_complaint
       )
     
      Diagnosis<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Earliest_Non_NA_Diagnosis_Code_Lag=t(lag_diagnosis(data)[-1]),
-      State_wide_Average= state_diagnosis
+     # State_wide_Average= state_diagnosis
       )
     
     Trigger<-data.frame(
