@@ -6,8 +6,8 @@
 diagnosis_code_perc<-function(data){
   Diagnosis_Code=data%>%
     select(C_BioSense_ID, Diagnosis_Code)%>%
-    mutate(Diagnosis_Code=ifelse(is.na(Diagnosis_Code),"NA",Diagnosis_Code))%>%
-    distinct(C_BioSense_ID,.keep_all=TRUE)%>%
+    mutate(Diagnosis_Code=ifelse(is.na(Diagnosis_Code),"NULL",Diagnosis_Code))%>%
+    distinct(C_BioSense_ID,Diagnosis_Code,.keep_all=TRUE)%>%
     count(Diagnosis_Code)%>%
     transmute(Diagnosis_Code,count=n,percentage=round(100*n/sum(n),2))
   return(
