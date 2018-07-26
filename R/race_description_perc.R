@@ -7,7 +7,7 @@ race_description_perc<-function(data){
   Race_Description=data%>%
     select(C_BioSense_ID,Race_Description)%>%
     mutate(Race_Description=toupper(Race_Description),
-           Race_Description=ifelse(is.na(Race_Description),"NA",Race_Description))%>%
+           Race_Description=ifelse(is.na(Race_Description),"NULL",Race_Description))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Race_Description)%>%
     transmute(Race_Description,count=n,percentage=round(100*n/sum(n),2))
