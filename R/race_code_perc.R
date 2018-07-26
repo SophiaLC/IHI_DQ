@@ -6,7 +6,7 @@
 race_code_perc<-function(data){
   Race_Code=data%>%
     select(C_BioSense_ID,Race_Code)%>%
-    mutate(Race_Code=ifelse(is.na(Race_Code),"NA",Race_Code))%>%
+    mutate(Race_Code=ifelse(is.na(Race_Code),"NULL",Race_Code))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Race_Code)%>%
     transmute(Race_Code,count=n,percentage=round(100*n/sum(n),2))
