@@ -21,7 +21,7 @@
 #' @import RODBC
 #' @importFrom stringr str_replace_all
 #' @export
-write_facility <- function(username, password, table, mft, start, end, facility, directory="", nexamples=0) {
+write_facility <- function(username, password, table, mft, raw, start, end, facility, directory="", nexamples=0) {
 
   # pull data
   channel <- odbcConnect("BioSense_Platform", paste0("BIOSENSE\\", username), password) # open channel
@@ -84,16 +84,56 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                                                  ))) %>%
                                   right_join(hl7_values, ., by="Field"))
                                   
-  writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
   
-    Lag_table<-data.frame(
+
+   Lag<-data.frame(
       HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
       Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
       Average_Lag_hours=t(va_lag(data)[-1]),
-      Early_Lag_hours=t(early_lag(data)[-1])
+      State_wide_Average= state_lag
       )
-  writeDataTable(wb,sheet1,Lag_table,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-  setColWidths(wb, sheet1, 1:3, "auto")
+    Early_Lag<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Early_Lag_hours= t(early_lag(data)[-1]),
+      State_wide_Average=state_early_lag
+      )
+    
+    Chief_Complaint<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Earliest_Non_NA_Chief_Complaint_Lag=t(lag_chief_complaint(data)[-1]),
+      State_wide_Average= state_chief_complaint
+      )
+    
+     Diagnosis<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Earliest_Non_NA_Diagnosis_Code_Lag=t(lag_diagnosis(data)[-1]),
+      State_wide_Average= state_diagnosis
+      )
+    
+    Trigger<-data.frame(
+      HL7=c("EVN-2.1","MSH-7.1,EVN-2.1","MSH-7.1",""),
+      Lag_Between=c("Record_Visit","Message_Record","Arrival_Message","Arrival_Visit"),
+      Trigger_Event_A01=t(lag_by_trigger(data)[lag_by_trigger(data)$Trigger_Event=="A01",][-1]),
+      Trigger_Event_A03=t(lag_by_trigger(data)[lag_by_trigger(data)$Trigger_Event=="A03",][-1]),
+      Trigger_Event_A04=t(lag_by_trigger(data)[lag_by_trigger(data)$Trigger_Event=="A04",][-1]),
+      Trigger_Event_A06=t(lag_by_trigger(data)[lag_by_trigger(data)$Trigger_Event=="A06",][-1]),
+      Trigger_Event_A08=t(lag_by_trigger(data)[lag_by_trigger(data)$Trigger_Event=="A08",][-1])
+      )
+   
+
+    writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+      
+    setColWidths(wb, sheet1, 1:8, "auto")
+  
+  
   # sheet 2: required nulls
   sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
   writeDataTable(wb, sheet2, req_nulls, firstColumn=TRUE, bandedRows=TRUE) # write to table
@@ -112,6 +152,127 @@ write_facility <- function(username, password, table, mft, start, end, facility,
 
  
   
+   ## sheet 5: batch information
+    sheet5 <- addWorksheet(wb, "Batch_Information")
+    ##compute the average number of messages per batch for each Feed_Name
+    Batch_Mean=data%>%
+    select(Feed_Name,C_Biosense_Facility_ID)%>%
+    merge(mean_message_per_batch(batchdata),.,by="Feed_Name")%>%
+    distinct()
+    
+    ## compute the # of batches per day for each Feed_Name/facility
+    Batch_Info=batch_info(batchdata)
+    Batch_Data=Batch_Info%>%
+               inner_join(Batch_Mean,.,by="Feed_Name")%>%
+               select(Feed_Name, Arrived_Date, N_Batch, Time_Bet_Batch_Hours)
+
+    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet5, 1:4, "auto")
+    
+    ## sheet 6
+    sheet6 <- addWorksheet(wb, "Race and Ethnicity")
+    
+    Race_Description=race_description_perc(data)
+    Race_Code=race_code_perc(data)
+    
+    Ethnicity_Description=ethnicity_description_perc(data)
+    Ethnicity_Code=ethnicity_code_perc(data)
+    
+    writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    setColWidths(wb, sheet6, 1:8, "auto")
+    
+    ## sheet 7
+    sheet7 <- addWorksheet(wb, "Patient Location")
+    Country=country_perc(data)
+    State=state_perc(data)
+    City=city_perc(data)
+    County=county_perc(data)
+    
+    writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
+    setColWidths(wb, sheet7, 1:3, "auto")
+    
+    ## sheet 8
+    sheet8 <- addWorksheet(wb,"Other Patient Information")
+    Insurance=insurance_company_id_perc(data)
+    Patient_Class=patient_class_perc(data)
+    Age_Group=age_group_perc(data)
+    Trigger_Event=trigger_event_perc(data)
+    Trigger_Event_A03=data%>%
+                     filter(Trigger_Event=="A03")%>%
+                     select(C_BioSense_ID,Trigger_Event,Discharge_Date_Time,Discharge_Disposition)%>%
+                     mutate(Discharge_Disposition=ifelse(is.na(Discharge_Disposition),"NA",Discharge_Disposition),
+                     Discharge_Date_Time=ifelse(is.na(Discharge_Disposition),"NA",Discharge_Date_Time))%>%
+                     transmute(Trigger_Event,
+                               Discharge_Disposition_Perc=round(100*mean(Discharge_Disposition!="NA"),2),
+                               Discharge_Date_Time_Perc=round(100*mean(Discharge_Date_Time!="NA"),2))%>%
+                     distinct()
+
+    Smoking_Desc=smoking_status_description_perc(data)
+    Smoking_Code=smoking_status_code_perc(data)
+    Discharge_Dis=discharge_disposition_perc(data)
+    
+    writeDataTable(wb, sheet8, Insurance,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Patient_Class,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+2, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Trigger_Event_A03,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, startCol=4,bandedRows=TRUE)
+    
+    writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, 
+                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+6, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
+    setColWidths(wb, sheet8, 1:6, "auto")
+    
+    ## sheet 9
+    sheet9 <- addWorksheet(wb,"Facility and Diagnosis")
+    Facility_Desc=facility_type_description_perc(data)
+    Facility_Code=facility_type_code_perc(data)
+    Diagnosis_Type=diagnosis_type_perc(data)
+    Diagnosis_Code=diagnosis_code_perc(data)
+    
+    writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE,
+                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, 
+                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,startCol=5, bandedRows=TRUE)
+    setColWidths(wb, sheet9, 1:7, "auto")
+    
+    
+    ## sheet 10
+    sheet10 <- addWorksheet(wb,"Chief_Complaint_Check")
+  
+    Chief_Complaint_Text=chief_complaint_text_count(data)
+    Admit_Reason=admit_reason_description_count(data)
+    Triage_Notes=triage_notes_count(data)
+    Clinical_Impression=clinical_impression_count(data)
+    
+    writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
+                   bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+4)
+    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+6)
+    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
+                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+8)
+    setColWidths(wb,sheet10,1:3,"auto")
+  
+  
+  
+  
+  
+  
+  
   # write to file
   filename <- str_replace_all(name, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
     str_replace_all("[\\s]", "_") # replace spaces with underscores
@@ -129,7 +290,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                              death_invalid(data)[[1]], # 7
                              diagnosis_type_invalid(data)[[1]], # 8
                              discharge_disposition_invalid(data)[[1]], # 9
-                             ethnicity_invalid(data)[[1]], # 10
+                             ethnicity_invalid(data)[[1]], # 10 
                              facility_type_invalid(data)[[1]], # 11
                              fpid_mrn_invalid(data)[[1]], # 12
                              gender_invalid(data)[[1]], # 13
