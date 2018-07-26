@@ -64,4 +64,4 @@
         str_replace_all("[\\s]", "_") # replace spaces with underscores
       saveWorkbook(wb, paste0(directory, "/", filename, "_Examples.xlsx"), overwrite=TRUE)
   }
-}
+
