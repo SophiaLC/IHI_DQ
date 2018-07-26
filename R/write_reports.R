@@ -353,7 +353,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     #setColWidths(wb,sheet10,1:3,"auto)
 
    # write to file
-    filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
+    filename <- str_replace_all(fname, "[[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
     saveWorkbook(wb, paste0(directory, "/", filename, "_Summary.xlsx"), overwrite=TRUE)
   }
