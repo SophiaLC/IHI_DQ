@@ -6,7 +6,7 @@
 smoking_status_description_perc<-function(data){
   Smoking_Status_Description=data%>%
     select(C_BioSense_ID, Smoking_Status_Description)%>%
-     mutate(Smoking_Status_Description=ifelse(is.na(Smoking_Status_Description),"NA",Smoking_Status_Description))%>%
+     mutate(Smoking_Status_Description=ifelse(is.na(Smoking_Status_Description),"NULL",Smoking_Status_Description))%>%
     distinct(C_BioSense_ID,.keep_all=TRUE)%>%
     count(Smoking_Status_Description)%>%
     transmute(Smoking_Status_Description,count=n,percentage=round(100*n/sum(n),2))
