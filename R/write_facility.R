@@ -151,7 +151,7 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
      ##making data for it
     fac_req_null=(one_facility_summary(get_req_nulls(data)[,-c(2,3)], facility)) # join with one facility summary
     writeDataTable(wb, sheet2, fac_req_null, firstColumn=TRUE, bandedRows=TRUE) # write to table
-    setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
+    setColWidths(wb, sheet2, 1:ncol(fac_req_null), "auto") # format sheet
     freezePane(wb, sheet2, firstActiveRow=2) # format sheet
                             
     # sheet 3: optional nulls
