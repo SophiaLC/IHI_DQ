@@ -1,12 +1,16 @@
-
 triage_notes_count<-function(data){
   triage_notes=data%>%
-    select(Triage_Notes,C_BioSense_ID)%>%
+    select(Triage_Notes,C_BioSense_ID,Medical_Record_Number)%>%
     filter(is.na(Triage_Notes)==FALSE)%>%
-    group_by(C_BioSense_ID)%>%
-    count(Triage_Notes)%>%
     arrange(Triage_Notes)%>%
-    select(Triage_Notes,n,C_BioSense_ID)
-  
+    distinct()%>%
+    inner_join(girard%>%
+                 select(Triage_Notes,C_BioSense_ID,Medical_Record_Number)%>%
+                 filter(is.na(Triage_Notes)==FALSE)%>%
+                 arrange(Triage_Notes)%>%
+                 distinct()%>%
+                 count(Triage_Notes),.,by="Triage_Notes")%>%
+    mutate(Field="Triage_Notes",Freq=n,Content=Triage_Notes)%>%
+    select(Field,Content,Freq,C_BioSense_ID,Medical_Record_Number)
   return(triage_notes)
 }
