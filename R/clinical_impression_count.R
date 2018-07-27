@@ -5,7 +5,7 @@ clinical_impression_count<-function(data){
     arrange(Clinical_Impression)%>%
     mutate(Clinical_Impression=as.character(Clinical_Impression))%>%
     distinct()%>%
-    inner_join(data%>%
+    right_join(data%>%
                  select(Clinical_Impression,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Clinical_Impression)==FALSE)%>%
                  arrange(Clinical_Impression)%>%
