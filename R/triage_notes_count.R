@@ -5,7 +5,7 @@ triage_notes_count<-function(data){
     arrange(Triage_Notes)%>%
     mutate(Trige_Notes=as.character(Triage_Notes))%>%
     distinct()%>%
-    inner_join(data%>%
+    right_join(data%>%
                  select(Triage_Notes,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Triage_Notes)==FALSE)%>%
                  arrange(Triage_Notes)%>%
