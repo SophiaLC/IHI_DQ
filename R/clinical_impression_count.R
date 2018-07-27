@@ -3,16 +3,17 @@ clinical_impression_count<-function(data){
     select(Clinical_Impression,C_BioSense_ID,Medical_Record_Number)%>%
     filter(is.na(Clinical_Impression)==FALSE)%>%
     arrange(Clinical_Impression)%>%
+    mutate(Clinical_Impression=as.character(Clinical_Impression))%>%
     distinct()%>%
-    inner_join(girard%>%
+    inner_join(data%>%
                  select(Clinical_Impression,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Clinical_Impression)==FALSE)%>%
                  arrange(Clinical_Impression)%>%
                  distinct()%>%
-                 count(Clinical_Impression),.,by="Clinical_Impression")%>%
+                 count(Clinical_Impression)%>%
+                 mutate(Clinical_Impression=as.character(Clinical_Impression)),.,by="Clinical_Impression")%>%
     mutate(Field="Clinical_Impression",Freq=n,Content=Clinical_Impression)%>%
     select(Field,Content,Freq,C_BioSense_ID,Medical_Record_Number)
   
   return(clinical_impression)
 }
-
