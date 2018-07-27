@@ -5,7 +5,7 @@ admit_reason_description_count<-function(data){
     arrange(Admit_Reason_Description)%>%
     mutate(Admit_Reason_Description=as.character(Admit_Reason_Description))%>%
     distinct()%>%
-    inner_join(data%>%
+    right_join(data%>%
                  select(Admit_Reason_Description,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Admit_Reason_Description)==FALSE)%>%
                  arrange(Admit_Reason_Description)%>%
