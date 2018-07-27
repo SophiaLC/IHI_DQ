@@ -3,13 +3,15 @@ admit_reason_description_count<-function(data){
     select(Admit_Reason_Description,C_BioSense_ID,Medical_Record_Number)%>%
     filter(is.na(Admit_Reason_Description)==FALSE)%>%
     arrange(Admit_Reason_Description)%>%
+    mutate(Admit_Reason_Description=as.character(Admit_Reason_Description))%>%
     distinct()%>%
-    inner_join(girard%>%
+    inner_join(data%>%
                  select(Admit_Reason_Description,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Admit_Reason_Description)==FALSE)%>%
                  arrange(Admit_Reason_Description)%>%
                  distinct()%>%
-                 count(Admit_Reason_Description),.,by="Admit_Reason_Description")%>%
+                 count(Admit_Reason_Description)%>%
+                 mutate(Admit_Reason_Description=as.character(Admit_Reason_Description)),.,by="Admit_Reason_Description")%>%
     mutate(Field="Admit_Reason_Description",Freq=n,Content=Admit_Reason_Description)%>%
     select(Field,Content,Freq,C_BioSense_ID,Medical_Record_Number)
     
