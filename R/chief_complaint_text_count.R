@@ -5,7 +5,7 @@ chief_complaint_text_count<-function(data){
     arrange(Chief_Complaint_Text)%>%
     mutate(Chief_Complaint_Text=as.character(Chief_Complaint_Text))%>%
     distinct()%>%
-    inner_join(data%>%
+    right_join(data%>%
                  select(Chief_Complaint_Text,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Chief_Complaint_Text)==FALSE)%>%
                  arrange(Chief_Complaint_Text)%>%
