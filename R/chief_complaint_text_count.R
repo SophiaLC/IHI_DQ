@@ -3,13 +3,15 @@ chief_complaint_text_count<-function(data){
     select(Chief_Complaint_Text,C_BioSense_ID,Medical_Record_Number)%>%
     filter(is.na(Chief_Complaint_Text)==FALSE)%>%
     arrange(Chief_Complaint_Text)%>%
+    mutate(Chief_Complaint_Text=as.character(Chief_Complaint_Text))%>%
     distinct()%>%
-    inner_join(girard%>%
+    inner_join(data%>%
                  select(Chief_Complaint_Text,C_BioSense_ID,Medical_Record_Number)%>%
                  filter(is.na(Chief_Complaint_Text)==FALSE)%>%
                  arrange(Chief_Complaint_Text)%>%
                  distinct()%>%
-                 count(Chief_Complaint_Text),.,by="Chief_Complaint_Text")%>%
+                 count(Chief_Complaint_Text)%>%
+                 mutate(Chief_Complaint_Text=as.character(Chief_Complaint_Text)),.,by="Chief_Complaint_Text")%>%
     mutate(Field="Chief_Complaint_Text",Freq=n,Content=Chief_Complaint_Text)%>%
     select(Field,Content,Freq,C_BioSense_ID,Medical_Record_Number)
   
