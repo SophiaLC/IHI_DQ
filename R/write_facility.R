@@ -292,21 +292,22 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                              blood_pressure_invalid(data)[[1]], # 4
                              cc_ar_invalid(data)[[1]], # 5
                              country_invalid(data)[[1]], # 6
-                             death_invalid(data)[[1]], # 7
-                             diagnosis_type_invalid(data)[[1]], # 8
-                             discharge_disposition_invalid(data)[[1]], # 9
-                             ethnicity_invalid(data)[[1]], # 10
-                             facility_type_invalid(data)[[1]], # 11
-                             fpid_mrn_invalid(data)[[1]], # 12
-                             gender_invalid(data)[[1]], # 13
-                             height_invalid(data)[[1]], # 14
-                             patient_class_invalid(data)[[1]], # 15
-                             pulseox_invalid(data)[[1]], # 16
-                             race_invalid(data)[[1]], # 17
-                             smoking_status_invalid(data)[[1]], # 18
-                             state_invalid(data)[[1]], # 19
-                             temperature_invalid(data)[[1]], # 20
-                             weight_invalid(data)[[1]], # 21
+                             county_invalid(data)[[1]], # 7
+                             death_invalid(data)[[1]], # 8
+                             diagnosis_type_invalid(data)[[1]], # 9
+                             discharge_disposition_invalid(data)[[1]], # 10
+                             ethnicity_invalid(data)[[1]], # 11
+                             facility_type_invalid(data)[[1]], # 12
+                             fpid_mrn_invalid(data)[[1]], # 13
+                             gender_invalid(data)[[1]], # 14
+                             height_invalid(data)[[1]], # 15
+                             patient_class_invalid(data)[[1]], # 16
+                             pulseox_invalid(data)[[1]], # 17
+                             race_invalid(data)[[1]], # 18
+                             smoking_status_invalid(data)[[1]], # 19
+                             state_invalid(data)[[1]], # 20
+                             temperature_invalid(data)[[1]], # 21
+                             weight_invalid(data)[[1]], # 22
                              zip_invalid(data)[[1]]) # 22
 
       inv_examples <- examples_invalids(facility, invalid_examples) # get examples of invalids from this facility
@@ -324,7 +325,6 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                               Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
                               Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
                               Facility_Type_Code, Facility_Type_Description,
-                              Discharge_Disposition, Discharge_Date_Time,
                               Smoking_Status_Code, Smoking_Status_Description,
                               Initial_Temp, Initial_Temp_Units,
                               Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
@@ -348,7 +348,6 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
                                     Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
                                     Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
                                     Facility_Type_Code, Facility_Type_Description,
-                                    Discharge_Disposition, Discharge_Date_Time,
                                     Smoking_Status_Code, Smoking_Status_Description,
                                     Initial_Temp, Initial_Temp_Units,
                                     Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
@@ -377,4 +376,3 @@ write_facility <- function(username, password, table, mft, raw, start, end, faci
       saveWorkbook(wb, paste0(directory, "/", filename, "_Examples.xlsx"), overwrite=TRUE)
   }
 }
-                            
