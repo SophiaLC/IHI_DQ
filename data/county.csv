@@ -1,4 +1,4 @@
-Concept Code,Concept Name,Preferred Concept Name,Preferred Alternate Code,Code System OID,Code System Name,Code System Code,Code System Version,HL7 Table 0396 Code,Value Set Concept Definition Text
+Concept_Code,Concept_Name,Preferred_Concept_Name,Preferred Alternate Code,Code System OID,Code System Name,Code System Code,Code System Version,HL7 Table 0396 Code,Value Set Concept Definition Text
 45001,Abbeville,"Abbeville, SC",,2.16.840.1.113883.6.93,FIPS 6-4 (County),PH_County_FIPS_6-4,April 2018,FIPS6_4,
 22001,Acadia Parish,"Acadia Parish, LA",,2.16.840.1.113883.6.93,FIPS 6-4 (County),PH_County_FIPS_6-4,April 2018,FIPS6_4,
 51001,Accomack,"Accomack, VA",,2.16.840.1.113883.6.93,FIPS 6-4 (County),PH_County_FIPS_6-4,April 2018,FIPS6_4,
