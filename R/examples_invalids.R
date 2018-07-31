@@ -83,6 +83,13 @@ examples_invalids <- function(i, invalid_examples) {
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
+  ## patient county
+  output <- invalid_examples[[6]] %>%
+    filter(C_Biosense_Facility_ID==i & Invalid_Patient_County==TRUE) %>%
+    select(C_BioSense_ID, C_Patient_County) %>%
+    distinct() %>%
+    full_join(output, by="C_BioSense_ID")
+  
   ## missing death given dd
   output <- invalid_examples[[7]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Death_Given_Discharge_Disposition==TRUE) %>%
