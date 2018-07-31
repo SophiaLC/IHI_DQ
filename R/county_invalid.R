@@ -20,8 +20,8 @@ county_invalid <- function(data) {
   data("county", envir=environment())
   
   valid_county_values <- county %>% # take data
-    select(Concept_Code) %>% # the variable we want is called concept code
-    filter(!is.na(Concept_Code)) %>% # get rid of any nas
+    select(Concept.Code) %>% # the variable we want is called concept code
+    filter(!is.na(Concept.Code)) %>% # get rid of any nas
     c() %>% # turn this into a vector
     unlist() %>% # unlist them from the concept name object 
     unname() %>% # unname stuff
