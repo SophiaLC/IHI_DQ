@@ -58,17 +58,16 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   
   # writing xlsx
   wb <- createWorkbook() # create workbook
-  hs <- createStyle(fgFill="#4f81bd", halign="left", valign="top", textDecoration="bold", wrapText=TRUE)
   # sheet 1: required nulls
   sheet1 <- addWorksheet(wb, "Required Nulls")
   # putting statewide above the filter
-  writeData(wb, sheet1, statewides$statewide_reqnull,
+  writeData(wb, sheet1, statewides$statewide_reqnull, 
             startCol=4, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet1,
                  state_req_nulls %>% 
                    right_join(fnames, ., by = "C_Biosense_Facility_ID"),
-                 startCol=1, startRow=3, headerStyle=hs,bandedRows=TRUE)
+                 startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet1, 1:ncol(right_join(fnames, state_req_nulls, by = "C_Biosense_Facility_ID")), "auto")
   freezePane(wb, sheet1, firstActiveRow=4, firstActiveCol=6)
@@ -83,7 +82,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   writeDataTable(wb, sheet2,
                  state_opt_nulls %>% 
                    right_join(fnames, ., by = "C_Biosense_Facility_ID"),
-                 startCol=1, startRow=3, headerStyle=hs, bandedRows=TRUE)
+                 startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet2, 1:ncol(right_join(fnames, state_opt_nulls, by = "C_Biosense_Facility_ID")), "auto")
   freezePane(wb, sheet2, firstActiveRow=4, firstActiveCol=6)
@@ -98,7 +97,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   writeDataTable(wb, sheet3,
                  state_invalids %>% 
                    right_join(fnames, ., by = "C_Biosense_Facility_ID"),
-                 startCol=1, startRow=3, headerStyle=hs, bandedRows=TRUE)
+                 startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
   setColWidths(wb, sheet3, 1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), "auto")
   freezePane(wb, sheet3, firstActiveRow=4, firstActiveCol=6)
@@ -194,12 +193,12 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       Trigger_Event_A08=t(lag_by_trigger(subdata)[lag_by_trigger(subdata)$Trigger_Event=="A08",][-1])
       )
    
-    writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, headerStyle=hs, bandedRows=TRUE)
-    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, headerStyle=hs, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, headerStyle=hs, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, headerStyle=hs, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, headerStyle=hs,colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, headerStyle=hs,colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb, sheet1,facility_table,firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet1,Lag,startCol=1,startRow=nrow(facility_table)+2, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Early_Lag,startCol=1,startRow=nrow(facility_table)+7, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Chief_Complaint,startCol=1,startRow=nrow(facility_table)+12, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Diagnosis,startCol=1,startRow=nrow(facility_table)+17, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
       
     setColWidths(wb, sheet1, 1:8, "auto")
     ## sheet 2: required nulls
@@ -210,7 +209,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       select(-Location, -Measure) %>% # select vars only needed
       gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
       left_join(one_facility_summary(state_req_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
-    writeDataTable(wb, sheet2, facsheet2data,  headerStyle=hs,firstColumn=TRUE, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet2, facsheet2data, firstColumn=TRUE, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet2, 1:ncol(facsheet2data), "auto") # format sheet
     freezePane(wb, sheet2, firstActiveRow=2) # format sheet
     # sheet 3: optional nulls
@@ -221,7 +220,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       select(-Location, -Measure) %>% # select vars only needed
       gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
       left_join(one_facility_summary(state_opt_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
-    writeDataTable(wb, sheet3, facsheet3data, headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet3, facsheet3data, firstColumn=TRUE, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet3, 1:ncol(facsheet3data), "auto") # format sheet
     freezePane(wb, sheet3, firstActiveRow=2) # format sheet
     # sheet 4: invalids
@@ -232,7 +231,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       select(-Location, -Measure) %>% # select vars only needed
       gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
       left_join(one_facility_summary(state_invalids[,-c(2,3)], i), ., by="Field") # join with one facility summary
-    writeDataTable(wb, sheet4, facsheet4data, headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE) # write to table
+    writeDataTable(wb, sheet4, facsheet4data, firstColumn=TRUE, bandedRows=TRUE) # write to table
     setColWidths(wb, sheet4, 1:ncol(facsheet4data), "auto") # format sheet
     freezePane(wb, sheet4, firstActiveRow=2) # format sheet
 
@@ -254,8 +253,8 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                inner_join(Batch_Mean,.,by="Feed_Name")%>%
                select(Feed_Name, Arrived_Date, N_Batch, Time_Bet_Batch_Hours)
 
-    writeDataTable(wb, sheet5, Batch_Mean, headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, headerStyle=hs,colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet5, 1:4, "auto")
     
     ## sheet 6
@@ -267,10 +266,10 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Ethnicity_Description=ethnicity_description_perc(subdata)
     Ethnicity_Code=ethnicity_code_perc(subdata)
     
-    writeDataTable(wb, sheet6, Race_Description, headerStyle=hs,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, headerStyle=hs, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1, headerStyle=hs,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
-    writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3,headerStyle=hs, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb, sheet6, Race_Description,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet6,Race_Code,startCol=5,startRow=1, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Description,startCol=1,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
+    writeDataTable(wb,sheet6,Ethnicity_Code,startCol=5,startRow=nrow(Race_Code)+3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
     setColWidths(wb, sheet6, 1:8, "auto")
     
     ## sheet 7
@@ -280,10 +279,10 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     City=city_perc(subdata)
     County=county_perc(subdata)
     
-    writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
-    writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, Country,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, State,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+2, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, City,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+3, bandedRows=TRUE)
+    writeDataTable(wb, sheet7, County,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Country)+nrow(State)+nrow(City)+4, bandedRows=TRUE)
     setColWidths(wb, sheet7, 1:3, "auto")
     
     ## sheet 8
@@ -306,19 +305,19 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Smoking_Code=smoking_status_code_perc(subdata)
     Discharge_Dis=discharge_disposition_perc(subdata)
     
-    writeDataTable(wb, sheet8, Insurance,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Patient_Class,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,startRow=nrow(Insurance)+2, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,
+    writeDataTable(wb, sheet8, Insurance,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Patient_Class,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+2, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
+    writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Trigger_Event_A03,colNames=TRUE,rowNames=FALSE, headerStyle=hs, firstColumn=TRUE,
+    writeDataTable(wb, sheet8, Trigger_Event_A03,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, startCol=4,bandedRows=TRUE)
     
-    writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, headerStyle=hs,
+    writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, headerStyle=hs, 
+    writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, 
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+6, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, headerStyle=hs,
+    writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
     setColWidths(wb, sheet8, 1:6, "auto")
     
@@ -329,11 +328,11 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Diagnosis_Type=diagnosis_type_perc(subdata)
     Diagnosis_Code=diagnosis_code_perc(subdata)
     
-    writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, headerStyle=hs,firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, headerStyle=hs,firstColumn=TRUE,startCol=5, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, headerStyle=hs,
+    writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE,
                    firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, headerStyle=hs, 
+    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, 
                    firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,startCol=5, bandedRows=TRUE)
     setColWidths(wb, sheet9, 1:7, "auto")
     
@@ -348,12 +347,12 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Triage_Notes=triage_notes_count(subdata)
     Clinical_Impression=clinical_impression_count(subdata)
     
-    writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE,headerStyle=hs, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, headerStyle=hs,
+    writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
+    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+4)
-    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE, headerStyle=hs,
+    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
                    startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+6)
-    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE, headerStyle=hs,
+    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
                    startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+8)
     setColWidths(wb,sheet10,1:5,"auto")
 
@@ -377,22 +376,23 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                              blood_pressure_invalid(data)[[1]], # 4
                              cc_ar_invalid(data)[[1]], # 5
                              country_invalid(data)[[1]], # 6
-                             death_invalid(data)[[1]], # 7
-                             diagnosis_type_invalid(data)[[1]], # 8
-                             discharge_disposition_invalid(data)[[1]], # 9
-                             ethnicity_invalid(data)[[1]], # 10 
-                             facility_type_invalid(data)[[1]], # 11
-                             fpid_mrn_invalid(data)[[1]], # 12
-                             gender_invalid(data)[[1]], # 13
-                             height_invalid(data)[[1]], # 14
-                             patient_class_invalid(data)[[1]], # 15
-                             pulseox_invalid(data)[[1]], # 16
-                             race_invalid(data)[[1]], # 17
-                             smoking_status_invalid(data)[[1]], # 18
-                             state_invalid(data)[[1]], # 19
-                             temperature_invalid(data)[[1]], # 20
-                             weight_invalid(data)[[1]], # 21
-                             zip_invalid(data)[[1]]) # 22
+                             county_invalid(data)[[1]], # 7
+                             death_invalid(data)[[1]], # 8
+                             diagnosis_type_invalid(data)[[1]], # 9
+                             discharge_disposition_invalid(data)[[1]], # 10
+                             ethnicity_invalid(data)[[1]], # 11 
+                             facility_type_invalid(data)[[1]], # 12
+                             fpid_mrn_invalid(data)[[1]], # 13
+                             gender_invalid(data)[[1]], # 14
+                             height_invalid(data)[[1]], # 15
+                             patient_class_invalid(data)[[1]], # 16
+                             pulseox_invalid(data)[[1]], # 17
+                             race_invalid(data)[[1]], # 18
+                             smoking_status_invalid(data)[[1]], # 19
+                             state_invalid(data)[[1]], # 20
+                             temperature_invalid(data)[[1]], # 21
+                             weight_invalid(data)[[1]], # 22
+                             zip_invalid(data)[[1]]) # 23
     
     for (i in data$C_Biosense_Facility_ID[!duplicated(data$C_Biosense_Facility_ID)]) { # for every unique facility id
       inv_examples <- examples_invalids(i, invalid_examples) # get examples of invalids from this facility
@@ -410,7 +410,6 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                               Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
                               Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
                               Facility_Type_Code, Facility_Type_Description,
-                              Discharge_Disposition, Discharge_Date_Time,
                               Smoking_Status_Code, Smoking_Status_Description,
                               Initial_Temp, Initial_Temp_Units,
                               Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
@@ -434,7 +433,6 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                                     Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
                                     Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
                                     Facility_Type_Code, Facility_Type_Description,
-                                    Discharge_Disposition, Discharge_Date_Time,
                                     Smoking_Status_Code, Smoking_Status_Description,
                                     Initial_Temp, Initial_Temp_Units,
                                     Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
@@ -449,12 +447,12 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
       wb <- createWorkbook()
       # sheet 1: invalids
       sheet1 <- addWorksheet(wb, "Invalids")
-      writeDataTable(wb, sheet1, inv_examples, firstColumn=TRUE, bandedRows=TRUE,headerStyle=hs)
+      writeDataTable(wb, sheet1, inv_examples, firstColumn=TRUE, bandedRows=TRUE)
       setColWidths(wb, sheet1, 1:ncol(inv_examples), "auto")
       freezePane(wb, sheet1, firstActiveRow=2, firstActiveCol=4)
       # sheet2: nulls
       sheet2 <- addWorksheet(wb, "Nulls")
-      writeDataTable(wb, sheet2, null_examples, firstColumn=TRUE, headerStyle=hs, bandedRows=TRUE)
+      writeDataTable(wb, sheet2, null_examples, firstColumn=TRUE, bandedRows=TRUE)
       setColWidths(wb, sheet2, 1:ncol(null_examples), "auto")
       freezePane(wb, sheet2, firstActiveRow=2, firstActiveCol=3)
       # write sheet
@@ -465,4 +463,3 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     }
   }
 }
-
