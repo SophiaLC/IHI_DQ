@@ -15,8 +15,8 @@ get_opt_nulls <- function(data) {
   # listing fields to summarize and create future column names from them
   opt_pv_fields <- c("Birth_Date_Time", "Admit_Source", "Initial_Temp", "Initial_Temp_Units", "Problem_List_Code", 
                      "Problem_List_Description", "Medication_List", "Medication_Code", "Medication_Description", 
-                     "Travel_History", "Initial_Pulse_Oximetry", "Initial_Pulse_Oximetry_Units",
-                     "Systolic_Diastolic_Blood_Pressure", "Systolic_Diastolic_Blood_Pressure_Units") # fields optional once per visit
+                     "Travel_History", "Initial_Pulse_Oximetry", "Initial_Pulse_Oximetry_Units","Triage_Notes", 
+                     "Clinical_Impression", "Systolic_Diastolic_Blood_Pressure", "Systolic_Diastolic_Blood_Pressure_Units") # fields optional once per visit
   opt_pv_pctnames <- unlist(lapply(opt_pv_fields, function(x) paste0(x, ".Percent"))) # creating names for the file
   opt_pv_cntnames <- unlist(lapply(opt_pv_fields, function(x) paste0(x, ".Count"))) # creating names for the file
   
@@ -50,12 +50,17 @@ get_opt_nulls <- function(data) {
                  funs(sum(., na.rm=TRUE))) %>% # take mean (i.e., proportion true), round to get a percentage
     magrittr::set_colnames(c("C_Biosense_Facility_ID", opt_pv_cntnames))
   
-  return(
-    pct %>% # take stuff from above...
+
+    result=pct %>% # take stuff from above...
       full_join(cnt, by = "C_Biosense_Facility_ID") %>% # more stuff from above
       gather("Check", "Value", 2:ncol(.)) %>% # gather all columns after facility into check and value columns
       separate(Check, c("Field", "Measure"), "[.]") %>% # splitting up check varaible into three columns by the period
       spread(Field, Value) %>% # spread out all of the facility ids into multiple columns
       as.data.frame() # make data frame, not tbl_df, for when we want to write to excel
+  
+  return(
+    merge(data%>%
+            select(C_Biosense_Facility_ID,Feed_Name,Sending_Application)%>%
+            distinct(),result, by="C_Biosense_Facility_ID")
   )
 }

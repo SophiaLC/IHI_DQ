@@ -76,7 +76,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
   # sheet 2: optional nulls
   sheet2 <- addWorksheet(wb, "Optional Nulls")
   # putting statewide above the filter
-  writeData(wb, sheet2, statewides$statewide_optnull, 
+ writeData(wb, sheet2, statewides$statewide_optnull, 
             startCol=4, startRow=1, colNames=FALSE)
   # writing data table below
   writeDataTable(wb, sheet2,
@@ -201,11 +201,11 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     writeDataTable(wb,sheet1,Trigger,startCol=1,startRow=nrow(facility_table)+22, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
       
     setColWidths(wb, sheet1, 1:8, "auto")
-    ## sheet 2: required nulls
+    # sheet 2: required nulls
     sheet2 <- addWorksheet(wb, "Required Nulls") # initialize sheet
-     ##making data for it
+    # making data for it
     facsheet2data <- statewides$statewide_reqnull %>% # take state average
-     filter(Measure=="Percent") %>% # only percent
+      filter(Measure=="Percent") %>% # only percent
       select(-Location, -Measure) %>% # select vars only needed
       gather(Field, State_Percent, 1:ncol(.)) %>% # put into long format
       left_join(one_facility_summary(state_req_nulls[,-c(2,3)], i), ., by="Field") # join with one facility summary
@@ -240,18 +240,42 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     ## batch information
     sheet5 <- addWorksheet(wb, "Batch_Information")
     ##compute the average number of messages per batch for each Feed_Name
-
+    batch_mean<-function(data){
+    Batch_Mean=data%>%
+    group_by(Feed_Name,File_Name)%>%
+    summarise(count=n())%>%
+    ungroup()%>%
+    group_by(Feed_Name)%>%
+    summarise(Batch_Mean=round(mean(count),2))
+     return(Batch_Mean)
+    }
     
     Batch_Mean=subdata%>%
     select(Feed_Name,C_Biosense_Facility_ID)%>%
-    merge(mean_message_per_batch(batchdata),.,by="Feed_Name")%>%
+    merge(batch_mean(batchdata),.,by="Feed_Name")%>%
     distinct()
     
     ## compute the # of batches per day for each Feed_Name/facility
-    Batch_Info=batch_info(batchdata)
-    Batch_Data=Batch_Info%>%
-               inner_join(Batch_Mean,.,by="Feed_Name")%>%
-               select(Feed_Name, Arrived_Date, N_Batch, Time_Bet_Batch_Hours)
+    Batch_Per_Day=batchdata%>%
+    group_by(Feed_Name,Arrived_Date)%>%
+    summarise(N_Batch=n_distinct(File_Name))%>%
+    filter(Feed_Name==Batch_Mean$Feed_Name)
+  
+    Batch_Time=batchdata%>%
+    group_by(Feed_Name,File_Name)%>%
+    select(Feed_Name,File_Name, Arrived_Date_Time,Arrived_Date)%>%
+    mutate(Arrived_Date_Time=as.POSIXct(Arrived_Date_Time,format="%Y-%m-%d %H:%M:%S"))%>%
+    slice(which.min(Arrived_Date_Time))
+
+
+    Time_Bet_Batch=Batch_Time%>%
+    group_by(Feed_Name,Arrived_Date)%>%
+    arrange(Arrived_Date)%>%
+    summarise(Time_Bet_Batch_Hours=round(as.numeric(difftime(max(Arrived_Date_Time),min(Arrived_Date_Time),units="hours"))/(n()-1),2))%>%
+    filter(Feed_Name==Batch_Mean$Feed_Name)
+  
+    Batch_Data=Batch_Per_Day%>%
+    left_join(.,Time_Bet_Batch,by = c("Feed_Name", "Arrived_Date"))
 
     writeDataTable(wb, sheet5, Batch_Mean, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet5,Batch_Data,startCol=1,startRow=3, colNames=TRUE,rowNames=FALSE,firstColumn=TRUE)
@@ -291,16 +315,6 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     Patient_Class=patient_class_perc(subdata)
     Age_Group=age_group_perc(subdata)
     Trigger_Event=trigger_event_perc(subdata)
-    Trigger_Event_A03=subdata%>%
-                     filter(Trigger_Event=="A03")%>%
-                     select(C_BioSense_ID,Trigger_Event,Discharge_Date_Time,Discharge_Disposition)%>%
-                     mutate(Discharge_Disposition=ifelse(is.na(Discharge_Disposition),"NA",Discharge_Disposition),
-                     Discharge_Date_Time=ifelse(is.na(Discharge_Disposition),"NA",Discharge_Date_Time))%>%
-                     transmute(Trigger_Event,
-                               Discharge_Disposition_Perc=round(100*mean(Discharge_Disposition!="NA"),2),
-                               Discharge_Date_Time_Perc=round(100*mean(Discharge_Date_Time!="NA"),2))%>%
-                     distinct()
-
     Smoking_Desc=smoking_status_description_perc(subdata)
     Smoking_Code=smoking_status_code_perc(subdata)
     Discharge_Dis=discharge_disposition_perc(subdata)
@@ -310,19 +324,16 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     writeDataTable(wb, sheet8, Age_Group,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Insurance)+nrow(Patient_Class)+3, bandedRows=TRUE)
     writeDataTable(wb, sheet8, Trigger_Event,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, bandedRows=TRUE)
-    writeDataTable(wb, sheet8, Trigger_Event_A03,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+4, startCol=4,bandedRows=TRUE)
-    
     writeDataTable(wb, sheet8, Smoking_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+5, bandedRows=TRUE)
     writeDataTable(wb, sheet8, Smoking_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, 
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+6, bandedRows=TRUE)
     writeDataTable(wb, sheet8, Discharge_Dis,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
                    startRow=nrow(Insurance)+nrow(Patient_Class)+nrow(Age_Group)+nrow(Trigger_Event)+nrow(Smoking_Desc)+nrow(Smoking_Code)+7, bandedRows=TRUE)
-    setColWidths(wb, sheet8, 1:6, "auto")
+    setColWidths(wb, sheet8, 1:3, "auto")
     
     ## sheet 9
-    sheet9 <- addWorksheet(wb,"Facility and Diagnosis")
+    sheet9<- addWorksheet(wb,"Facility and Diagnosis")
     Facility_Desc=facility_type_description_perc(subdata)
     Facility_Code=facility_type_code_perc(subdata)
     Diagnosis_Type=diagnosis_type_perc(subdata)
@@ -330,33 +341,11 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
     
     writeDataTable(wb,sheet9,Facility_Desc,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
     writeDataTable(wb,sheet9,Facility_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startCol=5, bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE,
-                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,bandedRows=TRUE)
-    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, 
-                   firstColumn=TRUE,startRow=max(nrow(Facility_Code),nrow(Facility_Desc))+3,startCol=5, bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Type,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,bandedRows=TRUE)
+    writeDataTable(wb,sheet9,Diagnosis_Code,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,startRow=nrow(Facility_Desc)+3,startCol=5, bandedRows=TRUE)
     setColWidths(wb, sheet9, 1:7, "auto")
     
-    
-    ## sheet 10
-    sheet10 <- addWorksheet(wb,"Chief_Complaint_Check")
-    subdata=data%>%
-            filter(C_Biosense_Facility_ID==i)
-    
-    Chief_Complaint_Text=chief_complaint_text_count(subdata)
-    Admit_Reason=admit_reason_description_count(subdata)
-    Triage_Notes=triage_notes_count(subdata)
-    Clinical_Impression=clinical_impression_count(subdata)
-    
-    writeDataTable(wb,sheet10,Chief_Complaint_Text,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE)
-    writeDataTable(wb,sheet10,Admit_Reason,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE,
-                   bandedRows=TRUE,startRow=nrow(Chief_Complaint_Text)+4)
-    writeDataTable(wb,sheet10,Triage_Notes,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+6)
-    writeDataTable(wb,sheet10,Clinical_Impression,colNames=TRUE,rowNames=FALSE, firstColumn=TRUE, bandedRows=TRUE,
-                   startRow=nrow(Chief_Complaint_Text)+nrow(Admit_Reason)+nrow(Triage_Notes)+8)
-    setColWidths(wb,sheet10,1:5,"auto")
-
-   # write to file
+    # write to file
     filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
       str_replace_all("[\\s]", "_") # replace spaces with underscores
     saveWorkbook(wb, paste0(directory, "/", filename, "_Summary.xlsx"), overwrite=TRUE)
@@ -376,23 +365,22 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
                              blood_pressure_invalid(data)[[1]], # 4
                              cc_ar_invalid(data)[[1]], # 5
                              country_invalid(data)[[1]], # 6
-                             county_invalid(data)[[1]], # 7
-                             death_invalid(data)[[1]], # 8
-                             diagnosis_type_invalid(data)[[1]], # 9
-                             discharge_disposition_invalid(data)[[1]], # 10
-                             ethnicity_invalid(data)[[1]], # 11 
-                             facility_type_invalid(data)[[1]], # 12
-                             fpid_mrn_invalid(data)[[1]], # 13
-                             gender_invalid(data)[[1]], # 14
-                             height_invalid(data)[[1]], # 15
-                             patient_class_invalid(data)[[1]], # 16
-                             pulseox_invalid(data)[[1]], # 17
-                             race_invalid(data)[[1]], # 18
-                             smoking_status_invalid(data)[[1]], # 19
-                             state_invalid(data)[[1]], # 20
-                             temperature_invalid(data)[[1]], # 21
-                             weight_invalid(data)[[1]], # 22
-                             zip_invalid(data)[[1]]) # 23
+                             death_invalid(data)[[1]], # 7
+                             diagnosis_type_invalid(data)[[1]], # 8
+                             discharge_disposition_invalid(data)[[1]], # 9
+                             ethnicity_invalid(data)[[1]], # 10 
+                             facility_type_invalid(data)[[1]], # 11
+                             fpid_mrn_invalid(data)[[1]], # 12
+                             gender_invalid(data)[[1]], # 13
+                             height_invalid(data)[[1]], # 14
+                             patient_class_invalid(data)[[1]], # 15
+                             pulseox_invalid(data)[[1]], # 16
+                             race_invalid(data)[[1]], # 17
+                             smoking_status_invalid(data)[[1]], # 18
+                             state_invalid(data)[[1]], # 19
+                             temperature_invalid(data)[[1]], # 20
+                             weight_invalid(data)[[1]], # 21
+                             zip_invalid(data)[[1]]) # 22
     
     for (i in data$C_Biosense_Facility_ID[!duplicated(data$C_Biosense_Facility_ID)]) { # for every unique facility id
       inv_examples <- examples_invalids(i, invalid_examples) # get examples of invalids from this facility
@@ -402,20 +390,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
         left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
                               C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time, 
                               Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time, 
-                              Message_Type, Trigger_Event, Message_Structure, Message_Control_ID,
-                              Patient_City, Patient_State, C_Patient_County, Patient_Country, Patient_Zip,
-                              Age_Reported, Age_Units_Reported, Birth_Date_Time,
-                              Height, Height_Units,Weight, Weight_Units,
-                              Admit_Reason_Description, Chief_Complaint_Text, Clinical_Impression, Triage_Notes,
-                              Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
-                              Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
-                              Facility_Type_Code, Facility_Type_Description,
-                              Smoking_Status_Code, Smoking_Status_Description,
-                              Initial_Temp, Initial_Temp_Units,
-                              Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
-                              Death_Date_Time, C_Death, Discharge_Disposition, Discharge_Date_Time,
-                              Systolic_Blood_Pressure, Systolic_Blood_Pressure_Units,
-                              Diastolic_Blood_Pressure, Diastolic_Blood_Pressure_Units)),
+                              Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
                   by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
         rename(Invalid_Field=Field) %>% # make it clearer that that field is the one that is invalid
         group_by(Invalid_Field) %>% # group by type of field
@@ -425,20 +400,7 @@ write_reports <- function(username, password, table, mft,raw, start, end, direct
         left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
                                     C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time, 
                                     Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time, 
-                                    Message_Type, Trigger_Event, Message_Structure, Message_Control_ID,
-                                    Patient_City, Patient_State, C_Patient_County, Patient_Country, Patient_Zip,
-                                    Age_Reported, Age_Units_Reported, Birth_Date_Time,
-                                    Height, Height_Units,Weight, Weight_Units,
-                                    Admit_Reason_Description, Chief_Complaint_Text, Clinical_Impression, Triage_Notes,
-                                    Diagnosis_Code, Diagnosis_Description, Diagnosis_Type,
-                                    Ethnicity_Code, Ethnicity_Description, Race_Code, Race_Description,
-                                    Facility_Type_Code, Facility_Type_Description,
-                                    Smoking_Status_Code, Smoking_Status_Description,
-                                    Initial_Temp, Initial_Temp_Units,
-                                    Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units,
-                                    Death_Date_Time, C_Death, Discharge_Disposition, Discharge_Date_Time,
-                                    Systolic_Blood_Pressure, Systolic_Blood_Pressure_Units,
-                                    Diastolic_Blood_Pressure, Diastolic_Blood_Pressure_Units)),
+                                    Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
                   by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
         group_by(Null_Field) %>% # group by type of field
         slice(1:nexamples) # get nexamples

@@ -15,6 +15,7 @@ get_all_invalids <- function(data) {
   # make summaries into a list
   invalid_summaries <- list(admit_source_invalid(data)[[2]], age_invalid(data)[[2]], any_e_invalid(data)[[2]],
                             blood_pressure_invalid(data)[[2]], cc_ar_invalid(data)[[2]], country_invalid(data)[[2]],
+                            county_invalid(data)[[2]],
                             death_invalid(data)[[2]], diagnosis_type_invalid(data)[[2]], 
                             discharge_disposition_invalid(data)[[2]], ethnicity_invalid(data)[[2]], 
                             facility_type_invalid(data)[[2]], fpid_mrn_invalid(data)[[2]],
@@ -38,5 +39,9 @@ get_all_invalids <- function(data) {
     as.data.frame() # make as a classic data frame for writing to xlsx
   state_invalids[state_invalids=="NaN"] <- NA # replace nan with na
   
-  return(state_invalids)
+   return(
+    merge(data%>%
+            select(C_Biosense_Facility_ID,Feed_Name,Sending_Application)%>%
+            distinct(),state_invalids, by="C_Biosense_Facility_ID")
+  )
 }

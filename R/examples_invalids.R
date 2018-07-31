@@ -83,197 +83,204 @@ examples_invalids <- function(i, invalid_examples) {
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
-  ## missing death given dd
+   ## patient county
   output <- invalid_examples[[7]] %>%
+    filter(C_Biosense_Facility_ID==i & Invalid_Patient_County==TRUE) %>%
+    select(C_BioSense_ID, C_Patient_County) %>%
+    distinct() %>%
+    full_join(output, by="C_BioSense_ID") 
+  
+  ## missing death given dd
+  output <- invalid_examples[[8]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Death_Given_Discharge_Disposition==TRUE) %>%
     select(C_BioSense_ID, Missing_Death_Given_Discharge_Disposition) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing death date time given death
-  output <- invalid_examples[[7]] %>%
+  output <- invalid_examples[[8]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Death_Date_Time_Given_Indicator==TRUE) %>%
     select(C_BioSense_ID, Missing_Death_Date_Time_Given_Indicator) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing death given ddt
-  output <- invalid_examples[[7]] %>%
+  output <- invalid_examples[[8]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Death_Indicator_Given_Date_Time==TRUE) %>%
     select(C_BioSense_ID, Missing_Death_Indicator_Given_Date_Time) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## diagnosis type
-  output <- invalid_examples[[8]] %>%
+  output <- invalid_examples[[9]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Diagnosis_Type==TRUE) %>%
     select(C_BioSense_ID, Diagnosis_Type) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## discharge disposition
-  output <- invalid_examples[[9]] %>%
+  output <- invalid_examples[[10]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Discharge_Disposition==TRUE) %>%
     select(C_BioSense_ID, Discharge_Disposition) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## discharge disposition
-  output <- invalid_examples[[10]] %>%
+  output <- invalid_examples[[11]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Ethnicity_Code==TRUE) %>%
     select(C_BioSense_ID, Ethnicity_Code) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## facility type
-  output <- invalid_examples[[11]] %>%
+  output <- invalid_examples[[12]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Facility_Type_Code==TRUE) %>%
     select(C_BioSense_ID, Facility_Type_Code) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## mrn, fpid mismatch
-  output <- invalid_examples[[12]] %>%
+  output <- invalid_examples[[13]] %>%
     filter(C_Biosense_Facility_ID==i & FPID_MRN_Mismatch==TRUE) %>%
     select(C_BioSense_ID, FPID_MRN_Mismatch) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## sex
-  output <- invalid_examples[[13]] %>%
+  output <- invalid_examples[[14]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Administrative_Sex==TRUE) %>%
     select(C_BioSense_ID, Administrative_Sex) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## height units
-  output <- invalid_examples[[14]] %>%
+  output <- invalid_examples[[15]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Height_Units==TRUE) %>%
     select(C_BioSense_ID, Height_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing height units
-  output <- invalid_examples[[14]] %>%
+  output <- invalid_examples[[15]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Height_Units_Given_Height==TRUE) %>%
     select(C_BioSense_ID, Missing_Height_Units_Given_Height) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing height
-  output <- invalid_examples[[14]] %>%
+  output <- invalid_examples[[15]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Height_Given_Height_Units==TRUE) %>%
     select(C_BioSense_ID, Missing_Height_Given_Height_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## patient class
-  output <- invalid_examples[[15]] %>%
+  output <- invalid_examples[[16]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Patient_Class_Code==TRUE) %>%
     select(C_BioSense_ID, Patient_Class_Code) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## invalid pulse ox units
-  output <- invalid_examples[[16]] %>%
+  output <- invalid_examples[[17]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Pulse_Oximetry_Units==TRUE) %>%
     select(C_BioSense_ID, Initial_Pulse_Oximetry_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## invalid pulse ox
-  output <- invalid_examples[[16]] %>%
+  output <- invalid_examples[[17]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Pulse_Oximetry==TRUE) %>%
     select(C_BioSense_ID, Initial_Pulse_Oximetry) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing pulse ox units
-  output <- invalid_examples[[16]] %>%
+  output <- invalid_examples[[17]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Oximetry_Units_Given_Pulse_Ox==TRUE) %>%
     select(C_BioSense_ID, Missing_Oximetry_Units_Given_Pulse_Ox) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing pulse ox
-  output <- invalid_examples[[16]] %>%
+  output <- invalid_examples[[17]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Pulse_Ox_Given_Oximetry_Units==TRUE) %>%
     select(C_BioSense_ID, Missing_Pulse_Ox_Given_Oximetry_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## race
-  output <- invalid_examples[[17]] %>%
+  output <- invalid_examples[[18]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Race_Code==TRUE) %>%
     select(C_BioSense_ID, Race_Code) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## smoking status
-  output <- invalid_examples[[18]] %>%
+  output <- invalid_examples[[19]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Smoking_Status_Code==TRUE) %>%
     select(C_BioSense_ID, Smoking_Status_Code) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## patient state
-  output <- invalid_examples[[19]] %>%
+  output <- invalid_examples[[20]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Patient_State==TRUE) %>%
     select(C_BioSense_ID, Patient_State) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## invalid temp units
-  output <- invalid_examples[[20]] %>%
+  output <- invalid_examples[[21]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Temp_Units==TRUE) %>%
     select(C_BioSense_ID, Initial_Temp_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## temperature out of range
-  output <- invalid_examples[[20]] %>%
+  output <- invalid_examples[[21]] %>%
     filter(C_Biosense_Facility_ID==i & Temp_OOR==TRUE) %>%
     select(C_BioSense_ID, Initial_Temp) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing temp
-  output <- invalid_examples[[20]] %>%
+  output <- invalid_examples[[21]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Temp_Given_Units==TRUE) %>%
     select(C_BioSense_ID, Missing_Temp_Given_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing temp units
-  output <- invalid_examples[[20]] %>%
+  output <- invalid_examples[[21]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Units_Given_Temp==TRUE) %>%
     select(C_BioSense_ID, Missing_Units_Given_Temp) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## invalid weight units
-  output <- invalid_examples[[21]] %>%
+  output <- invalid_examples[[22]] %>%
     filter(C_Biosense_Facility_ID==i & Invalid_Weight_Units==TRUE) %>%
     select(C_BioSense_ID, Weight_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing weight units
-  output <- invalid_examples[[21]] %>%
+  output <- invalid_examples[[22]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Weight_Units_Given_Weight==TRUE) %>%
     select(C_BioSense_ID, Missing_Weight_Units_Given_Weight) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   ## missing weight
-  output <- invalid_examples[[21]] %>%
+  output <- invalid_examples[[22]] %>%
     filter(C_Biosense_Facility_ID==i & Missing_Weight_Given_Weight_Units==TRUE) %>%
     select(C_BioSense_ID, Missing_Weight_Given_Weight_Units) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
 
   # patient zip
-  output <- invalid_examples[[22]] %>%
+  output <- invalid_examples[[23]] %>%
     filter(C_Biosense_Facility_ID==i & Zip_Invalid==TRUE) %>%
     select(C_BioSense_ID, Patient_Zip) %>%
     distinct() %>%
