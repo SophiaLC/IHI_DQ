@@ -114,7 +114,6 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                              blood_pressure_invalid(data)[[1]], # 4
                              cc_ar_invalid(data)[[1]], # 5
                              country_invalid(data)[[1]], # 6
-                             county_invalid(data)[[1]],
                              death_invalid(data)[[1]], # 7
                              diagnosis_type_invalid(data)[[1]], # 8
                              discharge_disposition_invalid(data)[[1]], # 9
