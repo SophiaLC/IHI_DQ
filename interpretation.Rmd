@@ -1,6 +1,6 @@
 ---
 title: "Interpreting `biosensequality` Reports"
-author: "Mark White | markhwhiteii@gmail.com"
+author: "Sophia Crossen, Mengjiao Wu, Mark White | sophia.crossen@ks.gov"
 output: html_document
 ---
 
@@ -16,7 +16,7 @@ I will discuss each of these three documents in turn.
 
 ## State Summary
 
-This document has four different tabs: required nulls, optional nulls, invalids, and visit-arrival lag. Required and optional refers to if these fields are required to be reported or optional.  
+This document has three different tabs: required nulls, optional nulls, and invalids. Required and optional refers to if these fields are required to be reported or optional.  
 
 The exact specifics of what is needed will likely vary by jurisdiction; for this reason, I made sure to annotate the code to make it clear what I'm doing at each point of the functions.  
 
@@ -47,18 +47,6 @@ Here is an example of what the invalids tab looks like:
 <br>
 
 The layout is the same as the null tabs, except now it it displays when fields are invalid. You may see that there are some gaps: This is to be expected. I exclude all nulls (that is, nulls are *not* considered invalid, since there is already a function that measures nulls), so if *all* examples of this field was null, then there is nothing to count! This means a denominator of zero for the percentages; a blank is just put here.  
-
-### Visit-Arrival Lag
-
-For each facility, this tab displays the average time between (a) when the patient first visited the facility and (b) when the first record for this visit arrived at the BioSense Platform. here is an example of what this tab looks like:  
-
-<br>
-<div style="width:1000px">
-![](http://i.imgur.com/wlfDsPk.png)
-</div>
-<br>
-
-This shows us that, for example, Facility I (ID 9) has an average length of 18.54 hours of lag between when the patient visited and when the record arrived (cell C10). Note that the metric is always in hours.  
 
 ## Facility Summary
 
@@ -94,10 +82,10 @@ If you set `nexamples` as greater than zero, you will also get an .xlsx file for
 
 For the invalids tab, Column A contains the patient-visit ID number (C_BioSense_ID), Column B contains the field that is invalid, and Column C contains the entry that is invalid. If you want to know *why* it is invalid, the documentation for all of the `*_invalid` functions talk about what specifically is valid or invalid. Again, we use the PHIN VADS value sets and what we wanted for KDHE as determinants of what is invalid. This is likely to change by jurisdiction; I sacrificed some speed in the code for readability, so it should be doable to edit the code as need be for your department's specific needs.  
 
-The rest of the columns (E through Q) gives you information needed to find the record and visit in question, in case the facility needs to track down what happened where in the data pipeline.  
+The rest of the columns gives you information needed to find the record and visit in question, in case the facility needs to track down what happened where in the data pipeline.  
 
 The nulls tab is almost the same. Columns A and B are the visit ID and null field, respectively; the rest of the columns (C to P) are the same columns that give you information needed to find the record and visit in question.  
 
-Any questions about interpretability can be addressed to markhwhiteii@gmail.com. You can also report bugs and issues on [GitHub](https://github.com/markhwhiteii/biosensequality/issues).
+Any questions about interpretability can be addressed to sophia.crossen@ks.gov. You can also report bugs and issues on [GitHub](https://github.com/SophiaLC/biosensequality/issues).
 <br>
 <br>
