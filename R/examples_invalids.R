@@ -285,7 +285,108 @@ examples_invalids <- function(i, invalid_examples) {
     select(C_BioSense_ID, Patient_Zip) %>%
     distinct() %>%
     full_join(output, by="C_BioSense_ID")
+  
+  ## snomed code by record
+  output<- invalid_examples[[24]]%>%
+  filter(C_Biosense_Facility_ID==i & letters==FALSE) %>%
+  select(C_BioSense_ID, Diagnosis_Code)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
 
+  ## check the format of data time-- Recorded_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_record==FALSE) %>%
+  select(C_BioSense_ID, Recorded_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+   ## check the format of data time-- C_Visit_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_visit==FALSE) %>%
+  select(C_BioSense_ID, C_Visit_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+
+  ## check the format of data time-- Admit_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_admit==FALSE) %>%
+  select(C_BioSense_ID, Admit_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+  ## check the format of data time-- Birth_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_birth==FALSE) %>%
+  select(C_BioSense_ID, Birth_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+  ## check the format of data time-- Create_Processed_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_create_processed==FALSE) %>%
+  select(C_BioSense_ID, Create_Processed_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+  
+ ## check the format of data time-- Create_Raw_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_create_raw==FALSE) %>%
+  select(C_BioSense_ID, Create_Raw_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+ 
+  ## check the format of data time-- Death_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_death==FALSE) %>%
+  select(C_BioSense_ID, Death_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+  
+   ## check the format of data time--Diagnosis_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_diagnosis==FALSE) %>%
+  select(C_BioSense_ID,Diagnosis_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+  ## check the format of data time--Discharge_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_discharge==FALSE) %>%
+  select(C_BioSense_ID,Discharge_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")  
+  
+ ## check the format of data time--Message_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_message==FALSE) %>%
+  select(C_BioSense_ID,Message_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID") 
+  
+   ## check the format of data time-- Observation_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_observation==FALSE) %>%
+  select(C_BioSense_ID, Observation_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID") 
+  
+  ## check the format of data time-- Procedure_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_procedure==FALSE) %>%
+  select(C_BioSense_ID,Procedure_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+  
+ ## check the format of data time-- Update_Processed_Date_Time
+  output<- invalid_examples[[25]]%>%
+  filter(C_Biosense_Facility_ID==i & check_update_processed==FALSE) %>%
+  select(C_BioSense_ID,Update_Processed_Date_Time)%>%
+  distinct() %>%
+  full_join(output,by="C_BioSense_ID")
+
+  
   return(
     suppressWarnings( # it'll throw that it is converting it all to character; we do not care
       output %>% # take output

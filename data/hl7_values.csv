@@ -1,19 +1,23 @@
 HL7;Field
 PID-8;Administrative_Sex
+PV1-44.1;Admit_Date_Time
 PV2-3.1, PV2-3.4;Admit_Reason_Code
 PV2-3.2, PV2-3.5;Admit_Reason_Description
 PV1-14.1;Admit_Source
 OBX-2, OBX-3, OBX-5;Age_Reported
 OBX-2, OBX-3, OBX-6;Age_Units_Reported
 PID-7.1;Birth_Date_Time
-PID-11.9, PID-12.1;C_Patient_County
+PID-11.9, PID-12.1;Patient_County
 OBX-2, OBX-3, OBX-5.1;Chief_Complaint_Code
 OBX-2, OBX-3, OBX-5.1;Chief_Complaint_Text
 OBX-2, OBX-3, OBX-5;Clinical_Impression
+PID-29.1;Death_Date_Time
 PID-29.1, PID-30.1;Missing_Death_Date_Time_Given_Indicator
 PID-29.1, PID-30.1, PV1-36;Missing_Death_Given_Discharge_Disposition
 PID-29.1, PID-30.1;Missing_Death_Indicator_Given_Date_Time
 DG1-3;Diagnosis_Code
+DG1-3;SNOMED_REC
+DG1-5;Diagnosis_Date_Time
 DG1-3;Diagnosis_Description
 DG1-6;Diagnosis_Type
 PV1-45.1;Discharge_Date_Time
@@ -46,6 +50,7 @@ OBX-2, OBX-3, OBX-5;Medication_List
 MSH-10.1;Message_Control_ID
 MSH-7.1;Message_Date_Time
 MSH-21.1;Message_Profile_ID
+OBX-14;Observation_Date_Time
 PID-11.3;Patient_City
 PV1-2.1;Patient_Class_Code
 PID-11.6;Patient_Country
@@ -53,6 +58,7 @@ PID-11.4;Patient_State
 PID-11.5;Patient_Zip
 OBX-2, OBX-3, OBX-5;Problem_List_Code
 OBX-2, OBX-3, OBX-5;Problem_List_Description
+PR1-5.1;Procedure_Date_Time
 MSH-11.1;Processing_ID
 PID-10.1;Race_Code
 PID-10.2;Race_Description

@@ -4,7 +4,7 @@
 #' second, a frame that contains facility-level summaries for counts and percentages of death invalids.
 #' 
 #' If Discharge_Disposition says the patient died, they should report a Death_Indicator AND Death_Date_Time. 
-#' If they do not, this function counts that as invalid. If Death_Indicator is returned, then Death_Date_Time should be reported. 
+#' If they do not, this function counts that as invalid. If Death_Indicator (YES, yes, or Yes) is returned, then Death_Date_Time should be reported. 
 #' If they do not, this function counts that as invalid. Death_Indicator should be reported if a Death_Date_Time is reported; 
 #' if it is not, this function counts that as invalid.
 #' 
@@ -18,9 +18,10 @@ death_invalid <- function(data) {
   death_examples <- data %>% # take data
     select(c(C_Biosense_Facility_ID, C_BioSense_ID, Death_Date_Time, Patient_Death_Indicator, Discharge_Disposition)) %>% # taking variables we need
     mutate(Missing_Death_Given_Discharge_Disposition=ifelse(Discharge_Disposition %in% c("20", "40", "41", "42") & # if dd includes any of these four and
-                                                              (is.na(Death_Date_Time) | is.na(Patient_Death_Indicator)), # either of the death fields are missing
+                                                              (is.na(Death_Date_Time) | is.na(Patient_Death_Indicator)| Patient_Death_Indicator=="No"), # either of the death fields are missing
                                                             TRUE, FALSE), # then it is missing, else it is not
-           Missing_Death_Date_Time_Given_Indicator=ifelse(!is.na(Patient_Death_Indicator) & is.na(Death_Date_Time), TRUE, FALSE), # indicator present but date time is not
+           Missing_Death_Date_Time_Given_Indicator=ifelse(Patient_Death_Indicator %in% c("yes","Yes","YES")
+                                                          & is.na(Death_Date_Time), TRUE, FALSE), # indicator present but date time is not
            Missing_Death_Indicator_Given_Date_Time=ifelse(is.na(Patient_Death_Indicator) & !is.na(Death_Date_Time), TRUE, FALSE)) # date time not present, indicator is
   
   # generate summary
