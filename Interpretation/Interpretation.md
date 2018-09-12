@@ -23,7 +23,7 @@ The exact specifics of what is needed will likely vary by jurisdiction; for this
 We used the [PHIN messaging guide](https://www.cdc.gov/nssp/documents/guides/syndrsurvmessagguide2_messagingguide_phn.pdf) from the CDC to determine what was required or optional, but also relied on our own needs at Kansas Department of Health and Environment.  
 
 Here is an example of what the nulls tabs look like:  
-<img src="https://github.com/SophiaLC0714/biosensequality/blob/master/Interpretation/State_Summary_Req_Null.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/State_Summary_Req_Null.PNG" alt="hi" class="inline"/>
 
 The first two columns show the facility's name and ID number, with the Feed Name and Sending Application for this facility showing next to them. Column 5 (Measures) points out what type of measure is being used: the raw count of nulls? Or the percentage that are null? Columns 6 and on are the fields that are being checked. For instance, the column named Chief_Complaint_Text shows the counts and pertanges of missing chief complaints for each of the facility. Rows 1 and 2 shaded in blue in the headline show the state counts and percents, respectively. So 742 is total NULL counts for Chief_Complaint_Text across the state, which takes about 4% of the visits. This is the setup for both the required and optional null tabs. The first three rows and first five columns are frozen to make it easier to navigate the page.  
 
