@@ -87,6 +87,6 @@ The rest of the columns gives you information needed to find the record and visi
 
 The nulls tab is almost the same. Columns 1 and 2 are the visit ID and null field, respectively; the rest of the columns are the same columns that give you information needed to find the record and visit in question.  
 
-Any questions about interpretability can be addressed to wumengjiao0714@gmail.com. You can also report bugs and issues on [GitHub](https://github.com/markhwhiteii/biosensequality/issues).
+Any questions about interpretability can be addressed to sophiacrossen@gmail.com. You can also report bugs and issues on [GitHub](https://github.com/markhwhiteii/biosensequality/issues).
 <br>
 <br>
