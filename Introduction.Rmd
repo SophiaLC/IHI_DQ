@@ -48,8 +48,8 @@ write_reports(username="lskywalker", password="xwingred5",
               table="KS_PR_Processed", mft="KS_MFT", raw="KS_PR_Raw",
               start="2017-06-01 00:00:00", 
               end="2017-06-30 23:59:59",
-              directory="~/Documents/JuneReports",
-              nexamples=20, offset=5)
+              directory="~/Reports/JuneReports",
+              nexamples=1000, offset=5)
 ```
 
 ##```write_reports_local```
@@ -57,8 +57,8 @@ This function does the exact same as above, except it skips Step 1 of pulling do
 
 ```library(biosensequality)
 write_reports_local(data=df, fnames=namekey,
-              directory="~/Documents/JuneReports",
-              nexamples=20, offset=5)
+              directory="~/Reports/JuneReports",
+              nexamples=1000, offset=5)
 ```
               
 ##```write_facility```
@@ -70,8 +70,8 @@ write_facility(username="lskywalker", password="xwingred5",
               start="2017-06-01 00:00:00", 
               end="2017-06-30 23:59:59",
               facility=3889
-              directory="~/Documents/JuneReports",
-              nexamples=20)
+              directory="~/Reports",
+              nexamples=1000)
 ```
   
   
