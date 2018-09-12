@@ -55,7 +55,8 @@ write_reports(username="lskywalker", password="xwingred5",
 ##```write_reports_local```
 This function does the exact same as above, except it skips Step 1 of pulling down all of the data. The user must provide data themselves. Let’s say someone wanted to do write the same reports as above, but they loaded the data into their R session as ```df``` and ```namekey``` already (see the documentation, ```?write_reports_local```, for how the two data frames should look). They would enter:
 
-```library(biosensequality)
+```
+library(biosensequality)
 write_reports_local(data=df, fnames=namekey,
               directory="~/Reports/JuneReports",
               nexamples=1000, offset=5)
@@ -64,7 +65,8 @@ write_reports_local(data=df, fnames=namekey,
 ##```write_facility```
 For a lightweight alternative, one could try the ```write_facility``` function. This function also takes a specific C_Biosense_Facility_ID and generates a summary file and an example file for that facility only. This takes far less time to run, and it might be useful in a situation where you are concerned with only what one facility is doing, and do not need an overall assessment of every single facility. The query would be the same as for  ```write_reports```, except now you enter a ```facility``` argument:
 
-```library(biosensequality)
+```
+library(biosensequality)
 write_facility(username="lskywalker", password="xwingred5", 
               table="KS_PR_Processed", mft="KS_MFT", raw="KS_PR_Raw",
               start="2017-06-01 00:00:00", 
