@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to biosensequality"
-author: "Sophia Crossen, Mengjiao Wu, Mark White | sophia.crossen@ks.gov"
+author: "Sophia Crossen, Mengjiao Wu, Mark White | sophiacrossen@gmail.com"
 date: "8/2/2018"
 output: html_document
 ---
