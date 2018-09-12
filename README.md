@@ -11,5 +11,5 @@ After this, you can install the `biosensequality` package using the `install_git
 
 **Getting Started**
 
-Take a look at the introductory vignette (https://github.com/SophiaLC/biosensequality/blob/master/Introduction.Rmd) for an introduction on how to use the function; also check out the explainer (http://rpubs.com/SophiaLC/bioqual-interpret or ) on how to interpret the results.
+Take a look at the introductory vignette (https://github.com/SophiaLC/biosensequality/blob/master/Introduction.Rmd) for an introduction on how to use the function; also check out the explainer (https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Interpretation.md) on how to interpret the results.
 
