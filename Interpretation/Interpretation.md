@@ -23,7 +23,7 @@ The exact specifics of what is needed will likely vary by jurisdiction; for this
 We used the [PHIN messaging guide](https://www.cdc.gov/nssp/documents/guides/syndrsurvmessagguide2_messagingguide_phn.pdf) from the CDC to determine what was required or optional, but also relied on our own needs at Kansas Department of Health and Environment.  
 
 Here is an example of what the nulls tabs look like:  
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/State_Summary_Req_Null.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC0714/biosensequality/blob/master/Interpretation/State_Summary_Req_Null.PNG" alt="hi" class="inline"/>
 
 The first two columns show the facility's name and ID number, with the Feed Name and Sending Application for this facility showing next to them. Column 5 (Measures) points out what type of measure is being used: the raw count of nulls? Or the percentage that are null? Columns 6 and on are the fields that are being checked. For instance, the column named Chief_Complaint_Text shows the counts and pertanges of missing chief complaints for each of the facility. Rows 1 and 2 shaded in blue in the headline show the state counts and percents, respectively. So 742 is total NULL counts for Chief_Complaint_Text across the state, which takes about 4% of the visits. This is the setup for both the required and optional null tabs. The first three rows and first five columns are frozen to make it easier to navigate the page.  
 
@@ -44,7 +44,7 @@ other patient information (insurance company, patient class, age group, etc), fa
 
 Here is an example of what the facility information tab looks like, with information about Stormont-Vail:  
 
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/Facility_Summary_FacInfo.PNG" alt="hi" class="inline"/> 
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Facility_Summary_FacInfo.PNG" alt="hi" class="inline"/> 
 
 The rows each list different summary information about the facility. Column 1 will list the HL7 segments that this information is taken from (the guide for these HL7 segments are found at [the CDC's NSSP data dictionary](https://www.cdc.gov/nssp/biosense/docs/NSSP-Data-Dictionary.xlsx)), while Column 2 lists the field name, and Column 3 lists the value. The dates for patient visit time represented in this file are 2018-08-10 to 2018-08-17. During these 8 days, there are 1296 visits in total and 162 visit per day on average.
 
@@ -52,26 +52,26 @@ The rows each list different summary information about the facility. Column 1 wi
 For each facility, we calculate the average time, in hours, between (a) when the patient visited the emergency department and (b) when the first message was recorded, and (c) when the first message was sent, and (d) when the first record for this visit arrived to the NSSP BioSense Platform for each visit. 
 
 Here is an example of the timeliness report for the earliest non NA chief complaint, the earliest non NA diagnosis code, and different types of trigger events.
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/Facility_Summary_Timeliness.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Facility_Summary_Timeliness.PNG" alt="hi" class="inline"/>
 
 
 ### Nulls and Invalids
 
 Here is an example of what each of the nulls and invalid tabs will look like (I used invalid as an example here): 
 
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/Facility_Summary_Invalid.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Facility_Summary_Invalid.PNG" alt="hi" class="inline"/>
 
 The HL7 segment that these fields are taken from is in Column 1, Field checked is in Column 2, that specific facility's counts and percents are in Columns 3 and 4, and the statewide percent is in Column 5. For example, there are 39 invalid inputs (3.01%) for Age_Reported while the state-average percentage is 15.43%.
 
 ### Batch Information
 The first part of the output gives the average number of messages per batch. The second part shows the number of batches per day, and the time, in hours, between the batches.
 
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/Facility_Summary_Batch.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Facility_Summary_Batch.PNG" alt="hi" class="inline"/>
 
 ### Race and Ethnicity
 Here is the example of count and percentage for race and ethnicity. 
 
-<img src="https://github.com/Mengjiao0714/biosensequality/blob/master/Interpretation/Facility_Summary_Race.PNG" alt="hi" class="inline"/>
+<img src="https://github.com/SophiaLC/biosensequality/blob/master/Interpretation/Facility_Summary_Race.PNG" alt="hi" class="inline"/>
 
 
 ### Others
@@ -87,6 +87,6 @@ The rest of the columns gives you information needed to find the record and visi
 
 The nulls tab is almost the same. Columns 1 and 2 are the visit ID and null field, respectively; the rest of the columns are the same columns that give you information needed to find the record and visit in question.  
 
-Any questions about interpretability can be addressed to sophiacrossen@gmail.com. You can also report bugs and issues on [GitHub](https://github.com/markhwhiteii/biosensequality/issues).
+Any questions about interpretability or reports of bugs or other issues can be addressed to sophiacrossen@gmail.com. 
 <br>
 <br>
