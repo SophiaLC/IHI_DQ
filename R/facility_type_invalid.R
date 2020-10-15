@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("facility_type")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid facility type checks.
+#' @param data The raw data on which you will do the invalid facility type checks.
 #' @return A list of two data frames: examples and summary for invalid Facility_Type.
 #' @import dplyr
 #' @export
