@@ -29,7 +29,7 @@ diagnosis_type_invalid <- function(data) {
   
   # generate examples
   diagnosis_type_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Diagnosis_Type)) %>% # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Diagnosis_Type)) %>% # taking just the variables we need
     mutate(Diagnosis_Type=toupper(as.character(Diagnosis_Type)), # make character and uppercase
            Invalid_Diagnosis_Type=case_when(
              is.na(Diagnosis_Type) ~ NA, # if it is na, keep it na
@@ -39,7 +39,7 @@ diagnosis_type_invalid <- function(data) {
   
   # generate summary
   diagnosis_type_summary <- diagnosis_type_examples %>% # take the examples
-    group_by(C_BioSense_ID) %>% 
+    group_by(C_Visit_ID) %>% 
     mutate(Any_Invalid_Diagnosis_Type=case_when(
       all(is.na(Invalid_Diagnosis_Type)) ~ NA, # if all na, keep na
       sum(Invalid_Diagnosis_Type, na.rm=TRUE) == 0 ~ FALSE, # if all are false, then false invalid
@@ -47,7 +47,7 @@ diagnosis_type_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # get one observation per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>%  # group by facility
+    group_by(C_Facility_ID) %>%  # group by facility
     summarise(Diagnosis_Type.Percent=round(mean(Any_Invalid_Diagnosis_Type, na.rm=TRUE)*100,2), # percents
               Diagnosis_Type.Count=sum(Any_Invalid_Diagnosis_Type, na.rm=TRUE)) # counts
   
