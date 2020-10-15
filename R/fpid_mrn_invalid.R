@@ -12,7 +12,7 @@ fpid_mrn_invalid <- function(data) {
   
   # generate examples
   fpidmrn_examples <- data %>% # take data
-    select(c(First_Patient_ID, Medical_Record_Number, C_BioSense_ID, C_Biosense_Facility_ID)) %>% # selecting just columns we need
+    select(c(First_Patient_ID, Medical_Record_Number, C_Visit_ID, C_Facility_ID)) %>% # selecting just columns we need
     mutate(First_Patient_ID=as.character(First_Patient_ID), # making first patient ID as character
            Medical_Record_Number=as.character(Medical_Record_Number), # making mrn a character
            FPID_MRN_Mismatch=case_when(
@@ -23,7 +23,7 @@ fpid_mrn_invalid <- function(data) {
   
   # generate summary
   fpidmrn_summary <- fpidmrn_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Mismatch=case_when(
       all(is.na(FPID_MRN_Mismatch)) ~ NA, # if all na, then na
       sum(FPID_MRN_Mismatch, na.rm=TRUE) == 0 ~ FALSE, # if all false, then record is false invalid
@@ -31,7 +31,7 @@ fpid_mrn_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # get one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(FPID_MRN_Mismatch.Percent=round(mean(Any_Mismatch, na.rm=TRUE)*100,2), # percent
               FPID_MRN_Mismatch.Count=sum(Any_Mismatch, na.rm=TRUE)) # count
   
