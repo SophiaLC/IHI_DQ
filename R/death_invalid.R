@@ -8,7 +8,7 @@
 #' If they do not, this function counts that as invalid. Death_Indicator should be reported if a Death_Date_Time is reported; 
 #' if it is not, this function counts that as invalid.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid death checks.
+#' @param data The raw data on which you will do the invalid death checks.
 #' @return A list of two data frames: examples and summary for these invalid death checks.
 #' @import dplyr
 #' @export
