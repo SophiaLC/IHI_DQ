@@ -18,7 +18,7 @@ temperature_invalid <- function(data) {
   
   # generate examples
   temperature_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Initial_Temp, Initial_Temp_Units)) %>% # get only vars we need
+    select(c(C_Facility_ID, C_Visit_ID, Initial_Temp, Initial_Temp_Units)) %>% # get only vars we need
     mutate(Initial_Temp_Units=as.character(toupper(Initial_Temp_Units)), # upper casing everything
            Invalid_Temp_Units=ifelse(Initial_Temp_Units %in% c("FAHRENHEIT", "DEGREE FAHRENHEIT", "CELSIUS", "DEGREE CELSIUS",
                                                                "FARENHEIT", "DEGREE FARENHEIT", "CELCIUS", "DEGREE CELCIUS") & # if units matches one of these
@@ -40,7 +40,7 @@ temperature_invalid <- function(data) {
   
   # generate summary
   temperature_summary <- temperature_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Temp_Units=case_when(
         all(is.na(Invalid_Temp_Units)) ~ NA, # if all na, keep na
@@ -65,7 +65,7 @@ temperature_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Initial_Temp_Units.Percent=round(mean(Any_Invalid_Temp_Units, na.rm=TRUE)*100,2),
               Initial_Temp_Out_Of_Range.Percent=round(mean(Any_Temp_OOR, na.rm=TRUE)*100,2),
               Initial_Temp_Missing_Given_Units.Percent=round(mean(Any_Missing_Temp_Given_Units, na.rm=TRUE)*100,2),
