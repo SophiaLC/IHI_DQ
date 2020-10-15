@@ -31,7 +31,7 @@ state_invalid <- function(data) {
   
   # generate examples
   state_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Patient_State)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Patient_State)) %>%  # taking just the variables we need
     mutate(Invalid_Patient_State=case_when(
       is.na(Patient_State) ~ NA, # if na then keep na
       Patient_State %in% valid_state_values ~ FALSE, # if state is found in valid values, false
@@ -40,7 +40,7 @@ state_invalid <- function(data) {
   
   # generate summary
   state_summary <- state_examples %>% # take the examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Patient_State=case_when(
       all(is.na(Invalid_Patient_State)) ~ NA, # if all is na, keep na
       sum(Invalid_Patient_State, na.rm=TRUE) == 0 ~ FALSE, # if none are true, then invalid is false
@@ -48,7 +48,7 @@ state_invalid <- function(data) {
     )) %>%
     slice(1) %>% # take one row per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Patient_State.Percent=round(mean(Any_Invalid_Patient_State, na.rm=TRUE)*100,2), # percent
               Patient_State.Count=sum(Any_Invalid_Patient_State, na.rm=TRUE)) # count
   
