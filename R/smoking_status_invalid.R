@@ -28,7 +28,7 @@ smoking_status_invalid <- function(data) {
   
   # generating examples
   smoking_status_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Smoking_Status_Code)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Smoking_Status_Code)) %>%  # taking just the variables we need
     mutate(Smoking_Status_Code=as.character(Smoking_Status_Code), # make as character and uppercase
            Invalid_Smoking_Status_Code=case_when(
              is.na(Smoking_Status_Code) ~ NA, # if field is na, then invalid is na
@@ -38,7 +38,7 @@ smoking_status_invalid <- function(data) {
   
   # generating summary
   smoking_status_summary <- smoking_status_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Smoking_Status_Code=case_when(
       all(is.na(Invalid_Smoking_Status_Code)) ~ NA, # if all na, then na
       sum(Invalid_Smoking_Status_Code, na.rm=TRUE) == 0 ~ FALSE, # if all false, then invalid false
@@ -46,7 +46,7 @@ smoking_status_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # get one row per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Smoking_Status_Code.Percent=round(mean(Any_Invalid_Smoking_Status_Code, na.rm=TRUE)*100,2), # percent
               Smoking_Status_Code.Count=sum(Any_Invalid_Smoking_Status_Code, na.rm=TRUE)) # count
   
