@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("admit_source")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid admit source checks.
+#' @param data The raw data on which you will do the invalid admit source checks.
 #' @return A list of two data frames: examples and summary for invalid Admit_Source.
 #' @import dplyr
 #' @export
