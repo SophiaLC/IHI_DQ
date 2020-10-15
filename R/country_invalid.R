@@ -29,7 +29,7 @@ country_invalid <- function(data) {
   
   # generate example file
   country_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Patient_Country)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Patient_Country)) %>%  # taking just the variables we need
     mutate(Patient_Country=toupper(as.character(Patient_Country)), # make as character and uppercase
            Invalid_Patient_Country=case_when(
              is.na(Patient_Country) ~ NA, # if field is na, then invalid remains na
@@ -39,7 +39,7 @@ country_invalid <- function(data) {
   
   # generating summary data
   country_summary <- country_examples %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Patient_Country=case_when(
       all(is.na(Invalid_Patient_Country)) ~ NA, # if all checks na, then case is na
       sum(Invalid_Patient_Country, na.rm=TRUE) == 0 ~ FALSE, # if no checks true, then false
@@ -47,7 +47,7 @@ country_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # take one observation per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Patient_Country.Percent=round(mean(Any_Invalid_Patient_Country, na.rm=TRUE)*100,2), # percent
               Patient_Country.Count=sum(Any_Invalid_Patient_Country, na.rm=TRUE)) # count
   
