@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("patient_class")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid patient class checks.
+#' @param data The raw data on which you will do the invalid patient class checks.
 #' @return A list of two data frames: examples and summary for invalid Patient_Class_Code.
 #' @import dplyr
 #' @export
