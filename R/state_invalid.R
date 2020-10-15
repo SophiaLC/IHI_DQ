@@ -12,7 +12,7 @@
 #' leaves off the zeros in front of single-digit codes; codes with zeros in front of them are explicitly added
 #' in the code for the function.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid patient state checks.
+#' @param data The raw data on which you will do the invalid patient state checks.
 #' @return A list of two data frames: examples and summary for the Patient_State.
 #' @import dplyr
 #' @export
