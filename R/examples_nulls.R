@@ -1,13 +1,13 @@
 #' Generate Examples of Null Fields
 #'
 #' @description
-#' This function will return the C_BioSense_ID for visits where required fields are missing, as well as what fields that are missing.
+#' This function will return the C_Visit_ID for visits where required fields are missing, as well as what fields that are missing.
 #' As mentioned in `get_req_nulls`, fields were treated as null if they were null in every single record of the visit, *except* for
 #' ones that had to be present in every record and thus are done at the record-level: Treating_Facility_ID, Trigger_Event, Message_Control_ID,
 #' Processing_ID, Version_ID, Message_Profile_ID, Recorded_Date_Time, Message_Date_Time, First_Patient_ID, and Medical_Record_Number.
 #'
 #' @param i A facility ID, as a string.
-#' @param data The raw data from BioSense on which these examples will be generated.
+#' @param data The raw data on which these examples will be generated.
 #' @return A data frame containing the patient-visit IDs and fields for this visit that were null.
 #' @import dplyr
 #' @export
@@ -53,7 +53,7 @@ examples_nulls <- function(i, data) {
       mutate(All_Null=ifelse(mean(Null)==1, TRUE, FALSE)) %>% # All null if all of entries are null
       ungroup() %>% # explicitly ungroup
       filter(All_Null==TRUE) %>% # get where all rows for patient visit are null
-      transmute(C_Visit_ID=C_Visit_ID, # keep biosense id
+      transmute(C_Visit_ID=C_Visit_ID, # keep visit id
                 Null_Field=req_pv_fields[k]) %>% # rename null field with what is null
       bind_rows(output, .)
   }
