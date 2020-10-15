@@ -32,7 +32,7 @@ blood_pressure_invalid <- function(data) {
   
   # generate examples data
   blood_pressure_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Systolic_Diastolic_Blood_Pressure, Systolic_Diastolic_Blood_Pressure_Units)) %>% # select relevant vars
+    select(c(C_Facility_ID, C_Visit_ID, Systolic_Diastolic_Blood_Pressure, Systolic_Diastolic_Blood_Pressure_Units)) %>% # select relevant vars
     mutate(Systolic_Diastolic_Blood_Pressure_Units=toupper(as.character(Systolic_Diastolic_Blood_Pressure_Units)), # uppercase and character
            Invalid_Blood_Pressure_Units=case_when(
              is.na(Systolic_Diastolic_Blood_Pressure_Units) ~ NA, # na if initial blood pressure is na
@@ -44,7 +44,7 @@ blood_pressure_invalid <- function(data) {
   
   # generate summary data
   blood_pressure_summary <- blood_pressure_examples %>% # take examples data frame
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Units=case_when(
         all(is.na(Invalid_Blood_Pressure_Units)) ~ NA, # if all na, keep na
@@ -64,7 +64,7 @@ blood_pressure_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # get one observation per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Systolic_Diastolic_Blood_Pressure_Units.Percent=round(mean(Any_Invalid_Units, na.rm=TRUE)*100,2), # percent invalid blood pressure units
               Systolic_Diastolic_Blood_Pressure_Missing_Given_BP_Units.Percent=round(mean(Any_Missing_BP, na.rm=TRUE)*100,2), # percent missing blood pressure given units
               Systolic_Diastolic_Blood_Pressure_Units_Missing_Given_BP.Percent=round(mean(Any_Missing_Units, na.rm=TRUE)*100,2), # percent missing units given blood pressure
