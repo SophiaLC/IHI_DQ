@@ -15,8 +15,8 @@
 va_lag <- function(data, names, offset) {
   return(
     data %>% # take raw data
-      select(C_BioSense_ID, C_Biosense_Facility_ID, Arrived_Date_Time, C_Visit_Date_Time) %>% # select only vars we need
-      group_by(C_BioSense_ID) %>% # group by patient visit
+      select(C_Visit_ID, C_Facility_ID, Arrived_Date_Time, C_Visit_Date_Time) %>% # select only vars we need
+      group_by(C_Visit_ID) %>% # group by patient visit
       slice(which.min(Arrived_Date_Time)) %>% # get the first arrived date time
       slice(1) %>% # get one, just in case there are ties
       mutate(
@@ -24,7 +24,7 @@ va_lag <- function(data, names, offset) {
         lag=as.numeric(difftime(Arrived_Date_Time, C_Visit_Date_Time, units="hours")) # get lag, in hours
       ) %>% 
       ungroup() %>% # ungroup explicitly
-      group_by(C_Biosense_Facility_ID) %>% # regroup by facility
+      group_by(C_Facility_ID) %>% # regroup by facility
       summarise(First_Message=round(mean(lag, na.rm=TRUE),2)) %>% # get the average, round by two digits
       right_join(names, ., by="C_Biosense_Facility_ID") # join with the names data
   )
