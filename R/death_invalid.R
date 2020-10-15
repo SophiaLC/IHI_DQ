@@ -16,7 +16,7 @@ death_invalid <- function(data) {
   
   # generate examples
   death_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Death_Date_Time, Patient_Death_Indicator, Discharge_Disposition)) %>% # taking variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Death_Date_Time, Patient_Death_Indicator, Discharge_Disposition)) %>% # taking variables we need
     mutate(Missing_Death_Given_Discharge_Disposition=ifelse(Discharge_Disposition %in% c("20", "40", "41", "42") & # if dd includes any of these four and
                                                               (is.na(Death_Date_Time) | is.na(Patient_Death_Indicator)), # either of the death fields are missing
                                                             TRUE, FALSE), # then it is missing, else it is not
@@ -25,7 +25,7 @@ death_invalid <- function(data) {
   
   # generate summary
   death_summary <- death_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Missing_Death_Given_Discharge_Disposition=case_when(
         all(is.na(Missing_Death_Given_Discharge_Disposition)) ~ NA, # if all na, keep na
@@ -45,7 +45,7 @@ death_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # get one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility id
+    group_by(C_Facility_ID) %>% # group by facility id
     summarise(Missing_Death_Given_Discharge_Disposition.Percent=round(mean(Any_Missing_Death_Given_Discharge_Disposition)*100,2),
               Missing_Death_Date_Time_Given_Indicator.Percent=round(mean(Any_Missing_Death_Date_Time_Given_Indicator)*100,2),
               Missing_Death_Indicator_Given_Date_Time.Percent=round(mean(Any_Missing_Death_Indicator_Given_Date_Time)*100,2),
