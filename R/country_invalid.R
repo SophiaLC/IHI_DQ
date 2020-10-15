@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("country")`.
 #' 
-#' @param data The raw data From BioSense on which you will do the invalid Patient_Country check.
+#' @param data The raw data on which you will do the invalid Patient_Country check.
 #' @return A list of two data frames: examples and summary for Patient_Country.
 #' @import dplyr
 #' @export
