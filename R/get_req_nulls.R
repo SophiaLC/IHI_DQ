@@ -11,7 +11,7 @@
 #' The distinctions between optional vs. invalid and per visit vs. every message were made based off of our interpretation of the
 #' PHIN guide as well as the needs of the Kansas Department of Health and Environment Syndromic Surveillance.
 #'
-#' @param data The raw data from BioSense on which you will do the null checks.
+#' @param data The raw data on which you will do the null checks.
 #' @return A summary data frame that lists counts and percentages for null fields, summarized at facility-level.
 #' @import dplyr
 #' @import tidyr
