@@ -4,7 +4,7 @@
 #' second, a frame that contains facility-level summaries for counts and percentages of cases where a patient's
 #' First_Patient_ID does not match their Medical_Record_Number.
 #' 
-#' @param data The raw data from BioSense on which you will do the mismatch checks.
+#' @param data The raw data on which you will do the mismatch checks.
 #' @return A list of two data frames: examples and summary for mismatches from First_Patient_ID (FPID) and Medical_Record_Number (MRN).
 #' @import dplyr
 #' @export
