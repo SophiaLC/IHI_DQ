@@ -31,7 +31,7 @@ discharge_disposition_invalid <- function(data) {
   
   # generate examples
   discharge_disposition_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Discharge_Disposition)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Discharge_Disposition)) %>%  # taking just the variables we need
     mutate(Discharge_Disposition=as.character(Discharge_Disposition),
            Invalid_Discharge_Disposition=case_when(
              is.na(Discharge_Disposition) ~ NA, # if field is na, then invalid is na
@@ -41,7 +41,7 @@ discharge_disposition_invalid <- function(data) {
              
   # generate summary
   discharge_disposition_summary <- discharge_disposition_examples %>% 
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Discharge_Disposition=case_when(
       all(is.na(Invalid_Discharge_Disposition)) ~ NA, # if all na, keep na
       sum(Invalid_Discharge_Disposition, na.rm=TRUE) == 0 ~ FALSE, # if all false, then false
@@ -49,7 +49,7 @@ discharge_disposition_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # get one per visit
     ungroup() %>% # ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Discharge_Disposition.Percent=round(mean(Any_Invalid_Discharge_Disposition, na.rm=TRUE)*100,2), # percents
               Discharge_Disposition.Count=sum(Any_Invalid_Discharge_Disposition, na.rm=TRUE)) # counts
   
