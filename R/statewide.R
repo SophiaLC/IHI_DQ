@@ -4,7 +4,7 @@
 #' (or table-wide, if the table you are calling is not the entire state) summary for counts and percents for each null and invalid check.
 #' The same message-level or patient-visit-level rules are used as are described in `get_all_invalids`, `get_opt_nulls` and `get_req_nulls`.
 #' 
-#' @param data The raw data from BioSense on which you will generate the statewide summary.
+#' @param data The raw data on which you will generate the statewide summary.
 #' @param state_req_nulls A summary returned from the `get_req_nulls` function.
 #' @param state_opt_nulls A summary returned from the `get_opt_nulls` function.
 #' @param state_invalids A summary returned from the `get_all_invalids` function.
