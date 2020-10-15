@@ -33,7 +33,7 @@ height_invalid <- function(data) {
   
   # generate examples
   height_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Height_Units, Height)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Height_Units, Height)) %>%  # taking just the variables we need
     mutate(Height_Units=toupper(as.character(Height_Units)), # make as character and uppercase
            Invalid_Height_Units=case_when(
              is.na(Height_Units) ~ NA, # if na, then keep na
@@ -45,7 +45,7 @@ height_invalid <- function(data) {
   
   # generate summary
   height_summary <- height_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Height_Units=case_when(
         all(is.na(Invalid_Height_Units)) ~ NA, # if all na keep na
@@ -65,7 +65,7 @@ height_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by faciltiy
+    group_by(C_Facility_ID) %>% # group by faciltiy
     summarise(Height_Units.Percent=round(mean(Any_Invalid_Height_Units, na.rm=TRUE)*100,2), # percent invalid
               Height_Units_Missing_Given_Height.Percent=round(mean(Any_Missing_Height_Units_Given_Height, na.rm=TRUE)*100,2), # percent missing units
               Height_Missing_Given_Height_Units.Percent=round(mean(Any_Missing_Height_Given_Height_Units, na.rm=TRUE)*100,2), # percent missing height
