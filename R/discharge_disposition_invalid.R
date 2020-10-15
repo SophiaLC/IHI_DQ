@@ -12,7 +12,7 @@
 #' data frame does not include zeros in front of single-digit numbers 1 to 9; these are also added as valid values
 #' in the function.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid discharge disposition checks.
+#' @param data The raw data on which you will do the invalid discharge disposition checks.
 #' @return A list of two data frames: examples and summary for invalid Discharge_Disposition.
 #' @import dplyr
 #' @export
