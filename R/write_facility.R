@@ -27,10 +27,10 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   channel <- odbcConnect("BioSense_Platform", paste0("BIOSENSE\\", username), password) # open channel
   data <- sqlQuery(
     channel,
-    paste0("SELECT * FROM ", table, " WHERE C_Visit_Date_Time >= '", start, "' AND C_Visit_Date_Time <= '", end, "' AND C_Biosense_Facility_ID = ", facility) # create sql query
+    paste0("SELECT * FROM ", table, " WHERE C_Visit_Date_Time >= '", start, "' AND C_Visit_Date_Time <= '", end, "' AND C_Facility_ID = ", facility) # create sql query
   , as.is=TRUE)
   if (nrow(data) == 0) stop("The query yielded no data.")
-  name <- as.character(unlist(unname(c(sqlQuery(channel, paste0("SELECT Facility_Name FROM ", mft, " WHERE C_Biosense_Facility_ID = ", facility)))))) # get name from mft
+  name <- as.character(unlist(unname(c(sqlQuery(channel, paste0("SELECT Facility_Name FROM ", mft, " WHERE C_Facility_ID = ", facility)))))) # get name from mft
   odbcCloseAll() # close connection
 
   # get hl7 values
@@ -39,19 +39,19 @@ write_facility <- function(username, password, table, mft, start, end, facility,
 
   # get facility-level state summary of required nulls
   req_nulls <- get_req_nulls(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
+    select(-c(C_Facility_ID)) %>%
     gather(Field, Value, 2:ncol(.)) %>%
     spread(Measure, Value) %>%
     right_join(hl7_values, ., by = "Field")
   # get facility-level state summary of optional nulls
   opt_nulls <- get_opt_nulls(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
+    select(-c(C_Facility_ID)) %>%
     gather(Field, Value, 2:ncol(.)) %>%
     spread(Measure, Value) %>%
     right_join(hl7_values, ., by = "Field")
   # get facility-level state summary of invalids
   invalids <- get_all_invalids(data) %>%
-    select(-c(C_Biosense_Facility_ID)) %>%
+    select(-c(C_Facility_ID)) %>%
     gather(Field, Value, 2:ncol(.)) %>%
     spread(Measure, Value) %>%
     right_join(hl7_values, ., by = "Field")
@@ -69,7 +69,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   sheet1 <- addWorksheet(wb, "Facility Information")
   writeDataTable(wb, sheet1,
                  suppressWarnings(data %>% # take data
-                                    select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application,
+                                    select(c(C_Facility_ID, Sending_Facility_ID, Sending_Application,
                                              Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
                                     gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
                                     distinct() %>% # get only distinct entries
@@ -81,7 +81,7 @@ write_facility <- function(username, password, table, mft, start, end, facility,
                                                          Value=c(paste("From", vmin, "to", vmax),
                                                                  paste("From", amin, "to", amax),
                                                                  nrow(data),
-                                                                 n_groups(group_by(data, C_BioSense_ID))))) %>%
+                                                                 n_groups(group_by(data, C_Visit_ID))))) %>%
                                     right_join(hl7_values, ., by="Field")), # get hl7 values
                  firstColumn=TRUE, bandedRows=TRUE)
   setColWidths(wb, sheet1, 1:3, "auto")
@@ -146,11 +146,11 @@ write_facility <- function(username, password, table, mft, start, end, facility,
         slice(1:nexamples) # get nexamples
       # do the same for nulls
       null_examples <- null_examples %>%
-        left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID,
+        left_join(., select(data, c(C_Visit_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID,
                                     C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time,
                                     Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time,
                                     Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
-                  by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
+                  by="C_Visit_ID") %>% # join with all these fields, for every record of that visit
         group_by(Null_Field) %>% # group by type of field
         slice(1:nexamples) # get nexamples
 
