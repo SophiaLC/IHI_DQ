@@ -29,7 +29,7 @@ race_invalid <- function(data) {
   
   # generate examples
   race_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Race_Code)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Race_Code)) %>%  # taking just the variables we need
     mutate(Race_Code=toupper(Race_Code), # upper casing
            Invalid_Race_Code=case_when(
              is.na(Race_Code) ~ NA, # if na keep na
@@ -39,7 +39,7 @@ race_invalid <- function(data) {
   
   # generate summary
   race_summary <- race_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Race_Code=case_when(
       all(is.na(Invalid_Race_Code)) ~ NA, # if all is na, then keep na
       sum(Invalid_Race_Code, na.rm=TRUE) == 0 ~ FALSE, # if all false, then invalid false
@@ -47,7 +47,7 @@ race_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # take one observation per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Race_Code.Percent=round(mean(Any_Invalid_Race_Code, na.rm=TRUE)*100,2), # percent
               Race_Code.Count=sum(Any_Invalid_Race_Code, na.rm=TRUE)) # count
   
