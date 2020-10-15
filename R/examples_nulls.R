@@ -28,17 +28,17 @@ examples_nulls <- function(i, data) {
   for (j in 1:length(req_all_fields)) { # for all required fields
     if (j==1) { # for first, will initialize the output data frame
       output <- data %>% # take data
-        filter(C_Biosense_Facility_ID==i) %>% # data from just facility of interest
-        select(C_BioSense_ID, req_all_fields[j]) %>% # get just patient visit and field
+        filter(C_Facility_ID==i) %>% # data from just facility of interest
+        select(C_Visit_ID, req_all_fields[j]) %>% # get just patient visit and field
         filter(any(is.na(.))) %>% # filter just nas
-        transmute(C_BioSense_ID=C_BioSense_ID, # keep patient visit
+        transmute(C_Visit_ID=C_Visit_ID, # keep patient visit
                   Null_Field=req_all_fields[j]) # list the null field, dispose of the actual null field
     } else {
       output <- data %>%
-        filter(C_Biosense_Facility_ID==i) %>%
-        select(C_BioSense_ID, req_all_fields[j]) %>%
+        filter(C_Facility_ID==i) %>%
+        select(C_Visit_ID, req_all_fields[j]) %>%
         filter(any(is.na(.))) %>%
-        transmute(C_BioSense_ID=C_BioSense_ID,
+        transmute(C_Visit_ID=C_Visit_ID,
                   Null_Field=req_all_fields[j]) %>%
         bind_rows(output, .)
     }
@@ -46,14 +46,14 @@ examples_nulls <- function(i, data) {
 
   for (k in 1:length(req_pv_fields)) {
     output <- data %>% # take data
-      filter(C_Biosense_Facility_ID==i) %>% # data from just facility of interest
-      select(C_BioSense_ID, req_pv_fields[k]) %>% # get just patient visit and field
+      filter(C_Facility_ID==i) %>% # data from just facility of interest
+      select(C_Visit_ID, req_pv_fields[k]) %>% # get just patient visit and field
       mutate(Null=ifelse(is.na(.[,req_pv_fields[k]]), TRUE, FALSE)) %>% # create variable that says if field for that row is null
-      group_by(C_BioSense_ID) %>% # group by patient visit
+      group_by(C_Visit_ID) %>% # group by patient visit
       mutate(All_Null=ifelse(mean(Null)==1, TRUE, FALSE)) %>% # All null if all of entries are null
       ungroup() %>% # explicitly ungroup
       filter(All_Null==TRUE) %>% # get where all rows for patient visit are null
-      transmute(C_BioSense_ID=C_BioSense_ID, # keep biosense id
+      transmute(C_Visit_ID=C_Visit_ID, # keep biosense id
                 Null_Field=req_pv_fields[k]) %>% # rename null field with what is null
       bind_rows(output, .)
   }
