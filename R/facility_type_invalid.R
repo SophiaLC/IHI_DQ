@@ -28,7 +28,7 @@ facility_type_invalid <- function(data) {
   
   # generate examples
   facility_type_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Facility_Type_Code)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Facility_Type_Code)) %>%  # taking just the variables we need
     mutate(Facility_Type_Code=toupper(as.character(Facility_Type_Code)), # make as character and uppercase
            Invalid_Facility_Type_Code=case_when(
              is.na(Facility_Type_Code) ~ NA, # if field is na, then invalid is na
@@ -38,7 +38,7 @@ facility_type_invalid <- function(data) {
   
   # generate summary
   facility_type_summary <- facility_type_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Facility_Type_Code=case_when(
       all(is.na(Invalid_Facility_Type_Code)) ~ NA, # if all na, keep na
       sum(Invalid_Facility_Type_Code, na.rm=TRUE) == 0 ~ FALSE, # if all false, then false invalid
@@ -46,7 +46,7 @@ facility_type_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # get one row per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Facility_Type_Code.Percent=round(mean(Any_Invalid_Facility_Type_Code, na.rm=TRUE)*100,2), # percent
               Facility_Type_Code.Count=sum(Any_Invalid_Facility_Type_Code, na.rm=TRUE)) # count
   
