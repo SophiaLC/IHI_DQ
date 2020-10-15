@@ -19,8 +19,8 @@ one_facility_summary <- function(getsummary, i) {
   return(
     getsummary %>% # take data
       gather(Field, Value, 3:ncol(.)) %>% # gather by field
-      filter(C_Biosense_Facility_ID==i) %>% # get only facility
-      select(-C_Biosense_Facility_ID) %>% # dump the facility id
+      filter(C_Facility_ID==i) %>% # get only facility
+      select(-C_Facility_ID) %>% # dump the facility id
       spread(Measure, Value) %>% # spread out by measure
       right_join(hl7_values, ., by="Field") # join with hl7 values
   )
