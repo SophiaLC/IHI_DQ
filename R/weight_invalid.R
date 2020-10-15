@@ -31,7 +31,7 @@ weight_invalid <- function(data) {
   
   # generate examples
   weight_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Weight_Units, Weight)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Weight_Units, Weight)) %>%  # taking just the variables we need
     mutate(Weight_Units=toupper(as.character(Weight_Units)), # make as character and uppercase
            Invalid_Weight_Units=case_when(
              is.na(Weight_Units) ~ NA, # if field is na, then invalid is na
@@ -43,7 +43,7 @@ weight_invalid <- function(data) {
   
   # generate summary
   weight_summary <- weight_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Weight_Units=case_when(
         all(is.na(Invalid_Weight_Units)) ~ NA, # if all na, keep it na
@@ -63,7 +63,7 @@ weight_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # take one row
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>%  # group by facility
+    group_by(C_Facility_ID) %>%  # group by facility
     summarise(Weight_Units.Percent=round(mean(Any_Invalid_Weight_Units, na.rm=TRUE)*100,2),
               Weight_Units_Missing_Given_Weight.Percent=round(mean(Any_Missing_Weight_Units_Given_Weight, na.rm=TRUE)*100,2),
               Weight_Missing_Given_Weight_Units.Percent=round(mean(Any_Missing_Weight_Given_Weight_Units, na.rm=TRUE)*100,2),
