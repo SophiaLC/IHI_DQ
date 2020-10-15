@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("county")`.
 #' 
-#' @param data The raw data From BioSense on which you will do the invalid C_Patient_County check.
+#' @param data The raw data on which you will do the invalid C_Patient_County check.
 #' @return A list of two data frames: examples and summary for C_Patient_County.
 #' @import dplyr
 #' @export
@@ -29,7 +29,7 @@ county_invalid <- function(data) {
   
   # generate example file
   county_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, C_Patient_County)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, C_Patient_County)) %>%  # taking just the variables we need
     mutate(C_Patient_County=toupper(as.character(C_Patient_County)), # make as character and uppercase
            Invalid_Patient_County=case_when(
              is.na(C_Patient_County) ~ NA, # if field is na, then invalid remains na
@@ -39,7 +39,7 @@ county_invalid <- function(data) {
   
   # generating summary data
   county_summary <- county_examples %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(v) %>% # group by patient visit
     mutate(Any_Invalid_Patient_County=case_when(
       all(is.na(Invalid_Patient_County)) ~ NA, # if all checks na, then case is na
       sum(Invalid_Patient_County, na.rm=TRUE) == 0 ~ FALSE, # if no checks true, then false
@@ -47,7 +47,7 @@ county_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # take one observation per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(C_Patient_County.Percent=round(mean(Any_Invalid_Patient_County, na.rm=TRUE)*100,2), # percent
               C_Patient_County.Count=sum(Any_Invalid_Patient_County, na.rm=TRUE)) # count
   
