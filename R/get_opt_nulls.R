@@ -5,7 +5,7 @@
 #' The distinctions between optional vs. invalid and per visit vs. every message were made based off of our interpretation of the
 #' PHIN guide as well as the needs of the Kansas Department of Health and Environment Syndromic Surveillance.
 #' 
-#' @param data The raw data from BioSense on which you will do the null checks.
+#' @param data The raw data on which you will do the null checks.
 #' @return A summary data frame that lists counts and percentages for null fields, summarized at facility-level.
 #' @import dplyr
 #' @import tidyr
@@ -41,7 +41,7 @@ get_opt_nulls <- function(data) {
     summarise_at(opt_pv_fields, # summarise for all fields in the vector above
                  funs(all(is.na(.)))) %>% # returns true if that field is in na in all messages for that patient visit
     ungroup() %>% # explicitly ungroup
-    full_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_BioSense_ID") %>% # get facility info back
+    full_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_Visit_ID") %>% # get facility info back
     group_by(C_Visit_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one row per patient visit (they are all the same)
     ungroup() %>% # explicitly ungroup
