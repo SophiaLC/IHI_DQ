@@ -1,17 +1,17 @@
-#' Write NSSP BioSense Platform Data Quality Summary Reports for One Facility
+#' Write Data Quality Summary Reports for One Facility
 #'
 #' @description
 #' This function is a lightweight version of the `write_reports` function. It will generate summary and example workbooks, but only for
 #' one specified facility. The first summary workbook shows percents and counts of nulls and invalids, while the examples workbook
 #' generates de tailed information on records and visits that are null or invalid.
 #'
-#' @param username Your BioSense username, as a string. This is the same username you may use to log into RStudio or Adminer.
-#' @param password Your BioSense password, as a string. This is the same password you may use to log into RStudio or Adminer.
+#' @param username Your username, as a string. This is the same username you may use to log into RStudio or Adminer.
+#' @param password Your password, as a string. This is the same password you may use to log into RStudio or Adminer.
 #' @param table The table that you want to retrieve the data from, as a string.
 #' @param mft The MFT (master facilities table) from where the facility name will be retrieved, as a string.
 #' @param start The start date time that you wish to begin pulling data from, as a string.
 #' @param end The end data time that you wish to stop pulling data from, as a string.
-#' @param facility The C_Biosense_Facility_ID for the facility that you wish to generate and write the report for.
+#' @param facility The C_Facility_ID for the facility that you wish to generate and write the report for.
 #' @param directory The directory where you would like to write the reports to (i.e., "~/Documents/MyReports"), as a string.
 #' @param nexamples An integer number of examples you would like for each type of invalid or null field in the examples workbooks for each facility.
 #' This defaults to 0, which will not generate these example workbooks.
@@ -136,11 +136,11 @@ write_facility <- function(username, password, table, mft, start, end, facility,
       null_examples <- examples_nulls(facility, data) # get examples of nulls from this faciltiy
       # join with other relevant fields
       inv_examples <- inv_examples %>% # take examples
-        left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID,
+        left_join(., select(data, c(C_Visit_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID,
                                     C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time,
                                     Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time,
                                     Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
-                  by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
+                  by="C_Visit_ID") %>% # join with all these fields, for every record of that visit
         rename(Invalid_Field=Field) %>% # make it clearer that that field is the one that is invalid
         group_by(Invalid_Field) %>% # group by type of field
         slice(1:nexamples) # get nexamples
