@@ -15,7 +15,7 @@
 #' invalid if Units are not reported; lastly, Initial_Pulse_Oximetry_Units are considered invalid if a corresponding Initial_Pulse_Oximetry
 #' is not reported.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid pulse oximetry checks.
+#' @param data The raw data on which you will do the invalid pulse oximetry checks.
 #' @return A list of two data frames: examples and summary for Initial_Pulse_Oximetry and Initial_Pulse_Oximetry_Units.
 #' @import dplyr
 #' @export
