@@ -12,7 +12,7 @@
 #' @details
 #' You can view the concept names that are considered valid by calling data("age_units").
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid ages and age units checks.
+#' @param data The raw data on which you will do the invalid ages and age units checks.
 #' @return A list of two data frames: examples and summary for invalid Age_Reported and Age_Units_Reported.
 #' @import dplyr
 #' @export
