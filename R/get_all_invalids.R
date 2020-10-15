@@ -4,7 +4,7 @@
 #' invalid checks were done at the patient-visit-level: If *one* message in a patient-visit was found to be invalid, then the whole patient visit
 #' was returned as invalid.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid checks.
+#' @param data The raw data on which you will do the invalid checks.
 #' @return A data frame that contains the results from all of the `_invalid` functions.
 #' @import dplyr
 #' @import tidyr
@@ -27,7 +27,7 @@ get_all_invalids <- function(data) {
   for (i in 2:length(invalid_summaries)) { # for the rest of the data frames in the list
     state_invalids <- full_join(state_invalids, 
                                 invalid_summaries[[i]], # join them to the state invalids summary 
-                                by="C_Biosense_Facility_ID") # by facility id
+                                by="C_Facility_ID") # by facility id
   }
   
   # clean up state invalids
