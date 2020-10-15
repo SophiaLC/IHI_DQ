@@ -40,7 +40,7 @@ age_invalid <- function(data) {
   
   # generate examples file
   age_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Age_Reported, Age_Units_Reported)) %>% # get only the variables we need right now
+    select(c(C_Facility_ID, C_Visit_ID, Age_Reported, Age_Units_Reported)) %>% # get only the variables we need right now
     mutate(Age_Units_Reported=toupper(Age_Units_Reported), # upper casing everything
            Invalid_Age_Units=case_when(
              is.na(Age_Units_Reported) ~ NA, # if it is na, keep it na
@@ -57,7 +57,7 @@ age_invalid <- function(data) {
            ))
   
   age_summary <- age_examples %>% # take these examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Age_Units=case_when(
         all(is.na(Invalid_Age_Units)) ~ NA, # if all invalid checks are na, keep na
@@ -72,7 +72,7 @@ age_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # get one observation per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility 
+    group_by(C_Facility_ID) %>% # group by facility 
     summarise(Age_Reported.Percent=round(mean(Any_Invalid_Age, na.rm=TRUE)*100,2), # get percent
               Age_Units_Reported.Percent=round(mean(Any_Invalid_Age_Units, na.rm=TRUE)*100,2), # get percent
               Age_Reported.Count=sum(Any_Invalid_Age, na.rm=TRUE), # get count
