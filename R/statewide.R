@@ -15,7 +15,7 @@
 statewide <- function(data, state_req_nulls, state_opt_nulls, state_invalids) {
   
   # get n visits, n records, facilities statewide
-  n_visits <- n_groups(group_by(data, C_BioSense_ID)) # number of patient visits
+  n_visits <- n_groups(group_by(data, C_Visit_ID)) # number of patient visits
   n_records <- nrow(data) # number of records
   
   # get totals to work with
