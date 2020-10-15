@@ -13,7 +13,7 @@
 #' 
 #' You can view the concept names that are considered valid by calling `data("blood_pressure_units")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the blood pressure checks.
+#' @param data The raw data on which you will do the blood pressure checks.
 #' @return A list of two data frames: examples and summary for blood pressure checks.
 #' @import dplyr
 #' @export
