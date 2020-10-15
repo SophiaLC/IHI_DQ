@@ -12,7 +12,7 @@
 #' 
 #' Weight is considered invalid of Weight_Units are missing; the reverse is also true.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid patient weight checks.
+#' @param data The raw data on which you will do the invalid patient weight checks.
 #' @return A list of two data frames: examples and summary for Weight and Weight_Units.
 #' @import dplyr
 #' @export
