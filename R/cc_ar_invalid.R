@@ -4,7 +4,7 @@
 #' second, a frame that contains facility-level summaries for for counts and percentages of Chief_Complaint and Admit_Reason
 #' text/descriptions that are shorter than three characters long.
 #'
-#' @param data The raw data from BioSense on which you will do the checks.
+#' @param data The raw data on which you will do the checks.
 #' @return A list of two data frames: examples and summary for Chief_Complaint_Text and Admit_Reason_Description that are too short.
 #' @import dplyr
 #' @importFrom stringr str_length
