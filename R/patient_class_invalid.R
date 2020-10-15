@@ -29,7 +29,7 @@ patient_class_invalid <- function(data) {
   
   # generate examples
   patient_class_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Patient_Class_Code)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Patient_Class_Code)) %>%  # taking just the variables we need
     mutate(Patient_Class_Code=as.character(Patient_Class_Code), # make class code character
            Invalid_Patient_Class_Code=case_when(
              is.na(Patient_Class_Code) ~ NA, # if field is na, then invalid is na
@@ -39,7 +39,7 @@ patient_class_invalid <- function(data) {
   
   # generate summary
   patient_class_summary <- patient_class_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Patient_Class_Code=case_when(
       all(is.na(Invalid_Patient_Class_Code)) ~ NA, # if all na, keep na
       sum(Invalid_Patient_Class_Code, na.rm=TRUE) == 0 ~ FALSE, # if all false, then visit is false invalid
@@ -47,7 +47,7 @@ patient_class_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # take one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Patient_Class_Code.Percent=round(mean(Any_Invalid_Patient_Class_Code, na.rm=TRUE)*100,2), # percent
               Patient_Class_Code.Count=sum(Any_Invalid_Patient_Class_Code, na.rm=TRUE)) # count
   
