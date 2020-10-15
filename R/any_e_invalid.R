@@ -5,7 +5,7 @@
 #' from (i.e., visits with no "E" present); second, a frame that contains facility-level summaries for counts and percentages of visits
 #' without an "E" patient class at least once.
 #' 
-#' @param data The raw data from BioSense on which you will do the check.
+#' @param data The raw data on which you will do the check.
 #' @return A list of two data frames: examples and summary for visits with no "E" in patient class.
 #' @import dplyr
 #' @export
