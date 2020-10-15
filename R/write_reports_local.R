@@ -1,12 +1,12 @@
-#' Write NSSP BioSense Platform Data Quality Summary Reports, Using Local Data
+#' Write Platform Data Quality Summary Reports, Using Local Data
 #' 
 #' @description 
-#' The `write_reports` function will do a data pull using RODBC. In case you do not have a connection to BioSense_Platform through RODBC, you can
+#' The `write_reports` function will do a data pull using RODBC. In case you do not have a connection to Platform through RODBC, you can
 #' use this function to run the reports on data that are loaded to your current R session. That way, you can load in files yourself if you need to write
 #' reports for data have already been pulled or been pulled down using other means than the RODBC package.
 #' 
-#' @param data A data frame of raw data from the BioSense Platform.
-#' @param fnames A data frame that includes two variables: C_Biosense_Facility_ID and Facility_Name. Make sure there is NO repeat C_Biosense_Facility_ID numbers.
+#' @param data A data frame of raw data from the Platform.
+#' @param fnames A data frame that includes two variables: C_Facility_ID and Facility_Name. Make sure there is NO repeat C_Facility_ID numbers.
 #' @param directory The directory where you would like to write the reports to (i.e., "~/Documents/MyReports"), as a string.
 #' @param nexamples An integer number of examples you would like for each type of invalid or null field in the examples workbooks for each facility.
 #' This defaults to 0, which will not generate these example workbooks.
@@ -40,13 +40,13 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
   # writing data table below
   writeDataTable(wb, sheet1,
                  state_req_nulls %>% 
-                   right_join(fnames, ., by = "C_Biosense_Facility_ID"),
+                   right_join(fnames, ., by = "C_Facility_ID"),
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
-  setColWidths(wb, sheet1, 1:ncol(right_join(fnames, state_req_nulls, by = "C_Biosense_Facility_ID")), "auto")
+  setColWidths(wb, sheet1, 1:ncol(right_join(fnames, state_req_nulls, by = "C_Facility_ID")), "auto")
   freezePane(wb, sheet1, firstActiveRow=4, firstActiveCol=4)
   addStyle(wb, sheet1, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
-           rows=1:3, cols=1:ncol(right_join(fnames, state_req_nulls, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
+           rows=1:3, cols=1:ncol(right_join(fnames, state_req_nulls, by = "C_Facility_ID")), gridExpand=TRUE)
   # sheet 2: optional nulls
   sheet2 <- addWorksheet(wb, "Optional Nulls")
   # putting statewide above the filter
@@ -55,13 +55,13 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
   # writing data table below
   writeDataTable(wb, sheet2,
                  state_opt_nulls %>% 
-                   right_join(fnames, ., by = "C_Biosense_Facility_ID"),
+                   right_join(fnames, ., by = "C_Facility_ID"),
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
-  setColWidths(wb, sheet2, 1:ncol(right_join(fnames, state_opt_nulls, by = "C_Biosense_Facility_ID")), "auto")
+  setColWidths(wb, sheet2, 1:ncol(right_join(fnames, state_opt_nulls, by = "C_Facility_ID")), "auto")
   freezePane(wb, sheet2, firstActiveRow=4, firstActiveCol=4)
   addStyle(wb, sheet2, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
-           rows=1:3, cols=1:ncol(right_join(fnames, state_opt_nulls, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
+           rows=1:3, cols=1:ncol(right_join(fnames, state_opt_nulls, by = "C_Facility_ID")), gridExpand=TRUE)
   # sheet 3: invalids
   sheet3 <- addWorksheet(wb, "Invalids")
   # putting statewide above the filter
@@ -70,13 +70,13 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
   # writing data table below
   writeDataTable(wb, sheet3,
                  state_invalids %>% 
-                   right_join(fnames, ., by = "C_Biosense_Facility_ID"),
+                   right_join(fnames, ., by = "C_Facility_ID"),
                  startCol=1, startRow=3, bandedRows=TRUE)
   # formatting widths, freeze panes, and color
-  setColWidths(wb, sheet3, 1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), "auto")
+  setColWidths(wb, sheet3, 1:ncol(right_join(fnames, state_invalids, by = "C_Facility_ID")), "auto")
   freezePane(wb, sheet3, firstActiveRow=4, firstActiveCol=4)
   addStyle(wb, sheet3, createStyle(fgFill="#4f81bd", fontColour="#ffffff", textDecoration = "bold"),
-           rows=1:3, cols=1:ncol(right_join(fnames, state_invalids, by = "C_Biosense_Facility_ID")), gridExpand=TRUE)
+           rows=1:3, cols=1:ncol(right_join(fnames, state_invalids, by = "C_Facility_ID")), gridExpand=TRUE)
   # sheet 4: visit-arrival lag
   sheet4 <- addWorksheet(wb, "Visit-Arrival Lag")
   writeDataTable(wb, sheet4,
@@ -91,17 +91,17 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
   
   
   ## facility by facility summary
-  for (i in data$C_Biosense_Facility_ID[!duplicated(data$C_Biosense_Facility_ID)]) { # for every unique facility id
+  for (i in data$C_Facility_ID[!duplicated(data$C_Facility_ID)]) { # for every unique facility id
     # getting first and last visit date times
-    vmin <- min(as.character(filter(data, C_Biosense_Facility_ID==i)$C_Visit_Date_Time))
-    vmax <- max(as.character(filter(data, C_Biosense_Facility_ID==i)$C_Visit_Date_Time))
-    amin <- min(as.character(filter(data, C_Biosense_Facility_ID==i)$Arrived_Date_Time))
-    amax <- max(as.character(filter(data, C_Biosense_Facility_ID==i)$Arrived_Date_Time))
+    vmin <- min(as.character(filter(data, C_Facility_ID==i)$C_Visit_Date_Time))
+    vmax <- max(as.character(filter(data, C_Facility_ID==i)$C_Visit_Date_Time))
+    amin <- min(as.character(filter(data, C_Facility_ID==i)$Arrived_Date_Time))
+    amax <- max(as.character(filter(data, C_Facility_ID==i)$Arrived_Date_Time))
     # get hl7 values
     data("hl7_values", envir=environment())
     hl7_values$Field <- as.character(hl7_values$Field)
     # get name of facility
-    fname <- as.character(unlist(unname(c(fnames[which(fnames$C_Biosense_Facility_ID==i),1]))))
+    fname <- as.character(unlist(unname(c(fnames[which(fnames$C_Facility_ID==i),1]))))
     
     # write to xlsx
     # initialize workbook
@@ -110,9 +110,9 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
     sheet1 <- addWorksheet(wb, "Facility Information")
     writeDataTable(wb, sheet1,
                    suppressWarnings(data %>% # take data
-                                      select(c(C_Biosense_Facility_ID, Sending_Facility_ID, Sending_Application, 
+                                      select(c(C_Facility_ID, Sending_Facility_ID, Sending_Application, 
                                                Treating_Facility_ID, Receiving_Application, Receiving_Facility)) %>% # taking only variables we want
-                                      filter(C_Biosense_Facility_ID==i) %>% # taking only rows with the same facility ID
+                                      filter(C_Facility_ID==i) %>% # taking only rows with the same facility ID
                                       gather(key=Field, value=Value, convert=TRUE) %>% # suppressed warnings because this will tell you it converted all to characters
                                       distinct() %>% # get only distinct entries
                                       bind_rows(data.frame(Field="Facility_Name", Value=fname), .) %>% # add name to the top
@@ -121,8 +121,8 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
                                                                    "Number of Records", "Number of Visits"),
                                                            Value=c(paste("From", vmin, "to", vmax),
                                                                    paste("From", amin, "to", amax),
-                                                                   nrow(filter(data, C_Biosense_Facility_ID==i)), 
-                                                                   n_groups(group_by(filter(data, C_Biosense_Facility_ID==i), C_BioSense_ID))))) %>% 
+                                                                   nrow(filter(data, C_Facility_ID==i)), 
+                                                                   n_groups(group_by(filter(data, C_Facility_ID==i), C_Visit_ID))))) %>% 
                                       right_join(hl7_values, ., by="Field")), # get hl7 values
                    firstColumn=TRUE, bandedRows=TRUE)
     setColWidths(wb, sheet1, 1:3, "auto")
@@ -196,26 +196,26 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
                              weight_invalid(data)[[1]], # 21
                              zip_invalid(data)[[1]]) # 22
     
-    for (i in data$C_Biosense_Facility_ID[!duplicated(data$C_Biosense_Facility_ID)]) { # for every unique facility id
+    for (i in data$C_Facility_ID[!duplicated(data$C_Facility_ID)]) { # for every unique facility id
       inv_examples <- examples_invalids(i, invalid_examples) # get examples of invalids from this facility
       null_examples <- examples_nulls(i, data) # get examples of nulls from this faciltiy
       # join with other relevant fields
       inv_examples <- inv_examples %>% # take examples
-        left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
+        left_join(., select(data, c(C_Visit_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
                                     C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time, 
                                     Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time, 
                                     Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
-                  by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
+                  by="C_Visit_ID") %>% # join with all these fields, for every record of that visit
         rename(Invalid_Field=Field) %>% # make it clearer that that field is the one that is invalid
         group_by(Invalid_Field) %>% # group by type of field
         slice(1:nexamples) # get nexamples
       # do the same for nulls
       null_examples <- null_examples %>% 
-        left_join(., select(data, c(C_BioSense_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
+        left_join(., select(data, c(C_Visit_ID, C_Visit_Date, C_Visit_Date_Time, First_Patient_ID, 
                                     C_Unique_Patient_ID, Medical_Record_Number, Visit_ID, Admit_Date_Time, 
                                     Recorded_Date_Time, Message_Date_Time, Create_Raw_Date_Time, 
                                     Message_Type, Trigger_Event, Message_Structure, Message_Control_ID)),
-                  by="C_BioSense_ID") %>% # join with all these fields, for every record of that visit
+                  by="C_Visit_ID") %>% # join with all these fields, for every record of that visit
         group_by(Null_Field) %>% # group by type of field
         slice(1:nexamples) # get nexamples
       
@@ -232,7 +232,7 @@ write_reports_local <- function(data, fnames, directory="", nexamples=0) {
       setColWidths(wb, sheet2, 1:ncol(null_examples), "auto")
       freezePane(wb, sheet2, firstActiveRow=2, firstActiveCol=3)
       # write sheet
-      fname <- as.character(unlist(unname(c(fnames[which(fnames$C_Biosense_Facility_ID==i),1])))) # get facility name
+      fname <- as.character(unlist(unname(c(fnames[which(fnames$C_Facility_ID==i),1])))) # get facility name
       filename <- str_replace_all(fname, "[^[a-zA-z\\s0-9]]", "") %>% # get rid of punctuation from faciltiy name
         str_replace_all("[\\s]", "_") # replace spaces with underscores
       saveWorkbook(wb, paste0(directory, "/", filename, "_Examples.xlsx"), overwrite=TRUE)
