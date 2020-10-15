@@ -15,7 +15,7 @@ zip_invalid <- function(data) {
   
   # generate examples
   zip_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Patient_Zip)) %>% # limit dataset to just faciltiy id and patient zip
+    select(c(C_Facility_ID, C_Visit_ID, Patient_Zip)) %>% # limit dataset to just faciltiy id and patient zip
     mutate(Zip_Invalid=case_when(
       is.na(Patient_Zip) ~ NA, # if na, keep as na
       grepl("[^0-9-]", Patient_Zip) | # if it includes anything non-numeric (except for a -), 
@@ -28,7 +28,7 @@ zip_invalid <- function(data) {
 
   # generate summary
   zip_summary <- zip_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Zip_Invalid=case_when(
       all(is.na(Zip_Invalid)) ~ NA, # if all are na, keep na
       sum(Zip_Invalid, na.rm=TRUE) == 0 ~ FALSE, # if none are invalid, whole visit is false 
@@ -36,7 +36,7 @@ zip_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Patient_Zip.Percent=round(mean(Any_Zip_Invalid, na.rm=TRUE)*100,2), # percent
               Patient_Zip.Count=sum(Any_Zip_Invalid, na.rm=TRUE)) # count
   
