@@ -37,50 +37,50 @@ get_req_nulls <- function(data) {
 
   # getting required on all messages summaries
   pct_nulls_req_all <- data %>% # take data
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise_at(req_all_fields, # summarise at fields required for all messages
                  funs(round(sum(is.na(.))/length(.)*100,2))) %>% # percentage of nulls in a given field
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", req_all_pctnames)) # set column names based on those saved above
+    magrittr::set_colnames(c("C_Facility_ID", req_all_pctnames)) # set column names based on those saved above
 
   count_nulls_req_all <- data %>% # take data
-    group_by((C_Biosense_Facility_ID)) %>%  # group by facility
+    group_by((C_Facility_ID)) %>%  # group by facility
     summarise_at(req_all_fields, # summarise at fields required for all messages
                  funs(sum(is.na(.)))) %>% # sum all na values in a given field
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", req_all_cntnames)) # set column names based on those saved above
+    magrittr::set_colnames(c("C_Facility_ID", req_all_cntnames)) # set column names based on those saved above
 
   # getting required on one message per visit summaries
   pct_nulls_req_pv <- data %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     summarise_at(req_pv_fields, # summarise at fields required once per visit
                  funs(all(is.na(.)))) %>% # returns true if that field is na in all messages for that patient visit
     ungroup() %>% # joining will ungroup, but I'm explicitly doing it here
-    full_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID")], by="C_BioSense_ID") %>% # joining with facility information
-    group_by(C_BioSense_ID) %>% # grouping by patient visit again
+    full_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_Visit_ID") %>% # joining with facility information
+    group_by(C_Visit_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one ovservation per patient visit (they are all identical)
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # regroup by facility
+    group_by(C_Facility_ID) %>% # regroup by facility
     summarise_at(req_pv_fields, # summarise at fields required once per patient visit
                  funs(round(mean(., na.rm=TRUE)*100,2))) %>% # take the mean (i.e., proportion true), multiply and round to get a percentage
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", req_pv_pctnames)) # renaming columns
+    magrittr::set_colnames(c("C_Facility_ID", req_pv_pctnames)) # renaming columns
 
   count_nulls_req_pv <- data %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     summarise_at(req_pv_fields, # summarise at fields required once per visit
                  funs(all(is.na(.)))) %>% # returns true if that field is na in all messages for that patient
     ungroup() %>% # joining will ungroup, but explicitly doing it here
-    left_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID")], by="C_BioSense_ID") %>% # joining with facility information
-    group_by(C_BioSense_ID) %>% # grouping by patient visit again
+    left_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_Visit_ID") %>% # joining with facility information
+    group_by(C_Visit_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one ovservation per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # regroup by facility
+    group_by(C_Facility_ID) %>% # regroup by facility
     summarise_at(req_pv_fields, funs(sum(., na.rm=TRUE))) %>% # take the number of trues (missing in all) per each group
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", req_pv_cntnames)) # renaming columns
+    magrittr::set_colnames(c("C_Facility_ID", req_pv_cntnames)) # renaming columns
 
   return(
     pct_nulls_req_all %>% # take stuff from above...
-      full_join(count_nulls_req_all, by = "C_Biosense_Facility_ID") %>% # more stuff from above...
-      full_join(pct_nulls_req_pv, by = "C_Biosense_Facility_ID") %>% # more stuff from above...
-      full_join(count_nulls_req_pv, by = "C_Biosense_Facility_ID") %>% # and the last table from above
+      full_join(count_nulls_req_all, by = "C_Facility_ID") %>% # more stuff from above...
+      full_join(pct_nulls_req_pv, by = "C_Facility_ID") %>% # more stuff from above...
+      full_join(count_nulls_req_pv, by = "C_Facility_ID") %>% # and the last table from above
       gather("Check", "Value", 2:ncol(.)) %>% # gather all columns after facility into check and value columns
       separate(Check, c("Field", "Measure"), "[.]") %>% # splitting up check varaible into three columns by the period
       spread(Field, Value) %>% # spread out all of the facility ids into multiple columns
