@@ -10,7 +10,7 @@
 #' If it is in F, then it has to be between 73 and 110 inclusive, or else it is invalid ("OOR" for "out of range"). Temp is
 #' considered invalid of Units are not reported with it; similarly, Units are considered invalid of Temp is not reported with them.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid temperature checks.
+#' @param data The raw data on which you will do the invalid temperature checks.
 #' @return A list of two data frames: examples and summary for invalid Initial_Temp and Initial_Temp_Units.
 #' @import dplyr
 #' @export
