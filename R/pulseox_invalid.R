@@ -34,7 +34,7 @@ pulseox_invalid <- function(data) {
   
   # generate examples
   pulseox_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units)) %>% # select relevant vars
+    select(c(C_Facility_ID, C_Visit_ID, Initial_Pulse_Oximetry, Initial_Pulse_Oximetry_Units)) %>% # select relevant vars
     mutate(Initial_Pulse_Oximetry_Units=toupper(as.character(Initial_Pulse_Oximetry_Units)), # uppercase and character
            Invalid_Pulse_Oximetry_Units=case_when(
              is.na(Initial_Pulse_Oximetry) ~ NA, # if na, keep na
@@ -47,7 +47,7 @@ pulseox_invalid <- function(data) {
   
   # generate summary
   pulseox_summary <- pulseox_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(
       Any_Invalid_Pulse_Oximetry=case_when(
         all(is.na(Invalid_Pulse_Oximetry)) ~ NA, # if na, keep na
@@ -72,7 +72,7 @@ pulseox_invalid <- function(data) {
     ) %>% 
     slice(1) %>% # take one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by pulse ox
+    group_by(C_Facility_ID) %>% # group by pulse ox
     summarise(Initial_Pulse_Oximetry.Percent=round(mean(Any_Invalid_Pulse_Oximetry, na.rm=TRUE)*100,2),
               Initial_Pulse_Oximetry_Units.Percent=round(mean(Any_Invalid_Pulse_Oximetry_Units, na.rm=TRUE)*100,2),
               Initial_Pulse_Oximetry_Missing_Given_Units.Percent=round(mean(Any_Missing_Pulse_Ox_Given_Oximetry_Units, na.rm=TRUE)*100,2),
