@@ -21,7 +21,7 @@ pull_data <- function(username, password, table, mft, start, end) {
   , as.is=TRUE
   )
   
-  names <- sqlQuery(channel, paste0("SELECT Facility_Name, C_Biosense_Facility_ID FROM ", mft)
+  names <- sqlQuery(channel, paste0("SELECT Facility_Name, C_Facility_ID FROM ", mft)
                    , as.is=TRUE
                    ) # get mft from channel
     
