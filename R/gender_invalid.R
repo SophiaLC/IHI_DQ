@@ -29,7 +29,7 @@ gender_invalid <- function(data) {
   
   # generate examples
   gender_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Administrative_Sex)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Administrative_Sex)) %>%  # taking just the variables we need
     mutate(Administrative_Sex=toupper(Administrative_Sex), # upper casing administrative sex
            Invalid_Administrative_Sex=case_when(
              is.na(Administrative_Sex) ~ NA, # if na, keep na
@@ -39,7 +39,7 @@ gender_invalid <- function(data) {
   
   # generate summary
   gender_summary <- gender_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Administrative_Sex=case_when(
       all(is.na(Invalid_Administrative_Sex)) ~ NA, # if all na, keep na
       sum(Invalid_Administrative_Sex, na.rm=TRUE) == 0 ~ FALSE, # if all false, then whole record is false invalid
@@ -47,7 +47,7 @@ gender_invalid <- function(data) {
     )) %>% 
     slice(1) %>% # one row per visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Administrative_Sex.Percent=round(mean(Any_Invalid_Administrative_Sex, na.rm=TRUE)*100,2), # percent
               Administrative_Sex.Count=sum(Any_Invalid_Administrative_Sex, na.rm=TRUE)) # count
   
