@@ -22,37 +22,37 @@ get_opt_nulls <- function(data) {
   
   # percent nulls for optional fields
   pct <- data %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     summarise_at(opt_pv_fields, # summarise for all fields in the vector above
                  funs(all(is.na(.)))) %>% # returns true if that field is in na in all messages for that patient visit
     ungroup() %>% # explicitly ungroup
-    full_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID")], by="C_BioSense_ID") %>% # get facility info back
-    group_by(C_BioSense_ID) %>% # grouping by patient visit again
+    full_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_Visit_ID") %>% # get facility info back
+    group_by(C_Visit_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one row per patient visit (they are all the same)
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # regroup by facility
+    group_by(C_Facility_ID) %>% # regroup by facility
     summarise_at(opt_pv_fields, # summarise at the given fields above
                  funs(round(mean(., na.rm=TRUE)*100,2))) %>% # take mean (i.e., proportion true), round to get a percentage
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", opt_pv_pctnames))
+    magrittr::set_colnames(c("C_Facility_ID", opt_pv_pctnames))
   
   # count nulls for optional fields
   cnt <- data %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     summarise_at(opt_pv_fields, # summarise for all fields in the vector above
                  funs(all(is.na(.)))) %>% # returns true if that field is in na in all messages for that patient visit
     ungroup() %>% # explicitly ungroup
-    full_join(data[,c("C_BioSense_ID", "C_Biosense_Facility_ID")], by="C_BioSense_ID") %>% # get facility info back
-    group_by(C_BioSense_ID) %>% # grouping by patient visit again
+    full_join(data[,c("C_Visit_ID", "C_Facility_ID")], by="C_BioSense_ID") %>% # get facility info back
+    group_by(C_Visit_ID) %>% # grouping by patient visit again
     slice(1) %>% # taking just one row per patient visit (they are all the same)
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # regroup by facility
+    group_by(C_Facility_ID) %>% # regroup by facility
     summarise_at(opt_pv_fields, # summarise at the given fields above
                  funs(sum(., na.rm=TRUE))) %>% # take mean (i.e., proportion true), round to get a percentage
-    magrittr::set_colnames(c("C_Biosense_Facility_ID", opt_pv_cntnames))
+    magrittr::set_colnames(c("C_Facility_ID", opt_pv_cntnames))
   
   return(
     pct %>% # take stuff from above...
-      full_join(cnt, by = "C_Biosense_Facility_ID") %>% # more stuff from above
+      full_join(cnt, by = "C_Facility_ID") %>% # more stuff from above
       gather("Check", "Value", 2:ncol(.)) %>% # gather all columns after facility into check and value columns
       separate(Check, c("Field", "Measure"), "[.]") %>% # splitting up check varaible into three columns by the period
       spread(Field, Value) %>% # spread out all of the facility ids into multiple columns
