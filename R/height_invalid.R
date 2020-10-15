@@ -14,7 +14,7 @@
 #' are Height_Units also reported? If Height_Units are reported, is Height also reported? Heights without Units are considered
 #' invalid; similarly, Units are considered invalid if Height is not reported with the Units.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid height checks.
+#' @param data The raw data on which you will do the invalid height checks.
 #' @return A list of two data frames: examples and summary for invalid Height and Height_Units.
 #' @import dplyr
 #' @export
