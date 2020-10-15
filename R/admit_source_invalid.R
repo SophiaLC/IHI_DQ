@@ -29,7 +29,7 @@ admit_source_invalid <- function(data) {
     c(., unlist(lapply(., function(x) paste0("0", x))))
   
   invalid_admit_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Admit_Source)) %>% # taking just variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Admit_Source)) %>% # taking just variables we need
     mutate(Admit_Source=as.character(Admit_Source), # make admit source character
            Invalid_Admit_Source=case_when(
              is.na(Admit_Source) ~ NA, # if admit source is na, then invalid will be na
@@ -38,7 +38,7 @@ admit_source_invalid <- function(data) {
            ))
   
   invalid_admit_summary <- invalid_admit_examples %>% # take these examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid=case_when( # making variable for if any is invalid
       all(is.na(Invalid_Admit_Source)) ~ NA, # if all the invalid checks are na, keep na
       sum(Invalid_Admit_Source, na.rm=TRUE) == 0 ~ FALSE, # if the sum of the ones that aren't na is 0, then false
@@ -46,7 +46,7 @@ admit_source_invalid <- function(data) {
       )) %>% 
     slice(1) %>% # get one observation per visit
     ungroup() %>% # explicitly ungroup by patient visit
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Admit_Source.Percent=round(mean(Any_Invalid, na.rm=TRUE)*100,2), # get percent
               Admit_Source.Count=sum(Any_Invalid, na.rm=TRUE)) # get count
   
