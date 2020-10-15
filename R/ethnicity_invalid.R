@@ -29,7 +29,7 @@ ethnicity_invalid <- function(data) {
   
   # get examples
   ethnicity_examples <- data %>% # take data
-    select(c(C_Biosense_Facility_ID, C_BioSense_ID, Ethnicity_Code)) %>%  # taking just the variables we need
+    select(c(C_Facility_ID, C_Visit_ID, Ethnicity_Code)) %>%  # taking just the variables we need
     mutate(Invalid_Ethnicity_Code=case_when(
       is.na(Ethnicity_Code) ~ NA, # if na, keep na
       Ethnicity_Code %in% valid_eth_values ~ FALSE, # if ethnicity code is in valid values, then invalid is false
@@ -38,7 +38,7 @@ ethnicity_invalid <- function(data) {
   
   # get summary
   ethnicity_summary <- ethnicity_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by patient visit
+    group_by(C_Visit_ID) %>% # group by patient visit
     mutate(Any_Invalid_Ethnicity_Code=case_when(
       all(is.na(Invalid_Ethnicity_Code)) ~ NA, # if all na, keep na
       sum(Invalid_Ethnicity_Code, na.rm=TRUE) == 0 ~ FALSE, # if all false, then invalid false
@@ -46,7 +46,7 @@ ethnicity_invalid <- function(data) {
     )) %>%
     slice(1) %>% # get one row per patient visit
     ungroup() %>% # explicitly ungroup
-    group_by(C_Biosense_Facility_ID) %>% # group by facility
+    group_by(C_Facility_ID) %>% # group by facility
     summarise(Ethnicity_Code.Percent=round(mean(Any_Invalid_Ethnicity_Code, na.rm=TRUE)*100,2), # percents
               Ethnicity_Code.Count=sum(Any_Invalid_Ethnicity_Code, na.rm=TRUE)) # counts
   
