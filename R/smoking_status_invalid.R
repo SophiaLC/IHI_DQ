@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("smoking_status")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid smoking status checks.
+#' @param data The raw data on which you will do the invalid smoking status checks.
 #' @return A list of two data frames: examples and summary for invalid Smoking_Status_Code.
 #' @import dplyr
 #' @export
