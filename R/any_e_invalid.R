@@ -13,8 +13,8 @@ any_e_invalid <- function(data) {
   
   # generate examples
   any_e_examples <- data %>% # take data
-    group_by(C_BioSense_ID) %>% # group by patient ID
-    select(C_Biosense_Facility_ID, Patient_Class_Code, C_BioSense_ID) %>% # selecting just variables we need
+    group_by(C_Visit_ID) %>% # group by patient ID
+    select(C_Facility_ID, Patient_Class_Code, C_Visit_ID) %>% # selecting just variables we need
     mutate(Patient_Class_Code=toupper(Patient_Class_Code), # uppercase everything
            Class_Is_E=ifelse(Patient_Class_Code=="E", TRUE, FALSE), # if message is e, then true; else, false
            No_E_In_Visit=ifelse(sum(Class_Is_E, rm.na=TRUE) > 0, FALSE, TRUE)) %>% # is there at least one e in a visit? true if no
@@ -22,10 +22,10 @@ any_e_invalid <- function(data) {
   
   # generate summary
   any_e_summary <- any_e_examples %>% # take examples
-    group_by(C_BioSense_ID) %>% # group by visit
+    group_by(C_Visit_ID) %>% # group by visit
     slice(1) %>% # get one entry for each visit (all of the relevant variables are the same across all rows of a patient visit)
     ungroup() %>% # explicitly ungrouping
-    group_by(C_Biosense_Facility_ID) %>% # regrouping by facility
+    group_by(C_Facility_ID) %>% # regrouping by facility
     summarise(Visits_With_No_E_Pt_Class.Percent=round(mean(No_E_In_Visit, na.rm=TRUE)*100,2), # get percent
               Visits_With_No_E_Pt_Class.Count=sum(No_E_In_Visit, na.rm=TRUE)) # get count
   
