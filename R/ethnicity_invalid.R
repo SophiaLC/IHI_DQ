@@ -10,7 +10,7 @@
 #' 
 #' You can view the concept codes that are considered valid by calling `data("ethnicity")`.
 #' 
-#' @param data The raw data from BioSense on which you will do the invalid ethnicity checks.
+#' @param data The raw data on which you will do the invalid ethnicity checks.
 #' @return A list of two data frames: examples and summary for invalid Ethnicity_Code.
 #' @import dplyr
 #' @export
