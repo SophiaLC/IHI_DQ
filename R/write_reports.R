@@ -17,7 +17,7 @@
 #' @param directory The directory where you would like to write the reports to (i.e., "~/Documents/MyReports"), as a string.
 #' @param nexamples An integer number of examples you would like for each type of invalid or null field in the examples workbooks for each facility.
 #' This defaults to 0, which will not generate these example workbooks.
-#' @param offset The number of hours you wish to offset Arrived_Date_Time (which is in UTC). The offset value is how far off your local time zone is from UTC. 
+#' @param offset The number of hours you wish to offset Date_Entry_Added (which is in UTC). The offset value is how far off your local time zone is from UTC. 
 #' For example, the Central Time Zone would set this to 5 or 6, depending on if it is daylight savings or not. This value should be an integer. 
 #' This is used for timeliness reports using the `va_lag` function.
 #' @import dplyr
@@ -113,8 +113,8 @@ write_reports <- function(username, password, table, mft, start, end, directory=
     # getting first and last visit date times
     vmin <- min(as.character(filter(data, C_Facility_ID==i)$C_Visit_Date_Time))
     vmax <- max(as.character(filter(data, C_Facility_ID==i)$C_Visit_Date_Time))
-    amin <- min(as.character(filter(data, C_Facility_ID==i)$Arrived_Date_Time))
-    amax <- max(as.character(filter(data, C_Facility_ID==i)$Arrived_Date_Time))
+    amin <- min(as.character(filter(data, C_Facility_ID==i)$Date_Entry_Added))
+    amax <- max(as.character(filter(data, C_Facility_ID==i)$Date_Entry_Added))
     # get hl7 values
     data("hl7_values", envir=environment())
     hl7_values$Field <- as.character(hl7_values$Field)
