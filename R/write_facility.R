@@ -59,8 +59,8 @@ write_facility <- function(username, password, table, mft, start, end, facility,
   # getting first and last visit date times
   vmin <- min(as.character(data$C_Visit_Date_Time))
   vmax <- max(as.character(data$C_Visit_Date_Time))
-  amin <- min(as.character(data$Arrived_Date_Time))
-  amax <- max(as.character(data$Arrived_Date_Time))
+  amin <- min(as.character(data$Date_Entry_Added))
+  amax <- max(as.character(data$Date_Entry_Added))
 
   # write to xlsx
   # initialize workbook
